@@ -2,18 +2,24 @@
 
 ## Ubiquitous Language Definition
 
-|Word/phrase|Definition|
-|:---------:|----------|
-|Ipsum      |Lorem     |
+| Word/phrase | Definition                                           |
+|:-----------:|------------------------------------------------------|
+|    user     | A person interacts with the system via the Frontend. |
 
 ## User types use case sketches
+
 ### anonymous user
-### etc
+
+### municipal user
+
+### citizen user
+
+### administrator user
 
 ## Frontend wireframes
 
 ## Project libraries
 
-|Library name|Justification for use|
-|:----------:|---------------------|
-|H2          |Postgres uses too much RAM.|
+| Library name | Justification for use                     |
+|:------------:|-------------------------------------------|
+|      H2      | Postgres uses too much RAM to run on 8GB. |

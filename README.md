@@ -1,6 +1,6 @@
 # BieleVote Municipal Voting System
 
-[Project documentation](documenation/README.md)
+[Project documentation](documentation/README.md)
 
 ## Project goals
 
