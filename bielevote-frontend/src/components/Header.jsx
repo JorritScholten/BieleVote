@@ -3,7 +3,9 @@ import { useEffect } from "react";
 
 export default function Header({ pageTitle }) {
   // sets page title in browser
-  useEffect(() => (document.title = pageTitle), []);
+  useEffect(() => {
+    document.title = pageTitle;
+  }, []);
 
   return (
     <div>
