@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: bielevote-backend
+  jpa:
+    hibernate:
+      ddl-auto: create
+      show_sql: false
+    datasource:
+      url: jdbc:h2:./build/bielevote
+      username: sa
+      password:
