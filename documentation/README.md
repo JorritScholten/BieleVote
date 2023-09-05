@@ -36,20 +36,37 @@ A user who can view, propose, comment and vote projects, view and react to the n
 
 ### Municipal user
 
-A user who can publish projects after reviewing, see the results of citizen voting. And publish news articles.
+A user who can publish projects after reviewing, see the results of citizen voting, and publish news articles.
 
-| Word/phrase | Definition                                           |
-|:-----------:|------------------------------------------------------|
-|    user     | A person interacts with the system via the Frontend. |
+|      Word/phrase      | Definition                                                                       |
+|:---------------------:|----------------------------------------------------------------------------------|
+|   Log into account    | Logging in requires a correct username and password.                             |
+|       Read news       | The user is able to read news articles.                                          |
+|     Publish news      | The user is able to publish news articles.                                       |
+|     React to news     | The user is able to like or dislike news articles.                               |
+| Publish project ideas | The user is able to publish project ideas to the main voting page.               |
+|    Review projects    | If the voting requirements are realized, the user is able to review the project. |
+|  Reward shop orders   | The user is able to see the history of orders from the rewards shop.             |
 
-### administrator user
+### Administrator user
 
 A user who has the power to create and delete user accounts. Publish items in the rewards shop and see the current
-orders from the reward shop.
+orders from the reward shop, and has an entrance to a dashboard of all the results of project ideas.
 
-| Word/phrase | Definition                                           |
-|:-----------:|------------------------------------------------------|
-|    user     | A person interacts with the system via the Frontend. |
+|      Word/phrase      | Definition                                                                       |
+|:---------------------:|----------------------------------------------------------------------------------|
+|   Log into account    | Logging in requires a correct username and password.                             |
+|    Create accounts    | This user is able to create citizen user accounts and municipal user accounts.   |
+|       Read news       | The user is able to read news articles.                                          |
+|     Publish news      | The user is able to publish news articles.                                       |
+|     React to news     | The user is able to like or dislike news articles.                               |
+| Publish project ideas | The user is able to publish project ideas to the main voting page.               |
+|    Review projects    | If the voting requirements are realized, the user is able to review the project. |
+|   Result dashboard    | The user is able to see the results of previous projects.                        |
+|  Reward shop orders   | The user is able to see the history of orders from the rewards shop.             |
+|   Manage shop items   | The user is able to publish or delete reward shop items.                         |
+
+
 
 ## Frontend wireframes
 
