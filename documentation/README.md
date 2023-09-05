@@ -36,7 +36,7 @@ A user who can view, propose, comment and vote projects, view and react to the n
 
 ### Municipal user
 
-A user who can publish projects after reviewing, see the results of citizen voting, and publish news articles.
+A user who can publish projects after reviewing, see the results of citizen voting, and publish news articles. They can also see the history of orders from the reward shop.
 
 |      Word/phrase      | Definition                                                                       |
 |:---------------------:|----------------------------------------------------------------------------------|
@@ -50,7 +50,7 @@ A user who can publish projects after reviewing, see the results of citizen voti
 
 ### Administrator user
 
-A user who has the power to create and delete user accounts. Publish items in the rewards shop and see the current
+A user who has the power to create and delete user accounts. Publish items in the rewards shop and see the history of
 orders from the reward shop, and has an entrance to a dashboard of all the results of project ideas.
 
 |      Word/phrase      | Definition                                                                       |
