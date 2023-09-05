@@ -1,5 +1,7 @@
 # BieleVote Development Documentation
 
+[**Project proposal**](CitizenVote.pdf)
+
 ## Ubiquitous Language Definition
 
 |     Word/phrase      | Definition                                                                                                                                                                     |
