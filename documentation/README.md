@@ -96,6 +96,30 @@ orders from the reward shop, and has an entrance to a dashboard of all the resul
 
 ## Frontend wireframes
 
+### Home page
+
+![](wireframe_homepage.jpeg)
+
+### News page
+
+![](wireframe_newspage.jpeg)
+
+### Create account page
+
+![](wireframe_createaccount.jpeg)
+
+### Project editor/proposal page
+
+![](wireframe_projecteditpage.jpeg)
+
+### Published projects overview page
+
+![](wireframe_projectsoverview.jpeg)
+
+### Project view/voting page
+
+![](wireframe_projectviewpage.jpeg)
+
 ## Project libraries
 
 |   Library name   | Justification for use                                                     |
