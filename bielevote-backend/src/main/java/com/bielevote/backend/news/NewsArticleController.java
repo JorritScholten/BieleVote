@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin
@@ -12,15 +13,25 @@ public class NewsArticleController {
 
     @Autowired
     NewsArticleRepository newsArticleRepository;
-    
+
 
     @GetMapping
     public List<NewsArticle> getAllArticles() {
         return newsArticleRepository.findAll();
     }
 
+    @GetMapping("/{id}")
+    public Optional<NewsArticle> getArticleById(@PathVariable("id") long id) {
+        return newsArticleRepository.findById(id);
+    }
+
     @PostMapping
     public NewsArticle postArticle(@RequestBody NewsArticle newsArticle) {
         return newsArticleRepository.save(newsArticle);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteArticleById(@PathVariable("id") long id) {
+        newsArticleRepository.deleteById(id);
     }
 }
