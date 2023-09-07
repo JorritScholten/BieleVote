@@ -2,6 +2,13 @@ package com.bielevote.backend.news;
 
 public enum Category {
     ECONOMY,
+    SAFETY,
+    HEALTH,
+    NATURE,
+    HOUSING,
+    EDUCATION,
     CULTURE,
-    SPORTS
+    SPORTS,
+    SUSTAINABILITY,
+    OTHER
 }

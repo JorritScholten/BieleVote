@@ -26,4 +26,10 @@ public class NewsArticle {
     private Category category;
     @Enumerated(value = EnumType.STRING)
     private Reaction reaction;
+
+    public NewsArticle(String title, String summary, Category category) {
+        this.title = title;
+        this.summary = summary;
+        this.category = category;
+    }
 }
