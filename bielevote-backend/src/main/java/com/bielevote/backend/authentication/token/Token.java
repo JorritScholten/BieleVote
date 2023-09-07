@@ -1,45 +1,37 @@
-package com.bielevote.backend.user;
+package com.bielevote.backend.authentication.token;
 
-import com.bielevote.backend.authentication.token.Token;
+import com.bielevote.backend.user.User;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.extern.jackson.Jacksonized;
 import org.hibernate.proxy.HibernateProxy;
-import org.springframework.security.core.GrantedAuthority;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
-@Jacksonized
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
 @Entity
-@Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "name"),
-        @UniqueConstraint(columnNames = "phone")
-})
-public class User {
+public class Token {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    public Integer id;
 
-    private String username;
-    private String password;
-    private String name;
-    private String phone;
+    @Column(unique = true)
+    public String token;
+
     @Enumerated(EnumType.STRING)
-    private UserType type;
-    @OneToMany(mappedBy = "user")
-    private List<Token> tokens;
+    public final TokenType tokenType = TokenType.BEARER;
 
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return type.getAuthorities();
-    }
+    public boolean revoked;
+
+    public boolean expired;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    public User user;
 
     @Override
     public final boolean equals(Object o) {
@@ -48,8 +40,8 @@ public class User {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        User user = (User) o;
-        return getId() != null && Objects.equals(getId(), user.getId());
+        Token token = (Token) o;
+        return getId() != null && Objects.equals(getId(), token.getId());
     }
 
     @Override
