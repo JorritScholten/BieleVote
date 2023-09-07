@@ -130,3 +130,7 @@ orders from the reward shop, and has an entrance to a dashboard of all the resul
 |   Semantic-UI    | It makes the REACT code of the frontend more legible.                     |
 |      Axios       | Simplifies API interactions for the REACT frontend.                       |
 |   react-icons    | Clean looking icons with minimal fuss.                                    |
+
+## Developer notes
+
+- Access the database viewer by opening [localhost:8080/h2-console](http://localhost:8080/h2-console) with the following JDBC URL:`jdbc:h2:./build/bielevote`
