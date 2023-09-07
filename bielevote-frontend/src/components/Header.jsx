@@ -9,7 +9,7 @@ export default function Header({ pageTitle }) {
 
   return (
     <>
-      <div className="p-10 flex justify-between items-center">
+      <div className="p-10 flex justify-between items-center bg-slate-200">
         <div>BieleVote</div>
         <div>
           <h1>{pageTitle}</h1>
