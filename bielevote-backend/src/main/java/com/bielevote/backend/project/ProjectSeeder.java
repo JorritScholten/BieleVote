@@ -21,11 +21,11 @@ public class ProjectSeeder implements CommandLineRunner {
         if (count == 0) {
             List<Project> projects = List.of(
                     new Project("Park", "new park"),
-                    new Project("Swimming pool", "new stimming pool")
+                    new Project("Swimming pool", "new swimming pool")
             );
             projectRepository.saveAll(projects);
             count = projectRepository.count();
         }
-        System.out.println(count + "items seeded");
+        System.out.println(count + " items seeded");
     }
 }
