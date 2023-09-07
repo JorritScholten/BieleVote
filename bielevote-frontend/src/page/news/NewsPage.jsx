@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 export default function NewsPage() {
   const emptyArticle = {
@@ -6,9 +7,8 @@ export default function NewsPage() {
     summary: "",
     content: [],
     author: "",
-    datePlaced: "2022-01-02",
+    datePlaced: "",
     category: "",
-    reaction: "",
   };
   const dummyArticle = {
     id: 1,
@@ -25,10 +25,18 @@ export default function NewsPage() {
   console.log(dummyArticle);
   const [news, setNews] = useState(emptyArticle);
 
+  const getNewsArticle = async () => {
+    const allUnits = await axios.get("http://localhost:8080/api/v1/articles");
+    setNews(allUnits.data);
+    console.log(allUnits);
+  };
+  useEffect(() => {
+    getNewsArticle();
+  }, []);
   return (
     <>
-      <h1>{dummyArticle.title}</h1>
-      <p>{dummyArticle.category}</p>
+      <h1>{news.title}</h1>
+      <p>{news.category}</p>
       <br></br>
       <p>{dummyArticle.summary}</p>
       <br></br>
