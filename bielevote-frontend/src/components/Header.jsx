@@ -8,9 +8,26 @@ export default function Header({ pageTitle }) {
   }, []);
 
   return (
-    <div>
-      <h1>{pageTitle}</h1>
-    </div>
+    <>
+      <div className="p-10 flex justify-between items-center bg-slate-200">
+        <div>BieleVote</div>
+        <div>
+          <h1>{pageTitle}</h1>
+        </div>
+        <div className="max-w-sm">
+          <form>
+            <div className="flex flex-row">
+            <input type="text" placeholder="username"/>
+            <input type="text" placeholder="password" />
+            </div>
+            <div className="flex justify-end gap-2">
+            <input className="rounded-lg border-2 border-black" type="submit" value="Log in"></input>
+            <input className="rounded-lg border-2 border-black" type="submit" value="Register"></input>
+            </div>
+          </form>
+        </div>
+      </div>
+    </>
   );
 }
 
