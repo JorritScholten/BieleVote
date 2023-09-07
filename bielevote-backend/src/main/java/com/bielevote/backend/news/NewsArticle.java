@@ -24,12 +24,13 @@ public class NewsArticle {
     private Date date;
     @Enumerated(value = EnumType.STRING)
     private Category category;
-    @Enumerated(value = EnumType.STRING)
-    private Reaction reaction;
 
-    public NewsArticle(String title, String summary, Category category) {
+    public NewsArticle(String title, String summary, List<String> content, String author, Date date, Category category) {
         this.title = title;
         this.summary = summary;
+        this.content = content;
+        this.author = author;
+        this.date = date;
         this.category = category;
     }
 }
