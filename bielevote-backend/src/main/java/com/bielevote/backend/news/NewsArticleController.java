@@ -3,6 +3,8 @@ package com.bielevote.backend.news;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +29,9 @@ public class NewsArticleController {
 
     @PostMapping
     public NewsArticle postArticle(@RequestBody NewsArticle newsArticle) {
+        if (newsArticle.getDatePlaced() == null) {
+            newsArticle.setDatePlaced(LocalDateTime.now());
+        }
         return newsArticleRepository.save(newsArticle);
     }
 
