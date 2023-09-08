@@ -1,6 +1,7 @@
 package com.bielevote.backend.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -35,10 +36,15 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    WebSecurityCustomizer webSecurityCustomizer() {
-        // Disables security for h2-console during development use, disable for a production build
-        return web -> web.ignoring()
-                .requestMatchers(new AntPathRequestMatcher("/h2-console/**"));
+    WebSecurityCustomizer webSecurityCustomizer(@Value("${spring.h2.console.enabled}") Boolean consoleEnabled) {
+        if (consoleEnabled) {
+            // Disables security for h2-console during development use, disable for a production build
+            return web -> web.ignoring()
+                    .requestMatchers(new AntPathRequestMatcher("/h2-console/**"));
+        } else {
+            return web -> {
+            };
+        }
     }
 
     @Bean
