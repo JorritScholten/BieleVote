@@ -11,13 +11,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,14 +26,13 @@ import java.util.List;
 public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
-                .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers(new AntPathRequestMatcher("/auth/**")).permitAll()
-                        .anyRequest().denyAll()
-                )
-                .build();
+        http.csrf(AbstractHttpConfigurer::disable);
+        http.cors(Customizer.withDefaults());
+        http.authorizeHttpRequests((authorize) -> authorize
+                .requestMatchers("/auth/**").permitAll()
+                .anyRequest().denyAll()
+        );
+        return http.build();
     }
 
     @Bean
