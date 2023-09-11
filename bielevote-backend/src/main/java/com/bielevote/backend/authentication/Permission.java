@@ -13,4 +13,8 @@ public enum Permission {
 
     @Getter
     private final String permission;
+
+    public String getRole() {
+        return permission;
+    }
 }

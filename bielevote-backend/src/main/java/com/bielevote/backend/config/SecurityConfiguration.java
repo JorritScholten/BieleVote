@@ -29,6 +29,7 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable);
         http.cors(Customizer.withDefaults());
         http.authorizeHttpRequests((authorize) -> authorize
+                .requestMatchers("/api/v1/users/me").hasRole(CITIZEN_READ.getRole())
                 .requestMatchers("/auth/**").permitAll()
                 .anyRequest().denyAll()
         );
