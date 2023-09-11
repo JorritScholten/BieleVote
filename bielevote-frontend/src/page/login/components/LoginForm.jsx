@@ -1,9 +1,15 @@
 import { useState } from "react";
 import { emptyForms } from "../../../misc/ApiForms";
 import { Form, Button } from "semantic-ui-react";
-import { backendApi } from "../../../misc/ApiMappings";
+import {
+  backendApi,
+  handleLogError,
+  parseJwt,
+} from "../../../misc/ApiMappings";
+import AuthContext from "../../../misc/AuthContext";
 
 export default function LoginForm() {
+  const Auth = AuthContext;
   const [formData, setFormData] = useState(emptyForms.login);
 
   const handleFormChange = (e, { inputMode, name, value }) => {
@@ -20,7 +26,18 @@ export default function LoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     backendApi.login(formData);
-    setFormData(emptyForms.login);
+    try {
+      const response = await backendApi.login(formData);
+      const { accessToken } = response.data;
+      const data = parseJwt(accessToken);
+      const authenticatedUser = { data, accessToken };
+
+      Auth.userLogin(authenticatedUser);
+      console.log(Auth);
+      setFormData(emptyForms.login);
+    } catch (error) {
+      handleLogError(error);
+    }
   };
 
   return (
