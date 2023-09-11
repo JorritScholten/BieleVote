@@ -14,4 +14,10 @@ public class AuthController {
     public ResponseEntity<String> test_endpoint() {
         return ResponseEntity.ok("Hello world");
     }
+
+    @PostMapping("/login")
+    public AuthResponse login(@Valid @RequestBody LoginRequest loginRequest) {
+        String token = authenticateAndGetToken(loginRequest.getUsername(), loginRequest.getPassword());
+        return new AuthResponse(token);
+    }
 }
