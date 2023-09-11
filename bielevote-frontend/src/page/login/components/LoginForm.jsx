@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { loginForm } from "../../../misc/ApiForms";
+import { emptyForms } from "../../../misc/ApiForms";
 import { Form, Button } from "semantic-ui-react";
 import { backendApi } from "../../../misc/ApiMappings";
 
 export default function LoginForm() {
-  const [formData, setFormData] = useState(loginForm.emptyForm);
+  const [formData, setFormData] = useState(emptyForms.login);
 
   const handleFormChange = (e, { inputMode, name, value }) => {
     if (inputMode === "numeric") {
@@ -20,7 +20,7 @@ export default function LoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     backendApi.login(formData);
-    setFormData(loginForm.emptyForm);
+    setFormData(emptyForms.login);
   };
 
   return (

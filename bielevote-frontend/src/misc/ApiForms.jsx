@@ -1,5 +1,5 @@
-export const loginForm = {
-  emptyForm: {
+export const emptyForms = {
+  login: {
     username: "",
     password: "",
   },
