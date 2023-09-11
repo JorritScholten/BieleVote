@@ -1,43 +1,57 @@
-import React from "react";
 import { useState } from "react";
 import { Form, Button } from "semantic-ui-react";
 
 function ProjectForm() {
-  const [projectData, setProjectData] = useState(projectForm.emptyForm);
+  const [newProject, setNewProject] = useState({
+    title: "",
+    content: "",
+  });
 
-  const projectForm = {
-    emptyForm: {
-      title: "",
-      content: "",
-    },
-  };
-
-  const handleSubmit = async (e) => {
+  function onSubmit(e) {
     e.preventDefault();
-    setProjectData(projectForm.emptyForm);
-  };
-
-  const handleFormChange
+    fetch(`http://localhost:8080/api/v1/project`, {
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newProject),
+    }).then(() => {
+      setNewProject({
+        title: "",
+        content: "",
+      });
+    });
+  }
 
   return (
     <div>
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={onSubmit}>
         <Form.Input
+          label="Title:"
+          width={10}
           name="title"
           placeholder="title"
-          value={projectData.title}
-          onChange={handleFormChange}
-          pattern="[\S]+"
+          value={newProject.title}
+          onChange={(e) =>
+            setNewProject({ ...newProject, title: e.target.value })
+          }
           required={true}
         />
         <Form.Input
+          label="Content:"
+          width={10}
           name="content"
           placeholder="content"
-          value={FormData.content}
-          onChange={handleFormChange}
-          pattern="[\S]+"
+          value={newProject.content}
+          onChange={(e) =>
+            setNewProject({ ...newProject, content: e.target.value })
+          }
           required={true}
         />
+        <Button type="submit" className="rounded-lg border-2 border-black">
+          Send
+        </Button>
       </Form>
     </div>
   );

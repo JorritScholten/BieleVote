@@ -1,5 +1,8 @@
 import React from "react";
 import Header from "../../components/Header";
+import ProjectForm from "./components/ProjectForm";
+import { Button } from "semantic-ui-react";
+import { useEffect } from "react";
 
 function ProjectWritingPage() {
   return (
@@ -8,18 +11,10 @@ function ProjectWritingPage() {
 
       <div className="flex flex-col px-20 py-10">
         <h1>Propose something for the city</h1>
-        <form className="flex flex-col">
-          <label for="title">Title</label>
-          <input type="text"></input>
-          <label for="content">Content</label>
-          <input type="text"></input>
-          <input
-            type="submit"
-            value="Send"
-            className="rounded-lg border-2 border-black"
-          ></input>
-        </form>
+        
+        <ProjectForm />
       </div>
+
     </>
   );
 }
