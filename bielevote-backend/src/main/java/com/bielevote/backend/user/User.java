@@ -33,12 +33,12 @@ public class User {
     private String name;
     private String phone;
     @Enumerated(EnumType.STRING)
-    private UserType type;
+    private UserRole role;
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return type.getAuthorities();
+        return role.getAuthorities();
     }
 
     @Override

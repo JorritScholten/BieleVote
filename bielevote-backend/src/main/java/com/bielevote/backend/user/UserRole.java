@@ -11,10 +11,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public enum UserType {
+public enum UserRole {
     ADMINISTRATOR(Collections.emptySet()),
     MUNICIPAL(Collections.emptySet()),
-    CITIZEN(Set.of(Permission.CITIZEN_READ));
+    CITIZEN(Set.of(
+            Permission.CITIZEN_READ,
+            Permission.CITIZEN_WRITE,
+            Permission.CITIZEN_DELETE,
+            Permission.CITIZEN_UPDATE
+    ));
 
     @Getter
     private final Set<Permission> permissions;
