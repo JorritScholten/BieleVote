@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { emptyForms } from "../../misc/ApiForms";
+import Header from "../../components/Header";
+import { IoReturnDownBack } from "react-icons/io5";
+import { BsFillCalendarWeekFill } from "react-icons/bs";
 
 export default function NewsPage() {
   const [newsArticle, setNewsArticle] = useState(emptyForms.newsArticle);
@@ -19,17 +22,34 @@ export default function NewsPage() {
   }, [articleId]);
 
   return (
-    <div>
-      <div className="text-2xl">{newsArticle.title}</div>
-      <p>{newsArticle.category}</p>
-      <br></br>
-      <div>{newsArticle.datePlaced}</div>
-      <br></br>
-      <div className="text-xl">{newsArticle.summary}</div>
-      <br></br>
-      <p>{newsArticle.content}</p>
-      <br></br>
-      <div>{newsArticle.author}</div>
-    </div>
+    <>
+      <Header pageTitle="News" />
+      <div className="flex m-auto text-6xl ml-10">
+        <Link to={"/news"}>
+          <IoReturnDownBack />
+        </Link>
+      </div>
+      <div className="flex justify-center">
+        <div className="flex items-center place-self-center w-3/5">
+          <div className="flex flex-col w-3/4">
+            <div className="flex items-center justify-between">
+              <div className="text-4xl font-bold">{newsArticle.title}</div>
+              <div>{newsArticle.category}</div>
+            </div>
+            <div className="flex flex-row mt-5">
+              <div className="mr-3 text-gray-600">{newsArticle.datePlaced}</div>
+              <div className="flex items-center">
+                <BsFillCalendarWeekFill />
+              </div>
+            </div>
+            <div className="text-xl font-semibold mt-5 w-4/5">
+              {newsArticle.summary}
+            </div>
+            <div className="text-xl mt-5">{newsArticle.content}</div>
+            <div className="text-gray-600 mt-5">{newsArticle.author}</div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
