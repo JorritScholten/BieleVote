@@ -1,6 +1,7 @@
 package com.bielevote.backend.config;
 
 import com.bielevote.backend.authentication.token.TokenAuthenticationFilter;
+import static com.bielevote.backend.user.UserRole.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -41,7 +42,7 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable);
         http.cors(Customizer.withDefaults());
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/api/v1/users/me").hasAnyRole("CITIZEN", "ADMINISTRATOR", "MUNICIPAL")
+                .requestMatchers("/api/v1/users/me").hasAnyRole(CITIZEN.name(), ADMINISTRATOR.name(), MUNICIPAL.name())
                 .requestMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated()
         );
