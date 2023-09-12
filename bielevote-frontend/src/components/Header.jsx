@@ -1,33 +1,24 @@
 import PropTypes from "prop-types";
 import { useEffect } from "react";
+import LoginForm from "../page/login/components/LoginForm";
+import { Link } from "react-router-dom";
 
 export default function Header({ pageTitle }) {
   // sets page title in browser
   useEffect(() => {
     document.title = pageTitle;
-  }, []);
+  }, [pageTitle]);
 
   return (
-    <>
-      <div className="p-10 flex justify-between items-center bg-slate-200">
-        <div>BieleVote</div>
-        <div>
-          <h1>{pageTitle}</h1>
-        </div>
-        <div className="max-w-sm">
-          <form>
-            <div className="flex flex-row">
-            <input type="text" placeholder="username"/>
-            <input type="text" placeholder="password" />
-            </div>
-            <div className="flex justify-end gap-2">
-            <input className="rounded-lg border-2 border-black" type="submit" value="Log in"></input>
-            <input className="rounded-lg border-2 border-black" type="submit" value="Register"></input>
-            </div>
-          </form>
-        </div>
+    <div className="p-2 gap-2 flex justify-between items-center bg-slate-200">
+      <Link to={"/"} className="w-1/5 text-center text-4xl">
+        BieleVote
+      </Link>
+      <h1 className="w-1/5 text-center text-4xl">{pageTitle}</h1>
+      <div className="w-1/4 self-center">
+        <LoginForm />
       </div>
-    </>
+    </div>
   );
 }
 

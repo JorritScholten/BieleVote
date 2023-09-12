@@ -7,10 +7,13 @@ import {
   parseJwt,
 } from "../../../misc/ApiMappings";
 import { useAuth } from "../../../misc/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginForm() {
+  const navigate = useNavigate();
   const Auth = useAuth();
   const [formData, setFormData] = useState(emptyForms.login);
+  const [showFields, setShowFields] = useState(false);
 
   const handleFormChange = (e, { inputMode, name, value }) => {
     if (inputMode === "numeric") {
@@ -40,26 +43,50 @@ export default function LoginForm() {
   };
 
   return (
-    <div>
-      <Form onSubmit={handleSubmit}>
-        <Form.Input
-          name="username"
-          placeholder="Username"
-          value={formData.username}
-          onChange={handleFormChange}
-          pattern="[\S]+"
-          required={true}
-        />
-        <Form.Input
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleFormChange}
-          pattern="[\S]+"
-          required={true}
-        />
-        <Button type="submit" content="Login" />
-      </Form>
-    </div>
+    <Form onSubmit={handleSubmit} size="tiny" className="w-full">
+      <Form.Input
+        name="username"
+        placeholder="Username"
+        value={formData.username}
+        onChange={handleFormChange}
+        required={true}
+        className={showFields ? "" : "hidden"}
+      />
+      <Form.Input
+        name="password"
+        placeholder="Password"
+        value={formData.password}
+        onChange={handleFormChange}
+        required={true}
+        type="password"
+        className={showFields ? "" : "hidden"}
+      />
+      {showFields ? (
+        <Button.Group widths={2} size="tiny">
+          <Button type="submit" color="green" content="Login" />
+          <Button
+            type="button"
+            color="orange"
+            onClick={() => setShowFields(false)}
+            content="Hide"
+          />
+        </Button.Group>
+      ) : (
+        <Button.Group widths={2} size="tiny">
+          <Button
+            type="button"
+            color="green"
+            onClick={() => setShowFields(true)}
+            content="Login"
+          />
+          <Button
+            type="button"
+            color="grey"
+            onClick={() => navigate("/new-account")}
+            content="Create account"
+          />
+        </Button.Group>
+      )}
+    </Form>
   );
 }
