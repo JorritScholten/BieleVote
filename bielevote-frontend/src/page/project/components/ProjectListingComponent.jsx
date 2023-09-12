@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import 'semantic-ui-css/semantic.min.css'
+import "semantic-ui-css/semantic.min.css";
 import { Icon, Table } from "semantic-ui-react";
 
 function ProjectListingComponent() {
@@ -47,7 +47,7 @@ function ProjectListingComponent() {
       </Table>
 
       <button
-      className="rounded-lg border-2 border-blue-300"
+        className="rounded-lg border-2 border-blue-300"
         type="button"
         onClick={() => setRefreshData(!refreshData)}
       >
