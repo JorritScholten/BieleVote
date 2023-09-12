@@ -1,6 +1,5 @@
 package com.bielevote.backend.user;
 
-import com.bielevote.backend.authentication.token.Token;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
@@ -8,7 +7,6 @@ import org.hibernate.proxy.HibernateProxy;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 @Jacksonized
@@ -35,8 +33,6 @@ public class User {
     private String phone;
     @Enumerated(EnumType.STRING)
     private UserRole role;
-//    @OneToMany(mappedBy = "user")
-//    private List<Token> tokens;
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.getAuthorities();

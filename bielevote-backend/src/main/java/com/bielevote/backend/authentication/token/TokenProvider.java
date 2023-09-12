@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 @Component
 public class TokenProvider {
     public static final String TOKEN_TYPE = "JWT";
-    public static final String TOKEN_ISSUER = "order-api";
-    public static final String TOKEN_AUDIENCE = "order-app";
+    public static final String TOKEN_ISSUER = "bielevote-backend";
+    public static final String TOKEN_AUDIENCE = "bielevote-frontend";
     @Value("${app.jwt.secret}")
     private String jwtSecret;
     @Value("${app.jwt.expiration.minutes}")

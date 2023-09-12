@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -39,5 +38,15 @@ public class Seeder implements CommandLineRunner {
         citizen1.name("John Smith");
         citizen1.phone("123");
         userRepository.save(citizen1.build());
+        var admin1 = User.builder();
+        admin1.role(UserRole.ADMINISTRATOR);
+        admin1.username("admin");
+        if (encryptPasswords) {
+            admin1.password(passwordEncoder.encode("admin"));
+        } else {
+            admin1.password("admin");
+        }
+        admin1.name("Jack Admin");
+        userRepository.save(admin1.build());
     }
 }
