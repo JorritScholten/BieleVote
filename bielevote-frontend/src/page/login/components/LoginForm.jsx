@@ -6,10 +6,10 @@ import {
   handleLogError,
   parseJwt,
 } from "../../../misc/ApiMappings";
-import AuthContext from "../../../misc/AuthContext";
+import { useAuth } from "../../../misc/AuthContext";
 
 export default function LoginForm() {
-  const Auth = AuthContext;
+  const Auth = useAuth();
   const [formData, setFormData] = useState(emptyForms.login);
 
   const handleFormChange = (e, { inputMode, name, value }) => {
@@ -33,7 +33,6 @@ export default function LoginForm() {
       const authenticatedUser = { data, accessToken };
 
       Auth.userLogin(authenticatedUser);
-      console.log(Auth);
       setFormData(emptyForms.login);
     } catch (error) {
       handleLogError(error);
