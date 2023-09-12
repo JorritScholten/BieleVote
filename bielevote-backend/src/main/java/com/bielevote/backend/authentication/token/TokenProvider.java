@@ -1,6 +1,6 @@
 package com.bielevote.backend.authentication.token;
 
-import com.bielevote.backend.authentication.CustomUserDetails;
+import com.bielevote.backend.user.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
@@ -27,7 +27,7 @@ public class TokenProvider {
     private Long jwtExpirationMinutes;
 
     public String generate(Authentication authentication) {
-        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
         List<String> roles = user.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)

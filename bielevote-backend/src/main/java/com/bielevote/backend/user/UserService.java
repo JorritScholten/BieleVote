@@ -1,4 +1,4 @@
-package com.bielevote.backend.authentication;
+package com.bielevote.backend.user;
 
 import com.bielevote.backend.user.User;
 

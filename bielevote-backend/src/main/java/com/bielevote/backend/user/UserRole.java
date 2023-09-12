@@ -1,33 +1,42 @@
 package com.bielevote.backend.user;
 
-import com.bielevote.backend.authentication.Permission;
+import com.bielevote.backend.authentication.Authority;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public enum UserRole {
-    ADMINISTRATOR(Collections.emptySet()),
-    MUNICIPAL(Collections.emptySet()),
+    ADMINISTRATOR(Set.of(
+            Authority.READ,
+            Authority.WRITE,
+            Authority.DELETE,
+            Authority.UPDATE
+    )),
+    MUNICIPAL(Set.of(
+            Authority.READ,
+            Authority.WRITE,
+            Authority.DELETE,
+            Authority.UPDATE
+    )),
     CITIZEN(Set.of(
-            Permission.CITIZEN_READ,
-            Permission.CITIZEN_WRITE,
-            Permission.CITIZEN_DELETE,
-            Permission.CITIZEN_UPDATE
+            Authority.READ,
+            Authority.WRITE,
+            Authority.DELETE,
+            Authority.UPDATE
     ));
 
     @Getter
-    private final Set<Permission> permissions;
+    private final Set<Authority> permissions;
 
     public List<SimpleGrantedAuthority> getAuthorities() {
         var authorities = getPermissions()
                 .stream()
-                .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
+                .map(permission -> new SimpleGrantedAuthority(permission.getValue()))
                 .collect(Collectors.toList());
         authorities.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
         return authorities;

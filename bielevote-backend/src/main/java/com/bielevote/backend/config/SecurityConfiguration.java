@@ -41,7 +41,7 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable);
         http.cors(Customizer.withDefaults());
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/api/v1/users/me").hasRole("CITIZEN")
+                .requestMatchers("/api/v1/users/me").hasAnyRole("CITIZEN", "ADMINISTRATOR", "MUNICIPAL")
                 .requestMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated()
         );

@@ -1,6 +1,5 @@
 package com.bielevote.backend.user;
 
-import com.bielevote.backend.authentication.CustomUserDetails;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +18,9 @@ import java.util.NoSuchElementException;
 public class UserController {
     private final UserRepository userRepository;
 
-    @PreAuthorize("hasAuthority('citizen:read')")
+    @PreAuthorize("hasAuthority('read')")
     @GetMapping("/me")
-    public ResponseEntity<String> getCurrentUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
+    public ResponseEntity<String> getCurrentUser(@AuthenticationPrincipal User currentUser) {
         try {
             var user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow();
             return ResponseEntity.ok(JsonMapper.builder()

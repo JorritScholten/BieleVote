@@ -1,7 +1,5 @@
-package com.bielevote.backend.authentication;
+package com.bielevote.backend.user;
 
-import com.bielevote.backend.user.User;
-import com.bielevote.backend.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
