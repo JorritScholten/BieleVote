@@ -42,11 +42,11 @@ public class NewsArticleController {
         newsArticleRepository.deleteById(id);
     }
 
-    record NewsArticlePreviewDto(String title, LocalDateTime datePlaced, String summaryPreview) {
+    record NewsArticlePreviewDto(long id, String title, LocalDateTime datePlaced, String summaryPreview) {
         public static NewsArticlePreviewDto from(NewsArticle newsArticle) {
             String[] previewWords = newsArticle.getSummary().split(" ");
             var preview = String.join(" ", Arrays.copyOf(previewWords, 20)) + "...";
-            return new NewsArticlePreviewDto(newsArticle.getTitle(), newsArticle.getDatePlaced(), preview);
+            return new NewsArticlePreviewDto(newsArticle.getId(), newsArticle.getTitle(), newsArticle.getDatePlaced(), preview);
         }
     }
 
