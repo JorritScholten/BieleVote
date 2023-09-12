@@ -1,12 +1,8 @@
 import { useState } from "react";
-import { emptyForms } from "../../../misc/ApiForms";
+import { emptyForms } from "../misc/ApiForms";
 import { Form, Button } from "semantic-ui-react";
-import {
-  backendApi,
-  handleLogError,
-  parseJwt,
-} from "../../../misc/ApiMappings";
-import { useAuth } from "../../../misc/AuthContext";
+import { backendApi, handleLogError, parseJwt } from "../misc/ApiMappings";
+import { useAuth } from "../misc/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginForm() {

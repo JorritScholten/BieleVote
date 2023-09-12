@@ -1,5 +1,5 @@
 import Header from "../../components/Header";
-import LoginForm from "./components/LoginForm";
+import LoginForm from "../../components/LoginForm";
 import TestBackendConnection from "../../components/TestBackendConnection";
 import PrintUserInfo from "../../components/PrintUserInfo";
 
