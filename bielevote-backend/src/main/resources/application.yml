@@ -19,6 +19,7 @@ spring:
       settings.web-allow-others: false
 
 app:
+  encrypted-password-storage: false
   jwt:
     secret: ?*<JM4T"jL'*7d#kp(S)V`^io9YEhzpSO$[m^D;w=DKY6iw&*#!+J'KGFvJxUM&j
     expiration:
