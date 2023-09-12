@@ -5,30 +5,16 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public enum UserRole {
-    ADMINISTRATOR(Set.of(
-            Authority.READ,
-            Authority.WRITE,
-            Authority.DELETE,
-            Authority.UPDATE
-    )),
-    MUNICIPAL(Set.of(
-            Authority.READ,
-            Authority.WRITE,
-            Authority.DELETE,
-            Authority.UPDATE
-    )),
-    CITIZEN(Set.of(
-            Authority.READ,
-            Authority.WRITE,
-            Authority.DELETE,
-            Authority.UPDATE
-    ));
+    ADMINISTRATOR(Collections.emptySet()),
+    MUNICIPAL(Collections.emptySet()),
+    CITIZEN(Collections.emptySet());
 
     @Getter
     private final Set<Authority> permissions;
