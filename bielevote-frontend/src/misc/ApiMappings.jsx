@@ -7,8 +7,6 @@ export const backendApi = {
 };
 
 function login(formData) {
-  console.log("attempting login with:");
-  console.log(formData);
   return instance.post("/auth/login", formData, {
     headers: { "Content-type": "application/json" },
   });

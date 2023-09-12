@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { backendApi, handleLogError } from "../misc/ApiMappings";
-import AuthContext from "../misc/AuthContext";
+import { useAuth } from "../misc/AuthContext";
 
 export default function PrintUserInfo() {
-  const Auth = AuthContext;
+  const Auth = useAuth();
   const [user, setUser] = useState(null);
 
   async function fetchData() {
     try {
-      const response = await backendApi.userInfo(Auth.getUser);
+      console.log("user: " + Auth.getUsername());
+      const response = await backendApi.userInfo(Auth.getUser());
+      console.log(response);
       setUser(response.data);
       console.log(response.data);
     } catch (error) {
@@ -21,7 +23,7 @@ export default function PrintUserInfo() {
       <button className="bg-green-300 p-1" onClick={fetchData}>
         get user info
       </button>
-      <div className="p-1">username: {user}</div>
+      <div className="p-1">username: {JSON.stringify(user)}</div>
     </div>
   );
 }

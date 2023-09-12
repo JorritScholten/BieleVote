@@ -42,7 +42,7 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable);
         http.cors(Customizer.withDefaults());
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/api/v1/users/me").hasRole(CITIZEN_READ.getRole())
+                .requestMatchers("/api/v1/users/me").hasRole("CITIZEN")
                 .requestMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated()
         );
@@ -79,7 +79,7 @@ public class SecurityConfiguration {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.setAllowedOrigins(allowedOrigins);
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "UPDATE"));
         configuration.addAllowedHeader("*");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

@@ -15,6 +15,15 @@ function AuthProvider({ children }) {
     return JSON.parse(localStorage.getItem("user"));
   };
 
+  const getUsername = () => {
+    let storedUser = localStorage.getItem("user");
+    if (!storedUser) {
+      return false;
+    }
+    storedUser = JSON.parse(storedUser);
+    return storedUser.data.username;
+  };
+
   const userIsAuthenticated = () => {
     let storedUser = localStorage.getItem("user");
     if (!storedUser) {
@@ -43,6 +52,7 @@ function AuthProvider({ children }) {
   const contextValue = {
     user,
     getUser,
+    getUsername,
     userIsAuthenticated,
     userLogin,
     userLogout,

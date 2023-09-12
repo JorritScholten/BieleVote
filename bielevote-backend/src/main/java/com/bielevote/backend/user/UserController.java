@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +19,7 @@ import java.util.NoSuchElementException;
 public class UserController {
     private final UserRepository userRepository;
 
-    @Secured({"citizen:read"})
+    @PreAuthorize("hasAuthority('citizen:read')")
     @GetMapping("/me")
     public ResponseEntity<String> getCurrentUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
         try {
