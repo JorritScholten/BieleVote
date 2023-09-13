@@ -22,9 +22,4 @@ public class Project {
     private String title;
     @Column(columnDefinition = "CLOB")
     private String content;
-
-    public Project(String title, String content) {
-        this.title = title;
-        this.content = content;
-    }
 }
