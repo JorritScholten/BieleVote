@@ -3,6 +3,7 @@ package com.bielevote.backend.news;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -64,22 +65,20 @@ public class NewsArticleController {
     public ResponseEntity<Map<String, Object>> getAllArticles(
             @RequestParam(required = false) String title,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "1") int size
+            @RequestParam(defaultValue = "10") int size
     ) {
-
         try {
             List<NewsArticle> newsArticles;
-//            List<NewsArticlePreviewDto> articlePreviews = new ArrayList<>((newsArticles).stream()
-//                    .map(NewsArticlePreviewDto::from)
-//                    .toList());
-            PageRequest paging = PageRequest.of(page, size);
+            PageRequest paging = PageRequest.of(page, size, Sort.by("datePlaced").descending());
 
             Page<NewsArticle> pageNewsPre = newsArticleRepository.findAll(paging);
 
             newsArticles = pageNewsPre.getContent();
 
             Map<String, Object> response = new HashMap<>();
-            response.put("articles", newsArticles);
+            response.put("articles", new ArrayList<>((newsArticles).stream()
+                    .map(NewsArticlePreviewDto::from)
+                    .toList()));
             response.put("currentPage", pageNewsPre.getNumber());
             response.put("totalItems", pageNewsPre.getTotalElements());
             response.put("totalPages", pageNewsPre.getTotalPages());

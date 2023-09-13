@@ -51,12 +51,12 @@ public class Seeder implements CommandLineRunner {
                     new NewsArticle(2L, "Nieuwe Regels voor Afvalinzameling",
                             "Belangrijke wijzigingen in de manier waarop we afval ophalen. Lees verder om te weten wat er is veranderd en hoe dit van invloed is op uw afvalinzameling.",
                             "Vanaf deze maand zijn er nieuwe regels voor het aanbieden van uw afval. De ophaaltijden zijn aangepast, en er zijn strengere voorschriften voor het scheiden van afval. Zorg ervoor dat u op de hoogte bent van deze veranderingen om boetes te voorkomen.",
-                            "Peter de Vries", LocalDateTime.now(),
+                            "Peter de Vries", LocalDateTime.now().plusMinutes(1),
                             Category.OTHER),
                     new NewsArticle(3L, "Afvalverwerkingstechnologieën van de Toekomst",
                             "Een kijkje in de innovatieve technologieën die de toekomst van afvalverwerking zullen vormgeven. Ontdek hoe we afval op een duurzamere en efficiëntere manier kunnen verwerken.",
                             "De traditionele methoden voor afvalverwerking evolueren snel, en er zijn veelbelovende technologieën op de horizon. Van recyclingrobots tot geavanceerde composteringssystemen, de toekomst van afvalverwerking is spannend en milieuvriendelijker dan ooit tevoren.",
-                            "Sophie Anderson", LocalDateTime.now(),
+                            "Sophie Anderson", LocalDateTime.now().plusMinutes(2),
                             Category.SUSTAINABILITY));
             newsArticleRepository.saveAll(articles);
             count = newsArticleRepository.count();

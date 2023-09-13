@@ -27,9 +27,10 @@ export default function NewsPageList() {
       page = 0;
     }
     const response = await axios.get(
-      "http://localhost:8080/api/v1/articles/pages?page=" + page
+      "http://localhost:8080/api/v1/articles/pages?page=" + page + "&size=" + 3
     );
     setNewsList(response.data);
+    console.log(response);
   };
 
   return (
@@ -40,7 +41,7 @@ export default function NewsPageList() {
           <IoReturnDownBack />
         </Link>
       </div>
-      <div className="flex items-center justify-center">
+      <div className="flex flex-col items-center justify-center">
         <div className="flex flex-col  w-3/5">
           {newsList.articles.map((articlePreview) => (
             <div className="p-3 flex flex-col" key={articlePreview.id}>
@@ -62,7 +63,8 @@ export default function NewsPageList() {
               </div>
             </div>
           ))}
-
+        </div>
+        <div className="">
           <Pagination
             defaultActivePage={1}
             totalPages={newsList.totalPages}
