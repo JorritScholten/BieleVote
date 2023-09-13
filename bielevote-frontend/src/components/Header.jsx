@@ -14,10 +14,10 @@ export default function Header({ pageTitle }) {
 
   return (
     <div className="p-2 gap-2 flex justify-between items-center bg-slate-200">
-      <Link to={"/"} className="w-1/5 text-center text-4xl">
+      <Link to={"/"} className="w-1/5 text-center text-4xl font-bold">
         BieleVote
       </Link>
-      <h1 className="w-1/5 text-center text-4xl">{pageTitle}</h1>
+      <h1 className="w-1/5 text-center text-3xl">{pageTitle}</h1>
       <div className="w-1/4 self-center">
         {userIsAuthenticated() ? (
           <Button.Group fluid size="small">

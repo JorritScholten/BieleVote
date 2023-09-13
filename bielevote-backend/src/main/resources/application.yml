@@ -13,10 +13,10 @@ spring:
     url: jdbc:h2:./build/bielevote
     username: sa
     password:
-  h2:
-    console.enabled: false
-    console:
+  h2.console:
+      enabled: true
       settings.web-allow-others: false
+      path: /h2-console
 
 app:
   encrypted-password-storage: false
@@ -29,5 +29,5 @@ app:
 
 logging:
   level:
-    org.springframework.security: DEBUG
+    org.springframework.security: WARN
     # org.hibernate.SQL: DEBUG

@@ -5,18 +5,17 @@ import com.bielevote.backend.user.UserRepository;
 import com.bielevote.backend.user.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 
 @RequiredArgsConstructor
 @Component
 public class Seeder implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
-    @Value("${app.encrypted-password-storage}")
-    private Boolean encryptPasswords;
     @Autowired
     private UserRepository userRepository;
 
@@ -27,26 +26,26 @@ public class Seeder implements CommandLineRunner {
     }
 
     private void seedUsers() {
-        var citizen1 = User.builder();
-        citizen1.role(UserRole.CITIZEN);
-        citizen1.username("citizen");
-        if (encryptPasswords) {
-            citizen1.password(passwordEncoder.encode("123"));
-        } else {
-            citizen1.password("123");
-        }
-        citizen1.name("John Smith");
-        citizen1.phone("123");
-        userRepository.save(citizen1.build());
-        var admin1 = User.builder();
-        admin1.role(UserRole.ADMINISTRATOR);
-        admin1.username("admin");
-        if (encryptPasswords) {
-            admin1.password(passwordEncoder.encode("admin"));
-        } else {
-            admin1.password("admin");
-        }
-        admin1.name("Jack Admin");
-        userRepository.save(admin1.build());
+        userRepository.saveAllAndFlush(List.of(
+                User.builder()
+                        .role(UserRole.CITIZEN)
+                        .username("citizen1")
+                        .password(passwordEncoder.encode("123"))
+                        .legalName("John Smith")
+                        .phone("123")
+                        .build(),
+                User.builder()
+                        .role(UserRole.ADMINISTRATOR)
+                        .username("admin1")
+                        .password(passwordEncoder.encode("admin"))
+                        .legalName("Jack Admin")
+                        .build(),
+                User.builder()
+                        .role(UserRole.MUNICIPAL)
+                        .username("municipal1")
+                        .legalName("Jane Doe")
+                        .password(passwordEncoder.encode("123"))
+                        .build()
+        ));
     }
 }

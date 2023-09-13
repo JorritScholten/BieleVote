@@ -19,7 +19,7 @@ import java.util.Objects;
 @Builder
 @Entity
 @Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "name"),
+        @UniqueConstraint(columnNames = "legalName"),
         @UniqueConstraint(columnNames = "phone")
 })
 public class User implements UserDetails {
@@ -30,7 +30,7 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String username;
     private String password;
-    private String name;
+    private String legalName;
     private String phone;
     @Enumerated(EnumType.STRING)
     private UserRole role;

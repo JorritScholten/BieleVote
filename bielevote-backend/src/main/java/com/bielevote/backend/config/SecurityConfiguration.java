@@ -1,7 +1,6 @@
 package com.bielevote.backend.config;
 
 import com.bielevote.backend.authentication.token.TokenAuthenticationFilter;
-import static com.bielevote.backend.user.UserRole.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,8 +12,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
@@ -22,13 +21,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static com.bielevote.backend.user.UserRole.*;
 
 @Configuration
 @EnableWebSecurity
@@ -38,12 +41,22 @@ public class SecurityConfiguration {
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   HandlerMappingIntrospector introspector,
+                                                   @Value("${spring.h2.console.enabled}") Boolean consoleEnabled,
+                                                   @Value("${spring.h2.console.path}") String h2ConsolePath)
+            throws Exception {
+        if (consoleEnabled) {
+            var h2RequestMatcher = new MvcRequestMatcher(introspector, "/**");
+            h2RequestMatcher.setServletPath(h2ConsolePath);
+            http.authorizeHttpRequests((a) -> a.requestMatchers(h2RequestMatcher).permitAll());
+            http.headers((headers) -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
+        }
         http.csrf(AbstractHttpConfigurer::disable);
         http.cors(Customizer.withDefaults());
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/api/v1/users/me").hasAnyRole(CITIZEN.name(), ADMINISTRATOR.name(), MUNICIPAL.name())
-                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/v1/users/me")).hasAnyRole(CITIZEN.name(), ADMINISTRATOR.name(), MUNICIPAL.name())
+                .requestMatchers(new AntPathRequestMatcher("/auth/**")).permitAll()
                 .anyRequest().authenticated()
         );
         http.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -55,18 +68,6 @@ public class SecurityConfiguration {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
-    }
-
-    @Bean
-    WebSecurityCustomizer webSecurityCustomizer(@Value("${spring.h2.console.enabled}") Boolean consoleEnabled) {
-        if (consoleEnabled) {
-            // Disables security for h2-console during development use, disable for a production build
-            return web -> web.ignoring()
-                    .requestMatchers(new AntPathRequestMatcher("/h2-console/**"));
-        } else {
-            return web -> {
-            };
-        }
     }
 
     @Bean
