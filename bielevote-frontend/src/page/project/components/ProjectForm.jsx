@@ -1,26 +1,17 @@
 import { useState } from "react";
 import { Form, Button } from "semantic-ui-react";
+import { emptyForms } from "../../../misc/ApiForms";
+import { useAuth } from "../../../misc/AuthContext";
+import { backendApi } from "../../../misc/ApiMappings";
 
 function ProjectForm() {
-  const [newProject, setNewProject] = useState({
-    title: "",
-    content: "",
-  });
+  const [newProject, setNewProject] = useState(emptyForms.newProject);
+  const { getUser } = useAuth();
 
-  function onSubmit(e) {
+  async function onSubmit(e) {
     e.preventDefault();
-    fetch(`http://localhost:8080/api/v1/project`, {
-      method: "post",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newProject),
-    }).then(() => {
-      setNewProject({
-        title: "",
-        content: "",
-      });
+    await backendApi.postProject(getUser(), newProject).then(() => {
+      setNewProject(emptyForms.newProject);
     });
   }
 

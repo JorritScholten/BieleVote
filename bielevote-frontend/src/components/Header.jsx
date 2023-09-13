@@ -13,7 +13,7 @@ export default function Header({ pageTitle }) {
   const { userIsAuthenticated, getUsername, userLogout } = useAuth();
 
   return (
-    <div className="p-2 gap-2 flex justify-between items-center bg-slate-200">
+    <div className="p-2 gap-2 flex justify-between items-center bg-slate-300">
       <Link to={"/"} className="w-1/5 text-center text-4xl font-bold">
         BieleVote
       </Link>

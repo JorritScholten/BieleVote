@@ -4,6 +4,8 @@ export const backendApi = {
   userInfo,
   login,
   authTest,
+  postProject,
+  getAllProjects,
 };
 
 function login(formData) {
@@ -20,6 +22,19 @@ function userInfo(user) {
 
 function authTest() {
   return instance.get("/auth/test");
+}
+
+function postProject(user, formData) {
+  return instance.post("/api/v1/project", formData, {
+    headers: {
+      Authorization: bearerAuth(user),
+      "Content-type": "application/json",
+    },
+  });
+}
+
+function getAllProjects() {
+  return instance.get("/api/v1/project");
 }
 
 // Axios calls

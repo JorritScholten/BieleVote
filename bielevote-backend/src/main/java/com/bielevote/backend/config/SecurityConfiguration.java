@@ -32,6 +32,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.bielevote.backend.user.UserRole.*;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 
 @Configuration
 @EnableWebSecurity
@@ -54,9 +56,12 @@ public class SecurityConfiguration {
         }
         http.csrf(AbstractHttpConfigurer::disable);
         http.cors(Customizer.withDefaults());
+        final var allAccounts = new String[]{CITIZEN.name(), ADMINISTRATOR.name(), MUNICIPAL.name()};
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers(new AntPathRequestMatcher("/api/v1/users/me")).hasAnyRole(CITIZEN.name(), ADMINISTRATOR.name(), MUNICIPAL.name())
+                .requestMatchers(new AntPathRequestMatcher("/api/v1/users/me")).hasAnyRole(allAccounts)
                 .requestMatchers(new AntPathRequestMatcher("/auth/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/v1/project", GET.name())).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/v1/project", POST.name())).hasAnyRole(allAccounts)
                 .anyRequest().authenticated()
         );
         http.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
