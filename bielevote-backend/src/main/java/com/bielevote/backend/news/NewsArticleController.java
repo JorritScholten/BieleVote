@@ -1,13 +1,15 @@
 package com.bielevote.backend.news;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -56,5 +58,35 @@ public class NewsArticleController {
         return newsArticles.stream()
                 .map(NewsArticlePreviewDto::from)
                 .toList();
+    }
+
+    @GetMapping("/pages")
+    public ResponseEntity<Map<String, Object>> getAllArticles(
+            @RequestParam(required = false) String title,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "1") int size
+    ) {
+
+        try {
+            List<NewsArticle> newsArticles;
+//            List<NewsArticlePreviewDto> articlePreviews = new ArrayList<>((newsArticles).stream()
+//                    .map(NewsArticlePreviewDto::from)
+//                    .toList());
+            PageRequest paging = PageRequest.of(page, size);
+
+            Page<NewsArticle> pageNewsPre = newsArticleRepository.findAll(paging);
+
+            newsArticles = pageNewsPre.getContent();
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("articles", newsArticles);
+            response.put("currentPage", pageNewsPre.getNumber());
+            response.put("totalItems", pageNewsPre.getTotalElements());
+            response.put("totalPages", pageNewsPre.getTotalPages());
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
