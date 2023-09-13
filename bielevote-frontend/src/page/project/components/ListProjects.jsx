@@ -1,11 +1,8 @@
-import "semantic-ui-css/semantic.min.css";
 import { Icon, Table } from "semantic-ui-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 
-function ListProjects({ projectsList, limit = 50 }) {
-  const [version, setVersion] = useState(0);
-
+function ListProjects({ projectsList, limit = 50, incrementDataVersion }) {
   return (
     <>
       <Table celled>
@@ -38,7 +35,7 @@ function ListProjects({ projectsList, limit = 50 }) {
       <button
         className="rounded-lg border-2 border-blue-300"
         type="button"
-        onClick={() => setVersion(version + 1)}
+        onClick={incrementDataVersion}
       >
         Refresh <Icon name="refresh" size="small" />
       </button>
@@ -49,7 +46,7 @@ function ListProjects({ projectsList, limit = 50 }) {
 ListProjects.propTypes = {
   projectsList: PropTypes.array.isRequired,
   limit: PropTypes.number,
-  // setVersion: PropTypes.func.isRequired,
+  incrementDataVersion: PropTypes.func,
 };
 
 export default ListProjects;

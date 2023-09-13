@@ -7,6 +7,7 @@ import axios from "axios";
 function ProjectWritingPage() {
   const [projectsList, setProjectsList] = useState([]);
   const [version, setVersion] = useState(0);
+  const incVersion = () => setVersion(version + 1);
 
   useEffect(() => {
     const getProjectsList = async () => {
@@ -25,8 +26,12 @@ function ProjectWritingPage() {
 
       <div className="flex flex-col px-20 py-10">
         <h1>Propose something for the city</h1>
-        <ProjectForm />
-        <ListProjects projectsList={projectsList} limit={30} />
+        <ProjectForm incrementDataVersion={incVersion} />
+        <ListProjects
+          projectsList={projectsList}
+          limit={30}
+          incrementDataVersion={incVersion}
+        />
       </div>
     </>
   );

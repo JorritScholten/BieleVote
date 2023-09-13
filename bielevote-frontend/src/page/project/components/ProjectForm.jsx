@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Form, Button } from "semantic-ui-react";
+import PropTypes from "prop-types";
 
-function ProjectForm() {
+function ProjectForm({ incrementDataVersion }) {
   const [newProject, setNewProject] = useState({
     title: "",
     content: "",
@@ -17,6 +18,7 @@ function ProjectForm() {
       },
       body: JSON.stringify(newProject),
     }).then(() => {
+      incrementDataVersion();
       setNewProject({
         title: "",
         content: "",
@@ -56,5 +58,9 @@ function ProjectForm() {
     </div>
   );
 }
+
+ProjectForm.propTypes = {
+  incrementDataVersion: PropTypes.func,
+};
 
 export default ProjectForm;
