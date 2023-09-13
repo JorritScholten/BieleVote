@@ -4,7 +4,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
@@ -13,3 +13,21 @@ spring:
     url: jdbc:h2:./build/bielevote
     username: sa
     password:
+  h2.console:
+      enabled: true
+      settings.web-allow-others: false
+      path: /h2-console
+
+app:
+  encrypted-password-storage: false
+  jwt:
+    secret: ?*<JM4T"jL'*7d#kp(S)V`^io9YEhzpSO$[m^D;w=DKY6iw&*#!+J'KGFvJxUM&j
+    expiration:
+      minutes: 10
+  cors:
+    allowed-origins: http://localhost:5173/
+
+logging:
+  level:
+    org.springframework.security: WARN
+    # org.hibernate.SQL: DEBUG

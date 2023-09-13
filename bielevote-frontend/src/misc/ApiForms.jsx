@@ -3,6 +3,9 @@ export const emptyForms = {
     username: "",
     password: "",
   },
+  newProject: {
+    title: "",
+    content: "",
   newsArticle: {
     title: "",
     summary: "",
