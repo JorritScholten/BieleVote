@@ -7,7 +7,7 @@ import { BsFillCalendarWeekFill } from "react-icons/bs";
 import { IoReturnDownBack } from "react-icons/io5";
 import { Pagination } from "semantic-ui-react";
 
-export default function NewsPageList() {
+export default function NewsOverview() {
   const [newsList, setNewsList] = useState({
     articles: [],
     currentPage: 0,
@@ -30,7 +30,6 @@ export default function NewsPageList() {
       "http://localhost:8080/api/v1/articles/pages?page=" + page + "&size=" + 3
     );
     setNewsList(response.data);
-    console.log(response);
   };
 
   return (

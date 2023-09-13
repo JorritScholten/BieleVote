@@ -6,7 +6,7 @@ import Header from "../../components/Header";
 import { IoReturnDownBack } from "react-icons/io5";
 import { BsFillCalendarWeekFill } from "react-icons/bs";
 
-export default function NewsPage() {
+export default function NewsArticlePage() {
   const [newsArticle, setNewsArticle] = useState(emptyForms.newsArticle);
   const { articleId } = useParams();
 
@@ -16,7 +16,6 @@ export default function NewsPage() {
         `http://localhost:8080/api/v1/articles/${articleId}`
       );
       setNewsArticle(response.data);
-      console.log(response.data);
     }
     getNewsArticle();
   }, [articleId]);
