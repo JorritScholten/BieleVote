@@ -3,6 +3,10 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 
+import {
+  BsFillArrowLeftSquareFill,
+  BsFillArrowRightSquareFill,
+} from "react-icons/bs";
 import { BsFillCalendarWeekFill } from "react-icons/bs";
 import { IoReturnDownBack } from "react-icons/io5";
 import ReactPaginate from "react-paginate";
@@ -62,10 +66,11 @@ export default function NewsPageList() {
               </div>
             </div>
           ))}
-          <div className="inline-block">
+          <div className="flex justify-center">
             <ReactPaginate
-              previousLabel={"<<"}
-              nextLabel={">>"}
+              className="flex flex-row"
+              previousLabel={<BsFillArrowLeftSquareFill />}
+              nextLabel={<BsFillArrowRightSquareFill />}
               breakLabel={"..."}
               pageCount={totalPages}
               onPageChange={handlePageChange}
