@@ -6,6 +6,7 @@ export const emptyForms = {
   newProject: {
     title: "",
     content: "",
+  },
   newsArticle: {
     title: "",
     summary: "",

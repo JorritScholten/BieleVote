@@ -1,5 +1,8 @@
 package com.bielevote.backend;
 
+import com.bielevote.backend.news.Category;
+import com.bielevote.backend.news.NewsArticle;
+import com.bielevote.backend.news.NewsArticleRepository;
 import com.bielevote.backend.project.Project;
 import com.bielevote.backend.project.ProjectRepository;
 import com.bielevote.backend.user.User;
@@ -23,9 +26,8 @@ public class Seeder implements CommandLineRunner {
     ProjectRepository projectRepository;
     @Autowired
     NewsArticleRepository newsArticleRepository;
-    private UserRepository userRepository;
     @Autowired
-    private ProjectRepository projectRepository;
+    UserRepository userRepository;
 
     @Override
     public void run(String... args) {
@@ -63,8 +65,8 @@ public class Seeder implements CommandLineRunner {
         long count = projectRepository.count();
         if (count == 0) {
             List<Project> projects = List.of(
-                    new Project("Park", "new park"),
-                    new Project("Swimming pool", "new swimming pool")
+                    new Project(1L, "Park", "new park"),
+                    new Project(2L, "Swimming pool", "new swimming pool")
             );
             projectRepository.saveAll(projects);
             count = projectRepository.count();

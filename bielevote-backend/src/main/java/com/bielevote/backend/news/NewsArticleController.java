@@ -13,7 +13,7 @@ import java.util.*;
 
 @RestController
 @CrossOrigin
-@RequestMapping("api/v1/articles")
+@RequestMapping("api/v1/news")
 public class NewsArticleController {
 
     @Autowired
@@ -50,7 +50,7 @@ public class NewsArticleController {
         }
     }
 
-    @GetMapping("/pages")
+    @GetMapping()
     public ResponseEntity<Map<String, Object>> getAllArticles(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size

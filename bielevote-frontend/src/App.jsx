@@ -9,21 +9,17 @@ import CreateAccountPage from "./page/newAccount";
 export default function App() {
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="*" element={<h1>Not Found</h1>} />
-          <Route path="/news" element={<NewsOverview />} />
-          <Route path="/news/:articleId" element={<NewsArticlePage />} />
-          <Route path="/projectwritingpage" element={<ProjectWritingPage />} />
-        </Routes>
-      </BrowserRouter>
       <AuthProvider>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/new-account" element={<CreateAccountPage />} />
-            <Route path="/projectwritingpage" element={<ProjectWritingPage />} />
+            <Route
+              path="/projectwritingpage"
+              element={<ProjectWritingPage />}
+            />
+            <Route path="/news" element={<NewsOverview />} />
+            <Route path="/news/:articleId" element={<NewsArticlePage />} />
             <Route path="*" element={<h1>Not Found</h1>} />
           </Routes>
         </BrowserRouter>
