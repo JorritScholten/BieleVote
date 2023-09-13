@@ -1,10 +1,12 @@
 package com.bielevote.backend;
 
+import com.bielevote.backend.project.Project;
+import com.bielevote.backend.project.ProjectRepository;
 import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRepository;
 import com.bielevote.backend.user.UserRole;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -18,11 +20,14 @@ public class Seeder implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ProjectRepository projectRepository;
 
     @Override
     public void run(String... args) {
         System.out.println("Seeding database...");
         seedUsers();
+        seedProjects();
     }
 
     private void seedUsers() {
@@ -47,5 +52,18 @@ public class Seeder implements CommandLineRunner {
                         .password(passwordEncoder.encode("123"))
                         .build()
         ));
+    }
+
+    private void seedProjects() {
+        long count = projectRepository.count();
+        if (count == 0) {
+            List<Project> projects = List.of(
+                    new Project("Park", "new park"),
+                    new Project("Swimming pool", "new swimming pool")
+            );
+            projectRepository.saveAll(projects);
+            count = projectRepository.count();
+        }
+        System.out.println(count + " projects seeded");
     }
 }
