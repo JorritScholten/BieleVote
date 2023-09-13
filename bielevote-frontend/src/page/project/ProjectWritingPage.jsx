@@ -4,19 +4,14 @@ import ProjectForm from "./components/ProjectForm";
 import { Button } from "semantic-ui-react";
 import { useEffect } from "react";
 
-function ProjectWritingPage() {
+export default function ProjectWritingPage() {
   return (
-    <>
-      <Header pageTitle="Project" />
-
+    <div>
+      <Header pageTitle="Propose new project" />
       <div className="flex flex-col px-20 py-10">
         <h1>Propose something for the city</h1>
-        
         <ProjectForm />
       </div>
-
-    </>
+    </div>
   );
 }
-
-export default ProjectWritingPage;

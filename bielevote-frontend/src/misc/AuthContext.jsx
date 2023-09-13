@@ -49,6 +49,14 @@ function AuthProvider({ children }) {
     setUser(null);
   };
 
+  const getAccountType = () => {
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) {
+      return "ANONYMOUS";
+    }
+    return JSON.parse(storedUser).data.accountType;
+  };
+
   const contextValue = {
     user,
     getUser,
@@ -56,6 +64,7 @@ function AuthProvider({ children }) {
     userIsAuthenticated,
     userLogin,
     userLogout,
+    getAccountType,
   };
 
   return (

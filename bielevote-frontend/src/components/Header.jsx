@@ -4,6 +4,7 @@ import LoginForm from "./LoginForm";
 import { Link } from "react-router-dom";
 import { useAuth } from "../misc/AuthContext";
 import { Button } from "semantic-ui-react";
+import NavBar from "./NavBar";
 
 export default function Header({ pageTitle }) {
   // sets page title in browser
@@ -14,6 +15,7 @@ export default function Header({ pageTitle }) {
 
   return (
     <div className="p-2 gap-2 flex justify-between items-center bg-slate-300">
+      <NavBar />
       <Link to={"/"} className="w-1/5 text-center text-4xl font-bold">
         BieleVote
       </Link>
