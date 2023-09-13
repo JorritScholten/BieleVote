@@ -1,5 +1,4 @@
 import { Icon, Table } from "semantic-ui-react";
-import { useState } from "react";
 import PropTypes from "prop-types";
 
 function ListProjects({ projectsList, limit = 50, incrementDataVersion }) {

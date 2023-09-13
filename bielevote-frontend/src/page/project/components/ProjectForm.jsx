@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { Form, Button } from "semantic-ui-react";
 import PropTypes from "prop-types";
+import { emptyForms } from "../../../misc/ApiForms";
 
 function ProjectForm({ incrementDataVersion }) {
-  const [newProject, setNewProject] = useState({
-    title: "",
-    content: "",
-  });
+  const [newProject, setNewProject] = useState(emptyForms.newProject);
 
   function onSubmit(e) {
     e.preventDefault();
@@ -19,10 +17,7 @@ function ProjectForm({ incrementDataVersion }) {
       body: JSON.stringify(newProject),
     }).then(() => {
       incrementDataVersion();
-      setNewProject({
-        title: "",
-        content: "",
-      });
+      setNewProject(emptyForms.newProject);
     });
   }
 
