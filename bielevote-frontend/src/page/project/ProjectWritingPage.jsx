@@ -2,7 +2,7 @@ import Header from "../../components/Header";
 import ProjectForm from "./components/ProjectForm";
 import ListProjects from "./components/ListProjects";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { backendApi } from "../../misc/ApiMappings";
 
 function ProjectWritingPage() {
   const [projectsList, setProjectsList] = useState([]);
@@ -11,11 +11,8 @@ function ProjectWritingPage() {
 
   useEffect(() => {
     const getProjectsList = async () => {
-      const allProjects = await axios.get(
-        "http://localhost:8080/api/v1/project"
-      );
+      const allProjects = await backendApi.getAllProjects();
       setProjectsList(allProjects.data);
-      console.log(allProjects.data);
     };
     getProjectsList();
   }, [version]);
