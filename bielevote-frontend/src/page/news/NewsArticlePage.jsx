@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { Link, useParams } from "react-router-dom";
-import { emptyForms } from "../../misc/ApiForms";
-import Header from "../../components/Header";
 import { IoReturnDownBack } from "react-icons/io5";
 import { BsFillCalendarWeekFill } from "react-icons/bs";
+import { Link, useParams } from "react-router-dom";
+import axios from "axios";
+
+import { emptyForms } from "../../misc/ApiForms";
+import Header from "../../components/Header";
 
 export default function NewsArticlePage() {
   const [newsArticle, setNewsArticle] = useState(emptyForms.newsArticle);
@@ -13,7 +14,7 @@ export default function NewsArticlePage() {
   useEffect(() => {
     async function getNewsArticle() {
       const response = await axios.get(
-        `http://localhost:8080/api/v1/articles/${articleId}`
+        `http://localhost:8080/api/v1/news/${articleId}`
       );
       setNewsArticle(response.data);
     }

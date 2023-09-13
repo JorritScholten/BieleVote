@@ -15,4 +15,10 @@ export const emptyForms = {
     datePlaced: "",
     category: "",
   },
+  newsOverview: {
+    articles: [],
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0,
+  },
 };

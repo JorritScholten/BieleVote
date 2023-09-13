@@ -1,19 +1,15 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
-import Header from "../../components/Header";
-
 import { BsFillCalendarWeekFill } from "react-icons/bs";
 import { IoReturnDownBack } from "react-icons/io5";
 import { Pagination } from "semantic-ui-react";
+import axios from "axios";
+
+import { emptyForms } from "../../misc/ApiForms";
+import Header from "../../components/Header";
 
 export default function NewsOverview() {
-  const [newsList, setNewsList] = useState({
-    articles: [],
-    currentPage: 0,
-    totalItems: 0,
-    totalPages: 0,
-  });
+  const [newsList, setNewsList] = useState(emptyForms.newsOverview);
 
   useEffect(() => {
     handlePageChange();
@@ -27,7 +23,7 @@ export default function NewsOverview() {
       page = 0;
     }
     const response = await axios.get(
-      "http://localhost:8080/api/v1/articles/pages?page=" + page + "&size=" + 3
+      "http://localhost:8080/api/v1/news?page=" + page + "&size=" + 3
     );
     setNewsList(response.data);
   };
