@@ -1,8 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { IoReturnDownBack } from "react-icons/io5";
 import { Pagination } from "semantic-ui-react";
-
 import { emptyForms } from "../../misc/ApiForms";
 import Header from "../../components/Header";
 import { backendApi } from "../../misc/ApiMappings";
@@ -27,13 +24,8 @@ export default function NewsOverviewPage() {
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-2 w-screen">
       <Header pageTitle="News" />
-      <div className="flex m-auto text-6xl ml-10">
-        <Link to={"/"}>
-          <IoReturnDownBack />
-        </Link>
-      </div>
       <div className="flex flex-col items-center justify-center">
         <ListNews newsList={newsList} />
         <div className="">
@@ -44,6 +36,6 @@ export default function NewsOverviewPage() {
           />
         </div>
       </div>
-    </>
+    </div>
   );
 }
