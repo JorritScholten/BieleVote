@@ -10,5 +10,6 @@ public enum Category {
     CULTURE,
     SPORTS,
     SUSTAINABILITY,
+    TECHNOLOGY,
     OTHER
 }

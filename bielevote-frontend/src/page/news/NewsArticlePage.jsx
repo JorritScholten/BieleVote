@@ -2,25 +2,27 @@ import { useState, useEffect } from "react";
 import { IoReturnDownBack } from "react-icons/io5";
 import { BsFillCalendarWeekFill } from "react-icons/bs";
 import { Link, useParams } from "react-router-dom";
-import axios from "axios";
 
 import { emptyForms } from "../../misc/ApiForms";
 import Header from "../../components/Header";
+import { backendApi } from "../../misc/ApiMappings";
 
 export default function NewsArticlePage() {
   const [newsArticle, setNewsArticle] = useState(emptyForms.newsArticle);
   const { articleId } = useParams();
 
   useEffect(() => {
-    async function getNewsArticle() {
-      const response = await axios.get(
-        `http://localhost:8080/api/v1/news/${articleId}`
-      );
-      setNewsArticle(response.data);
-    }
-    getNewsArticle();
+    fetchArticle(articleId);
   }, [articleId]);
 
+  async function fetchArticle(articleId) {
+    try {
+      const response = await backendApi.getNewsArticleById(articleId);
+      setNewsArticle(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <>
       <Header pageTitle="News" />

@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import { BsFillCalendarWeekFill } from "react-icons/bs";
 import { IoReturnDownBack } from "react-icons/io5";
 import { Pagination } from "semantic-ui-react";
-import axios from "axios";
 
 import { emptyForms } from "../../misc/ApiForms";
 import Header from "../../components/Header";
+import { backendApi } from "../../misc/ApiMappings";
 
 export default function NewsOverview() {
   const [newsList, setNewsList] = useState(emptyForms.newsOverview);
@@ -22,9 +22,7 @@ export default function NewsOverview() {
     } else {
       page = 0;
     }
-    const response = await axios.get(
-      "http://localhost:8080/api/v1/news?page=" + page + "&size=" + 3
-    );
+    const response = await backendApi.getAllNewsArticles(page, 3);
     setNewsList(response.data);
   };
 
