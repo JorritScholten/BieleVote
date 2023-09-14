@@ -45,6 +45,7 @@ public class TokenProvider {
                 .claim("rol", roles)
                 .claim("id", user.getId())
                 .claim("username", user.getUsername())
+                .claim("accountType", user.getRole().name())
                 .compact();
     }
 
