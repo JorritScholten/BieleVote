@@ -1,6 +1,5 @@
 import Header from "../../components/Header";
 import ProjectForm from "./components/ProjectForm";
-import ListProjects from "../projectOverview/components/ListProjects";
 import { useEffect, useState } from "react";
 import { backendApi } from "../../misc/ApiMappings";
 

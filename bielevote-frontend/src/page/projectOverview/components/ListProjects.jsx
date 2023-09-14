@@ -2,8 +2,6 @@ import { Icon, Table } from "semantic-ui-react";
 import PropTypes from "prop-types";
 
 function ListProjects({ projectsList, limit = 50, incrementDataVersion }) {
-
-
   return (
     <>
       <Table celled>
