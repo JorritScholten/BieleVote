@@ -9,17 +9,18 @@ export default function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-            {navList.map((nav) =>
-              nav.requiresLogin ? (
-                <Route
-                  key={nav.id}
-                  path={nav.path}
-                  element={<PrivateRoute>{nav.element()}</PrivateRoute>}
-                />
-              ) : (
-                <Route key={nav.id} path={nav.path} element={nav.element()} />
-              )
-            )}
+            {navList.map((nav) => (
+              <Route
+                key={nav.path}
+                path={nav.path}
+                element={
+                  <PrivateRoute
+                    page={nav.element()}
+                    allowedAccountTypes={nav.allowedAccountTypes}
+                  />
+                }
+              />
+            ))}
             <Route path="*" element={<h1>Not Found</h1>} />
           </Routes>
         </BrowserRouter>

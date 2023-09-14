@@ -11,7 +11,7 @@ export default function NavBar() {
       {navList
         .filter((nav) => !nav.hideFromMenu)
         .map((nav) => (
-          <Link to={nav.path} key={nav.id}>
+          <Link to={nav.path} key={nav.path}>
             {nav.name}
           </Link>
         ))}

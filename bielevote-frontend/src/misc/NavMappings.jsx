@@ -2,34 +2,36 @@ import HomePage from "../page/home";
 import CreateAccountPage from "../page/newAccount";
 import ProjectWritingPage from "../page/project";
 
-const accountTypes = {
+// these are the Enum options of UserRole as defined in the backend, except the visitor type which is used to represent no account/anonymous visitor
+export const accountType = {
   admin: "ADMINISTRATOR",
-  munic: "MUNICIPAL",
-  citiz: "CITIZEN",
+  municipal: "MUNICIPAL",
+  citizen: "CITIZEN",
+  visitor: "VISITOR",
 };
+const municipalTypes = [accountType.admin, accountType.municipal];
+const allLoggedInTypes = municipalTypes.concat(accountType.citizen);
+const allAccountTypes = allLoggedInTypes.concat(accountType.visitor);
 
 export const navList = [
   {
-    id: 0,
     path: "/",
     name: "Home",
-    requiresLogin: false,
+    allowedAccountTypes: allAccountTypes,
     hideFromMenu: false,
     element: () => <HomePage />,
   },
   {
-    id: 1,
     path: "/new-account",
     name: "New account",
-    requiresLogin: false,
+    allowedAccountTypes: allAccountTypes,
     hideFromMenu: true,
     element: () => <CreateAccountPage />,
   },
   {
-    id: 2,
     path: "/projectwritingpage",
     name: "New Project",
-    requiresLogin: true,
+    allowedAccountTypes: allLoggedInTypes,
     hideFromMenu: false,
     element: () => <ProjectWritingPage />,
   },

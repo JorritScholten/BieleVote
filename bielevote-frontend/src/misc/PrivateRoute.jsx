@@ -2,11 +2,18 @@ import PropTypes from "prop-types";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
-export default function PrivateRoute({ children }) {
-  const { userIsAuthenticated } = useAuth();
-  return userIsAuthenticated() ? children : <Navigate to="/" />;
+export default function PrivateRoute({ page, allowedAccountTypes }) {
+  const { getAccountType } = useAuth();
+  const accountType = getAccountType();
+  return allowedAccountTypes.some((type) => type === accountType) ? (
+    page
+  ) : (
+    <Navigate to="/" />
+  );
 }
 
 PrivateRoute.propTypes = {
-  children: PropTypes.any,
+  page: PropTypes.any.isRequired,
+  allowedAccountTypes: PropTypes.arrayOf(PropTypes.string.isRequired)
+    .isRequired,
 };
