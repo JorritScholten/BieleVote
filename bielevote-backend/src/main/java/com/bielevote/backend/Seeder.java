@@ -1,5 +1,6 @@
 package com.bielevote.backend;
 
+import com.bielevote.backend.project.ProjectStatus;
 import com.bielevote.backend.project.Project;
 import com.bielevote.backend.project.ProjectRepository;
 import com.bielevote.backend.user.User;
@@ -11,6 +12,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -61,10 +63,16 @@ public class Seeder implements CommandLineRunner {
                     Project.builder()
                             .title("Park")
                             .content("new park")
+                            .datePublished(LocalDateTime.now().minusHours(1))
+                            .status(ProjectStatus.PROPOSED)
+                            .author(userRepository.findByUsername("citizen1").orElseThrow())
                             .build(),
                     Project.builder()
                             .title("Swimming pool")
                             .content("new swimming pool")
+                            .datePublished(LocalDateTime.now().minusMinutes(6))
+                            .status(ProjectStatus.ACTIVE)
+                            .author(userRepository.findByUsername("municipal1").orElseThrow())
                             .build()
             );
             projectRepository.saveAll(projects);

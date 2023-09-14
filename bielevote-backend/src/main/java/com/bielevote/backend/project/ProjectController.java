@@ -1,5 +1,7 @@
 package com.bielevote.backend.project;
 
+import com.bielevote.backend.user.UserViews;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +17,13 @@ public class ProjectController {
     @Autowired
     ProjectRepository projectRepository;
 
+    @JsonView(UserViews.getProject.class)
     @GetMapping
     public ResponseEntity<List<Project>> getProjects() {
         return ResponseEntity.ok(projectRepository.findAll());
     }
 
+    @JsonView(UserViews.getProject.class)
     @GetMapping("/{id}")
     public ResponseEntity<Project> getProjectById(@PathVariable("id") long id) {
         try {

@@ -1,5 +1,8 @@
 package com.bielevote.backend.user;
 
+import com.bielevote.backend.project.Project;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
@@ -9,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 
 @Jacksonized
 @Getter
@@ -25,15 +29,21 @@ import java.util.Objects;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView(UserViews.getProject.class)
     private Long id;
 
+    @JsonView(UserViews.getProject.class)
     @Column(unique = true)
     private String username;
     private String password;
+    @JsonView(UserViews.getProject.class)
     private String legalName;
     private String phone;
     @Enumerated(EnumType.STRING)
     private UserRole role;
+    @JsonBackReference
+    @OneToMany(mappedBy = "author")
+    private Set<Project> projects;
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.getAuthorities();
