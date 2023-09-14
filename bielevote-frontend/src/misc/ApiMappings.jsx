@@ -6,6 +6,8 @@ export const backendApi = {
   authTest,
   postProject,
   getAllProjects,
+  getAllNewsArticles,
+  getNewsArticleById,
 };
 
 function login(formData) {
@@ -37,6 +39,13 @@ function getAllProjects() {
   return instance.get("/api/v1/project");
 }
 
+function getAllNewsArticles(page, amount) {
+  return instance.get("/api/v1/news" + "?page=" + page + "&size=" + amount);
+}
+
+function getNewsArticleById(articleId) {
+  return instance.get(`/api/v1/news/${articleId}`);
+}
 // Axios calls
 
 const instance = axios.create({

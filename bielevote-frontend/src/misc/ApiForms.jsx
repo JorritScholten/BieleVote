@@ -7,4 +7,18 @@ export const emptyForms = {
     title: "",
     content: "",
   },
+  newsArticle: {
+    title: "",
+    summary: "",
+    content: "",
+    author: "",
+    datePlaced: "",
+    category: "",
+  },
+  newsOverview: {
+    articles: [],
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0,
+  },
 };

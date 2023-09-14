@@ -1,8 +1,5 @@
-import React from "react";
 import Header from "../../components/Header";
 import ProjectForm from "./components/ProjectForm";
-import { Button } from "semantic-ui-react";
-import { useEffect } from "react";
 
 export default function ProjectWritingPage() {
   return (
