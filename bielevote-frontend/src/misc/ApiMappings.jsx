@@ -8,6 +8,7 @@ export const backendApi = {
   getAllProjects,
   getAllNewsArticles,
   getNewsArticleById,
+  getAllRewards,
 };
 
 function login(formData) {

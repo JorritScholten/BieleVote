@@ -1,11 +1,7 @@
-import { BsFillCalendarWeekFill } from "react-icons/bs";
-import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
-import { formatDate } from "../../../components/Utils";
-
-export default function ListNews({ newsList }) {
-  return newsList.articles == [] ? (
+export default function ListRewards(rewardsList) {
+  return rewardsList.rewards == [] ? (
     <div>loading...</div>
   ) : (
     <div className="flex flex-col  w-3/5">
@@ -33,6 +29,6 @@ export default function ListNews({ newsList }) {
   );
 }
 
-ListNews.propTypes = {
+ListRewards.propTypes = {
   newsList: PropTypes.object.isRequired,
 };
