@@ -1,10 +1,12 @@
 package com.bielevote.backend.project;
 
+import com.bielevote.backend.user.UserService;
 import com.bielevote.backend.user.UserViews;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -16,6 +18,8 @@ import java.util.List;
 public class ProjectController {
     @Autowired
     ProjectRepository projectRepository;
+    @Autowired
+    private UserService userService;
 
     @JsonView(UserViews.getProject.class)
     @GetMapping
@@ -36,10 +40,14 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<Project> postProject(@RequestBody Project project) {
         try {
-            if (project.getDatePublished() == null) {
-                project.setDatePublished(LocalDateTime.now());
+            var auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth == null) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
-            return new ResponseEntity<>(projectRepository.save(project), HttpStatus.OK);
+            project.setAuthor(userService.getByUsername(auth.getName()).orElseThrow());
+            project.setDatePublished(LocalDateTime.now());
+            project.setStatus(ProjectStatus.PROPOSED);
+            return new ResponseEntity<>(projectRepository.save(project), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

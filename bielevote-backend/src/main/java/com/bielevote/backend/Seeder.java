@@ -1,7 +1,11 @@
 package com.bielevote.backend;
 
+import com.bielevote.backend.news.Category;
+import com.bielevote.backend.news.NewsArticle;
+import com.bielevote.backend.news.NewsArticleRepository;
 import com.bielevote.backend.project.Project;
 import com.bielevote.backend.project.ProjectRepository;
+import com.bielevote.backend.project.ProjectStatus;
 import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRepository;
 import com.bielevote.backend.user.UserRole;
@@ -20,7 +24,7 @@ import java.util.List;
 public class Seeder implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     @Autowired
-    NewsArticleRepository newsArticleRepository;
+    private NewsArticleRepository newsArticleRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
