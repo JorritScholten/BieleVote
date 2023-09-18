@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RestController
@@ -80,7 +81,7 @@ public class NewsArticleController {
     record NewsArticlePreviewDto(long id, String title, LocalDateTime datePlaced, String summaryPreview) {
         public static NewsArticlePreviewDto from(NewsArticle newsArticle) {
             String[] previewWords = newsArticle.getSummary().split(" ");
-            var preview = String.join(" ", Arrays.copyOf(previewWords, 20)) + "...";
+            var preview = String.join(" ", Arrays.copyOf(previewWords, Math.min(20, previewWords.length))) + "...";
             return new NewsArticlePreviewDto(newsArticle.getId(), newsArticle.getTitle(), newsArticle.getDatePlaced(), preview);
         }
     }
