@@ -222,7 +222,6 @@ public class Seeder implements CommandLineRunner {
                         .inventory(30)
                         .isLimited(true)
                         .datePlaced(LocalDateTime.now().plusMinutes(1))
-                        .jpg("com/bielevote/backend/reward_shop/test-photo.jpg")
                         .build(),
                 Reward.builder()
                         .name("Concert Ticket - John Smith Live")

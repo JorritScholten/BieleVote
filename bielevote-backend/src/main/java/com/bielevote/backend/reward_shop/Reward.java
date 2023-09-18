@@ -7,7 +7,6 @@ import jakarta.persistence.Id;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
 
-import java.io.InputStream;
 import java.time.LocalDateTime;
 
 @Entity
@@ -29,5 +28,4 @@ public class Reward {
     @Column(columnDefinition = "TIMESTAMP(0)")
     private LocalDateTime datePlaced;
     private int cost;
-    private String jpg;
 }

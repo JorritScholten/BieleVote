@@ -39,7 +39,6 @@ export const emptyForms = {
   },
   rewardOverview: {
     rewards: [],
-    image: {},
     currentPage: 0,
     totalItems: 0,
     totalPages: 0,
