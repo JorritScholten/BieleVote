@@ -17,6 +17,12 @@ export const emptyForms = {
     content: "<p><br></p>",
     status: projectStatus.proposed,
   },
+  projectOverview: {
+    projects: [],
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0,
+  },
   newsArticle: {
     title: "",
     summary: "",

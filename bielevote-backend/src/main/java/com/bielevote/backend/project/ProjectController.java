@@ -1,6 +1,5 @@
 package com.bielevote.backend.project;
 
-import com.bielevote.backend.user.UserService;
 import com.bielevote.backend.user.UserViews;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +10,14 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/v1/project")
+@RequestMapping("/api/v1/projects")
 public class ProjectController {
     @Autowired
     ProjectRepository projectRepository;
@@ -23,9 +25,29 @@ public class ProjectController {
     private UserService userService;
 
     @JsonView(UserViews.getProject.class)
-    @GetMapping
-    public ResponseEntity<List<Project>> getProjects() {
-        return ResponseEntity.ok(projectRepository.findAll());
+    @GetMapping()
+    public ResponseEntity<Map<String, Object>> getAllProjects(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        try {
+            List<Project> projects;
+            PageRequest paging = PageRequest.of(page, size, Sort.by("datePublished").descending());
+
+            Page<Project> pageProject = projectRepository.findAll(paging);
+
+            projects = pageProject.getContent();
+
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("projects", projects);
+            responseBody.put("currentPage", pageProject.getNumber());
+            responseBody.put("totalItems", pageProject.getTotalElements());
+            responseBody.put("totalPages", pageProject.getTotalPages());
+
+            return new ResponseEntity<>(responseBody, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @JsonView(UserViews.getProject.class)

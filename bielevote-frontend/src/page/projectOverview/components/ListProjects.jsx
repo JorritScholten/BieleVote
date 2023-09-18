@@ -1,51 +1,33 @@
-import { Icon, Table } from "semantic-ui-react";
+import { Table } from "semantic-ui-react";
 import PropTypes from "prop-types";
+import { formatDate } from "../../../components/Utils";
+import { Link } from "react-router-dom";
 
-function ListProjects({ projectsList, limit = 50, incrementDataVersion }) {
-  return (
+export default function ListProjects({ projectsList }) {
+  return projectsList.projects == [] ? (
+    <div>loading...</div>
+  ) : (
     <>
-      <Table celled>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell>Identity number</Table.HeaderCell>
-            <Table.HeaderCell>Title</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-
-        <Table.Body>
-          <Table.Row>
-            <Table.Cell>
-              {" "}
-              {projectsList.slice(0, limit).map((project) => (
-                <div key={project.id}>{project.id}</div>
-              ))}{" "}
-            </Table.Cell>
-            <Table.Cell>
-              {" "}
-              {projectsList.slice(0, limit).map((project) => (
-                <div key={project.id}>{project.title}</div>
-              ))}{" "}
-            </Table.Cell>
-            <Table.Cell></Table.Cell>
-          </Table.Row>
-        </Table.Body>
-      </Table>
-
-      <button
-        className="rounded-lg border-2 border-blue-300"
-        type="button"
-        onClick={incrementDataVersion}
-      >
-        Refresh <Icon name="refresh" size="small" />
-      </button>
+      <div className="flex flex-col  w-3/5">
+        {projectsList.projects.map((project) => (
+          <div className="p-3 flex flex-col" key={project.id}>
+            <div>{project.id}</div>
+            <Link to={"project" + project.id}>
+              <div className="text-3xl text-blue-700 font-bold underline">
+                {project.title}
+              </div>
+            </Link>
+            <div>{project.content}</div>
+            <div>{project.author.legalName}</div>
+            <div>{formatDate(project.datePublished)}</div>
+            <div>{project.status}</div>
+          </div>
+        ))}
+      </div>
     </>
   );
 }
 
 ListProjects.propTypes = {
-  projectsList: PropTypes.array.isRequired,
-  limit: PropTypes.number,
-  incrementDataVersion: PropTypes.func,
+  projectsList: PropTypes.object.isRequired,
 };
-
-export default ListProjects;

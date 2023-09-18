@@ -2,30 +2,40 @@ import Header from "../../components/Header";
 import ListProjects from "./components/ListProjects";
 import { useState, useEffect } from "react";
 import { backendApi } from "../../misc/ApiMappings";
+import { Pagination } from "semantic-ui-react";
+import { emptyForms } from "../../misc/ApiForms";
 
-function ProjectOverviewPage() {
-const [projectsList, setProjectsList] = useState([]);
-const [version, setVersion] = useState(0);
-const incVersion = () => setVersion(version + 1);
+export default function ProjectOverviewPage() {
+  const [projectsList, setProjectsList] = useState(emptyForms.projectOverview);
 
-useEffect(() => {
-  const getProjectsList = async () => {
-    const allProjects = await backendApi.getAllProjects();
-    setProjectsList(allProjects.data);
+  useEffect(() => {
+    handlePageChange();
+  }, []);
+
+  const handlePageChange = async (event, value) => {
+    let page;
+    if (value) {
+      page = value.activePage - 1;
+    } else {
+      page = 0;
+    }
+    const response = await backendApi.getAllProjects(page, 3);
+    setProjectsList(response.data);
   };
-  getProjectsList();
-}, [version]);
 
   return (
-    <div>
-      <Header pageTitle="projects" />
-      <ListProjects
-        projectsList={projectsList}
-        limit={30}
-        incrementDataVersion={incVersion}
-      />
-    </div>
+    <>
+      <Header pageTitle="Projects" />
+      <div className="flex flex-col items-center justify-center">
+        <ListProjects projectsList={projectsList} />
+      </div>
+      <div className="flex flex-col items-center justify-center">
+        <Pagination
+          defaultActivePage={1}
+          totalPages={projectsList.totalPages}
+          onPageChange={handlePageChange}
+        />
+      </div>
+    </>
   );
 }
-
-export default ProjectOverviewPage;

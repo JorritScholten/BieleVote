@@ -60,13 +60,13 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests((authorize) -> authorize
                 .requestMatchers(new AntPathRequestMatcher("/api/v1/users/me")).hasAnyRole(allAccounts)
                 .requestMatchers(new AntPathRequestMatcher("/auth/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/v1/projects/*", GET.name())).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/v1/projects", GET.name())).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/v1/projects", POST.name())).hasAnyRole(allAccounts)
+                .requestMatchers(new AntPathRequestMatcher("/api/v1/projects/*", DELETE.name())).hasRole(ADMINISTRATOR.name())
                 .requestMatchers(new AntPathRequestMatcher("/api/v1/news/**", GET.name())).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/api/v1/news", POST.name())).hasAnyRole(municipality)
                 .requestMatchers(new AntPathRequestMatcher("/api/v1/news/**", DELETE.name())).hasAnyRole(ADMINISTRATOR.name())
-                .requestMatchers(new AntPathRequestMatcher("/api/v1/project", GET.name())).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/api/v1/project", POST.name())).hasAnyRole(allAccounts)
-                .requestMatchers(new AntPathRequestMatcher("/api/v1/project/*", GET.name())).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/api/v1/project/*", DELETE.name())).hasRole(ADMINISTRATOR.name())
                 .anyRequest().authenticated()
         );
         http.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
