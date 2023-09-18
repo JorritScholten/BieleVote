@@ -1,9 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import HomePage from "./page/home";
-import ProjectWritingPage from "./page/project/ProjectWritingPage";
 import { AuthProvider } from "./misc/AuthContext";
-import CreateAccountPage from "./page/newAccount";
-import ProjectOverviewPage from "./page/projectOverview/ProjectOverviewPage";
+import { navList } from "./misc/NavMappings";
+import PrivateRoute from "./misc/PrivateRoute";
 
 export default function App() {
   return (
@@ -11,10 +9,18 @@ export default function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/new-account" element={<CreateAccountPage />} />
-            <Route path="/projectwritingpage" element={<ProjectWritingPage />} />
-            <Route path="/projectoverview" element={<ProjectOverviewPage />} />
+            {navList.map((nav) => (
+              <Route
+                key={nav.path}
+                path={nav.path}
+                element={
+                  <PrivateRoute
+                    page={nav.element()}
+                    allowedAccountTypes={nav.allowedAccountTypes}
+                  />
+                }
+              />
+            ))}
             <Route path="*" element={<h1>Not Found</h1>} />
           </Routes>
         </BrowserRouter>

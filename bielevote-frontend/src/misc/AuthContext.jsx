@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { accountType } from "./NavMappings";
 
 const AuthContext = createContext();
 
@@ -49,6 +50,14 @@ function AuthProvider({ children }) {
     setUser(null);
   };
 
+  const getAccountType = () => {
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) {
+      return accountType.visitor;
+    }
+    return JSON.parse(storedUser).data.accountType;
+  };
+
   const contextValue = {
     user,
     getUser,
@@ -56,6 +65,7 @@ function AuthProvider({ children }) {
     userIsAuthenticated,
     userLogin,
     userLogout,
+    getAccountType,
   };
 
   return (
