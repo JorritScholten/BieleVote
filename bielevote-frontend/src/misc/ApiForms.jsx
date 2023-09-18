@@ -37,4 +37,10 @@ export const emptyForms = {
     totalItems: 0,
     totalPages: 0,
   },
+  rewardOverview: {
+    rewards: [],
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0,
+  },
 };

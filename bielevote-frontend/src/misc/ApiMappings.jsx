@@ -46,6 +46,10 @@ function getAllNewsArticles(page, amount) {
 function getNewsArticleById(articleId) {
   return instance.get(`/api/v1/news/${articleId}`);
 }
+
+function getAllRewards(page, amount) {
+  return instance.get("/api/v1/rewards" + "?page=" + page + "&size=" + amount);
+}
 // Axios calls
 
 const instance = axios.create({
