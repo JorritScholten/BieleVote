@@ -29,7 +29,7 @@ export default function ProjectOverviewPage() {
       <div className="flex flex-col items-center justify-center">
         <ListProjects projectsList={projectsList} />
       </div>
-      <div className="">
+      <div className="flex flex-col items-center justify-center">
         <Pagination
           defaultActivePage={1}
           totalPages={projectsList.totalPages}
