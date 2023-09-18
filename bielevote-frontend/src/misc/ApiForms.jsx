@@ -14,7 +14,7 @@ export const emptyForms = {
   },
   newProject: {
     title: "",
-    content: "",
+    content: "<p><br></p>",
     status: projectStatus.proposed,
   },
   newsArticle: {
