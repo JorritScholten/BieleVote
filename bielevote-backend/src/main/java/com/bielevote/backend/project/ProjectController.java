@@ -1,15 +1,12 @@
 package com.bielevote.backend.project;
 
-import com.bielevote.backend.news.NewsArticle;
-import com.bielevote.backend.news.NewsArticleController;
 import com.bielevote.backend.user.UserViews;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -24,6 +21,8 @@ import java.util.Map;
 public class ProjectController {
     @Autowired
     ProjectRepository projectRepository;
+    @Autowired
+    private UserService userService;
 
     @JsonView(UserViews.getProject.class)
     @GetMapping()
@@ -62,13 +61,20 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ResponseEntity<Project> postProject(@RequestBody Project project) {
+    public ResponseEntity<Project> postProject(@Validated @RequestBody Project project) {
         try {
-            if (project.getDatePublished() == null) {
-                project.setDatePublished(LocalDateTime.now());
+            var auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth == null) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
-            project.setStatus(ProjectStatus.PROPOSED);
-            return new ResponseEntity<>(projectRepository.save(project), HttpStatus.OK);
+            project.setAuthor(userService.getByUsername(auth.getName()).orElseThrow());
+            project.setDatePublished(LocalDateTime.now());
+            if (project.getStatus() == null) {
+                project.setStatus(ProjectStatus.PROPOSED);
+            } else if (!(project.getStatus() == ProjectStatus.PROPOSED || project.getStatus() == ProjectStatus.EDITING)) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(projectRepository.save(project), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -1,3 +1,12 @@
+export const projectStatus = {
+  editing: "EDITING",
+  proposed: "PROPOSED",
+  active: "ACTIVE",
+  accepted: "ACCEPTED",
+  rejected: "REJECTED",
+  archived: "OLD",
+};
+
 export const emptyForms = {
   login: {
     username: "",
@@ -5,7 +14,8 @@ export const emptyForms = {
   },
   newProject: {
     title: "",
-    content: "",
+    content: "<p><br></p>",
+    status: projectStatus.proposed,
   },
   projectOverview: {
     projects: [],

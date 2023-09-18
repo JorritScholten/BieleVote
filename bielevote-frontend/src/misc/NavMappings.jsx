@@ -46,7 +46,7 @@ export const navList = [
     element: () => <CreateAccountPage />,
   },
   {
-    path: "/projectwritingpage",
+    path: "/newproject",
     name: "New Project",
     allowedAccountTypes: allLoggedInTypes,
     hideFromMenu: false,

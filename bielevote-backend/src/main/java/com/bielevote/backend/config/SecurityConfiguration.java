@@ -63,6 +63,7 @@ public class SecurityConfiguration {
                 .requestMatchers(new AntPathRequestMatcher("/api/v1/projects/*", GET.name())).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/api/v1/projects", GET.name())).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/api/v1/projects", POST.name())).hasAnyRole(allAccounts)
+                .requestMatchers(new AntPathRequestMatcher("/api/v1/projects/*", DELETE.name())).hasRole(ADMINISTRATOR.name())
                 .requestMatchers(new AntPathRequestMatcher("/api/v1/news/**", GET.name())).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/api/v1/news", POST.name())).hasAnyRole(municipality)
                 .requestMatchers(new AntPathRequestMatcher("/api/v1/news/**", DELETE.name())).hasAnyRole(ADMINISTRATOR.name())

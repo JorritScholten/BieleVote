@@ -1,7 +1,7 @@
 import { BsFillCalendarWeekFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import { formatDate } from "../../../components/Utils";
+import { formatDate } from "../../../components/utils";
 
 export default function ListNews({ newsList }) {
   return newsList.articles == [] ? (

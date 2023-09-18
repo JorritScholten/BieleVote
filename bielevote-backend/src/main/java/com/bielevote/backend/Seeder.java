@@ -24,7 +24,7 @@ import java.util.List;
 public class Seeder implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     @Autowired
-    NewsArticleRepository newsArticleRepository;
+    private NewsArticleRepository newsArticleRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -63,7 +63,6 @@ public class Seeder implements CommandLineRunner {
     }
 
     private void seedProjects() {
-
         projectRepository.saveAllAndFlush(List.of(
                 Project.builder()
                         .title("Greening Our Urban Oasis")
