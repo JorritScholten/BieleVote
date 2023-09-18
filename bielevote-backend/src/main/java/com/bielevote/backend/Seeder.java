@@ -41,6 +41,7 @@ public class Seeder implements CommandLineRunner {
         seedUsers();
         seedProjects();
         seedNewsArticles();
+        seedRewards();
     }
 
     private void seedUsers() {
@@ -140,7 +141,7 @@ public class Seeder implements CommandLineRunner {
                         .content("This proposal focuses on improving community policing efforts and enhancing overall public safety. It includes measures for community policing training, the establishment of neighborhood watch programs, and increased investment in mental health crisis response teams.")
                         .build()
         ));
-        System.out.println(projectRepository.count() + " projects seeded");
+        System.out.println(projectRepository.count() + " projects seeded...");
     }
 
     private void seedNewsArticles() {
