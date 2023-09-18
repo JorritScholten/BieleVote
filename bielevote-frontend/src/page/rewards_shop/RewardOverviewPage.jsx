@@ -10,6 +10,7 @@ export default function RewardOverviewPage() {
   const [rewardsList, setRewardsList] = useState(emptyForms.rewardOverview);
 
   useEffect(() => {
+    console.log(rewardsList);
     handlePageChange();
   }, []);
 
