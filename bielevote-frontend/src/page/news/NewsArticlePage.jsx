@@ -6,7 +6,7 @@ import { Link, useParams } from "react-router-dom";
 import { emptyForms } from "../../misc/ApiForms";
 import Header from "../../components/Header";
 import { backendApi } from "../../misc/ApiMappings";
-import { formatDate } from "../../components/utils";
+import { formatDate } from "../../components/Utils";
 
 export default function NewsArticlePage() {
   const [newsArticle, setNewsArticle] = useState(emptyForms.newsArticle);
