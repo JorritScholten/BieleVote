@@ -29,7 +29,9 @@ export default function PrintUserInfo() {
       <button className="bg-green-300 p-1" onClick={fetchData}>
         get user info
       </button>
-      <div className="p-1">info: {JSON.stringify(user)}</div>
+      <div className="p-1">
+        info: <pre>{JSON.stringify(user, null, 2)}</pre>
+      </div>
     </div>
   );
 }

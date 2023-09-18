@@ -2,6 +2,7 @@ import axios from "axios";
 
 export const backendApi = {
   userInfo,
+  getAccountBalance,
   login,
   authTest,
   postProject,
@@ -18,6 +19,12 @@ function login(formData) {
 
 function userInfo(user) {
   return instance.get("/api/v1/users/me", {
+    headers: { Authorization: bearerAuth(user) },
+  });
+}
+
+function getAccountBalance(user) {
+  return instance.get("/api/v1/users/balance", {
     headers: { Authorization: bearerAuth(user) },
   });
 }
@@ -46,7 +53,8 @@ function getAllNewsArticles(page, amount) {
 function getNewsArticleById(articleId) {
   return instance.get(`/api/v1/news/${articleId}`);
 }
-// Axios calls
+
+// -- Axios calls
 
 const instance = axios.create({
   baseURL: "http://localhost:8080",
