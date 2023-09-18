@@ -58,7 +58,7 @@ public class SecurityConfiguration {
         final var allAccounts = new String[]{CITIZEN.name(), MUNICIPAL.name(), ADMINISTRATOR.name()};
         final var municipality = new String[]{MUNICIPAL.name(), ADMINISTRATOR.name()};
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers(new AntPathRequestMatcher("/api/v1/users/me")).hasAnyRole(allAccounts)
+                .requestMatchers(new AntPathRequestMatcher("/api/v1/users/**", GET.name())).hasAnyRole(allAccounts)
                 .requestMatchers(new AntPathRequestMatcher("/auth/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/api/v1/projects/*", GET.name())).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/api/v1/projects", GET.name())).permitAll()

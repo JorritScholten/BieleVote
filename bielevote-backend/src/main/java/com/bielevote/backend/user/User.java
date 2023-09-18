@@ -48,7 +48,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "author")
     private Set<Project> projects;
     @JsonManagedReference
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "user")
     private List<RewardPoint> rewardPointTransactions;
 
     public Collection<? extends GrantedAuthority> getAuthorities() {

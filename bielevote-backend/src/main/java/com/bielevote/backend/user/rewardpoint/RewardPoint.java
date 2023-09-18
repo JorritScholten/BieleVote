@@ -27,7 +27,7 @@ public class RewardPoint {
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
     @JsonBackReference
-    private User author;
+    private User user;
     @Enumerated(value = EnumType.STRING)
     private TransactionReason reason;
 }
