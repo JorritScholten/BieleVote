@@ -1,8 +1,5 @@
 package com.bielevote.backend;
 
-import com.bielevote.backend.news.Category;
-import com.bielevote.backend.news.NewsArticle;
-import com.bielevote.backend.news.NewsArticleRepository;
 import com.bielevote.backend.project.Project;
 import com.bielevote.backend.project.ProjectRepository;
 import com.bielevote.backend.user.User;
@@ -23,11 +20,11 @@ import java.util.List;
 public class Seeder implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     @Autowired
-    ProjectRepository projectRepository;
-    @Autowired
     NewsArticleRepository newsArticleRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ProjectRepository projectRepository;
 
     @Override
     public void run(String... args) {
@@ -62,17 +59,28 @@ public class Seeder implements CommandLineRunner {
     }
 
     private void seedProjects() {
-        projectRepository.saveAllAndFlush(List.of(
-                Project.builder()
-                        .title("Park")
-                        .content("new park")
-                        .build(),
-                Project.builder()
-                        .title("Swimming pool")
-                        .content("new swimming pool")
-                        .build()
-        ));
-        System.out.println(projectRepository.count() + " projects seeded");
+        long count = projectRepository.count();
+        if (count == 0) {
+            List<Project> projects = List.of(
+                    Project.builder()
+                            .title("Park")
+                            .content("new park")
+                            .datePublished(LocalDateTime.now().minusHours(1))
+                            .status(ProjectStatus.PROPOSED)
+                            .author(userRepository.findByUsername("citizen1").orElseThrow())
+                            .build(),
+                    Project.builder()
+                            .title("Swimming pool")
+                            .content("new swimming pool")
+                            .datePublished(LocalDateTime.now().minusMinutes(6))
+                            .status(ProjectStatus.ACTIVE)
+                            .author(userRepository.findByUsername("municipal1").orElseThrow())
+                            .build()
+            );
+            projectRepository.saveAll(projects);
+            count = projectRepository.count();
+        }
+        System.out.println(count + " projects seeded");
     }
 
     private void seedNewsArticles() {
@@ -136,6 +144,4 @@ public class Seeder implements CommandLineRunner {
         ));
         System.out.println(newsArticleRepository.count() + " news articles seeded...");
     }
-
 }
-
