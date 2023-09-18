@@ -1,7 +1,7 @@
 package com.bielevote.backend.user.rewardpoint;
 
 import com.bielevote.backend.user.User;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
@@ -15,7 +15,8 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity(name = "REWARD_POINT_TRANSACTIONS")
+@Entity
+@Table(name = "REWARD_POINT_TRANSACTIONS")
 public class RewardPoint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,8 +25,8 @@ public class RewardPoint {
     @Column(columnDefinition = "TIMESTAMP(0)")
     private LocalDateTime date;
     @ManyToOne
-    @JoinColumn(nullable = false)
-    @JsonManagedReference
+    @JoinColumn(name = "author_id", nullable = false)
+    @JsonBackReference
     private User author;
     @Enumerated(value = EnumType.STRING)
     private TransactionReason reason;
