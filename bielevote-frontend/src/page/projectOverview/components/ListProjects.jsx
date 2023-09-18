@@ -12,7 +12,7 @@ export default function ListProjects({ projectsList }) {
         {projectsList.projects.map((project) => (
           <div className="p-3 flex flex-col" key={project.id}>
             <div>{project.id}</div>
-            <Link to={"project" + project.id}>
+            <Link to={"/projects/" + project.id}>
               <div className="text-3xl text-blue-700 font-bold underline">
                 {project.title}
               </div>
