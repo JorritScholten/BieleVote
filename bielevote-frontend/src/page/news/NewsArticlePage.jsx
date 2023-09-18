@@ -6,6 +6,7 @@ import { Link, useParams } from "react-router-dom";
 import { emptyForms } from "../../misc/ApiForms";
 import Header from "../../components/Header";
 import { backendApi } from "../../misc/ApiMappings";
+import { formatDate } from "../../components/Utils";
 
 export default function NewsArticlePage() {
   const [newsArticle, setNewsArticle] = useState(emptyForms.newsArticle);
@@ -23,6 +24,7 @@ export default function NewsArticlePage() {
       console.log(error);
     }
   }
+
   return (
     <div className="flex flex-col gap-2 w-screen">
       <Header pageTitle="News" />
@@ -39,7 +41,9 @@ export default function NewsArticlePage() {
               <div>{newsArticle.category}</div>
             </div>
             <div className="flex flex-row mt-5">
-              <div className="mr-3 text-gray-600">{newsArticle.datePlaced}</div>
+              <div className="mr-3 text-gray-600">
+                {formatDate(newsArticle.datePlaced)}
+              </div>
               <div className="flex items-center">
                 <BsFillCalendarWeekFill />
               </div>

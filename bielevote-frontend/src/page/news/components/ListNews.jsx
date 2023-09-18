@@ -1,6 +1,7 @@
 import { BsFillCalendarWeekFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import { formatDate } from "../../../components/Utils";
 
 export default function ListNews({ newsList }) {
   return newsList.articles == [] ? (
@@ -16,7 +17,7 @@ export default function ListNews({ newsList }) {
           </Link>
           <div className="flex flex-row">
             <div className="mr-3 text-gray-600">
-              {articlePreview.datePlaced}
+              {formatDate(articlePreview.datePlaced)}
             </div>
             <div className="flex items-center">
               <BsFillCalendarWeekFill />
