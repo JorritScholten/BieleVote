@@ -1,8 +1,11 @@
-import { Icon, Table } from "semantic-ui-react";
+import { Table } from "semantic-ui-react";
 import PropTypes from "prop-types";
 
-function ListProjects({ projectsList, limit = 50, incrementDataVersion }) {
-  return (
+export default function ListProjects({ projectsList }) {
+  console.log(projectsList);
+  return projectsList.projects == [] ? (
+    <div>loading...</div>
+  ) : (
     <>
       <Table celled>
         <Table.Header>
@@ -16,36 +19,23 @@ function ListProjects({ projectsList, limit = 50, incrementDataVersion }) {
           <Table.Row>
             <Table.Cell>
               {" "}
-              {projectsList.slice(0, limit).map((project) => (
-                <div key={project.id}>{project.id}</div>
+              {projectsList.projects.map((project) => (
+                <div key={project.id}>
+                  <div>{project.id}</div>
+                  <div>{project.title}</div>
+                  <div>{project.author.legalName}</div>
+                  <div>{project.datePublished}</div>
+                  <div>{project.status}</div>
+                </div>
               ))}{" "}
             </Table.Cell>
-            <Table.Cell>
-              {" "}
-              {projectsList.slice(0, limit).map((project) => (
-                <div key={project.id}>{project.title}</div>
-              ))}{" "}
-            </Table.Cell>
-            <Table.Cell></Table.Cell>
           </Table.Row>
         </Table.Body>
       </Table>
-
-      <button
-        className="rounded-lg border-2 border-blue-300"
-        type="button"
-        onClick={incrementDataVersion}
-      >
-        Refresh <Icon name="refresh" size="small" />
-      </button>
     </>
   );
 }
 
 ListProjects.propTypes = {
-  projectsList: PropTypes.array.isRequired,
-  limit: PropTypes.number,
-  incrementDataVersion: PropTypes.func,
+  projectsList: PropTypes.object.isRequired,
 };
-
-export default ListProjects;
