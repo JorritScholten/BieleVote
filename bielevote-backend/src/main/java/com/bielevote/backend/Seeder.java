@@ -1,7 +1,11 @@
 package com.bielevote.backend;
 
+import com.bielevote.backend.news.Category;
+import com.bielevote.backend.news.NewsArticle;
+import com.bielevote.backend.news.NewsArticleRepository;
 import com.bielevote.backend.project.Project;
 import com.bielevote.backend.project.ProjectRepository;
+import com.bielevote.backend.project.ProjectStatus;
 import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRepository;
 import com.bielevote.backend.user.UserRole;
@@ -19,8 +23,6 @@ import java.util.List;
 @Component
 public class Seeder implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
-    @Autowired
-    ProjectRepository projectRepository;
     @Autowired
     NewsArticleRepository newsArticleRepository;
     @Autowired
@@ -61,13 +63,20 @@ public class Seeder implements CommandLineRunner {
     }
 
     private void seedProjects() {
+
         projectRepository.saveAllAndFlush(List.of(
                 Project.builder()
                         .title("Park")
+                        .author(userRepository.findByUsername("citizen1").orElseThrow())
+                        .datePublished(LocalDateTime.now())
+                        .status(ProjectStatus.PROPOSED)
                         .content("new park")
                         .build(),
                 Project.builder()
                         .title("Swimming pool")
+                        .author(userRepository.findByUsername("citizen1").orElseThrow())
+                        .datePublished(LocalDateTime.now().plusMinutes(1))
+                        .status(ProjectStatus.PROPOSED)
                         .content("new swimming pool")
                         .build()
         ));
