@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -26,6 +26,6 @@ public class Reward {
     private boolean isLimited;
     private int inventory;
     @Column(columnDefinition = "TIMESTAMP(0)")
-    private LocalDate datePlaced;
+    private LocalDateTime datePlaced;
     private int cost;
 }
