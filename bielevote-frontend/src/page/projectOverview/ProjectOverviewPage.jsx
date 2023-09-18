@@ -19,7 +19,7 @@ export default function ProjectOverviewPage() {
     } else {
       page = 0;
     }
-    const response = await backendApi.getAllProjects(page, 1);
+    const response = await backendApi.getAllProjects(page, 3);
     setProjectsList(response.data);
   };
 

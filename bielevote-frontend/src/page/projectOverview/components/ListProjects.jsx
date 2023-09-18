@@ -4,7 +4,6 @@ import { formatDate } from "../../../components/Utils";
 import { Link } from "react-router-dom";
 
 export default function ListProjects({ projectsList }) {
-  console.log(projectsList);
   return projectsList.projects == [] ? (
     <div>loading...</div>
   ) : (
