@@ -1,6 +1,7 @@
 package com.bielevote.backend.user;
 
 import com.bielevote.backend.project.Project;
+import com.bielevote.backend.user.rewardpoint.RewardPoint;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
@@ -44,6 +45,9 @@ public class User implements UserDetails {
     @JsonBackReference
     @OneToMany(mappedBy = "author")
     private Set<Project> projects;
+    @JsonBackReference
+    @OneToMany(mappedBy = "author")
+    private Set<RewardPoint> rewardPointTransactions;
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.getAuthorities();
