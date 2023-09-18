@@ -1,5 +1,7 @@
 import { Table } from "semantic-ui-react";
 import PropTypes from "prop-types";
+import { formatDate } from "../../../components/Utils";
+import { Link } from "react-router-dom";
 
 export default function ListProjects({ projectsList }) {
   console.log(projectsList);
@@ -7,31 +9,22 @@ export default function ListProjects({ projectsList }) {
     <div>loading...</div>
   ) : (
     <>
-      <Table celled>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell>Identity number</Table.HeaderCell>
-            <Table.HeaderCell>Title</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-
-        <Table.Body>
-          <Table.Row>
-            <Table.Cell>
-              {" "}
-              {projectsList.projects.map((project) => (
-                <div key={project.id}>
-                  <div>{project.id}</div>
-                  <div>{project.title}</div>
-                  <div>{project.author.legalName}</div>
-                  <div>{project.datePublished}</div>
-                  <div>{project.status}</div>
-                </div>
-              ))}{" "}
-            </Table.Cell>
-          </Table.Row>
-        </Table.Body>
-      </Table>
+      <div className="flex flex-col  w-3/5">
+        {projectsList.projects.map((project) => (
+          <div className="p-3 flex flex-col" key={project.id}>
+            <div>{project.id}</div>
+            <Link to={"project" + project.id}>
+              <div className="text-3xl text-blue-700 font-bold underline">
+                {project.title}
+              </div>
+            </Link>
+            <div>{project.content}</div>
+            <div>{project.author.legalName}</div>
+            <div>{formatDate(project.datePublished)}</div>
+            <div>{project.status}</div>
+          </div>
+        ))}
+      </div>
     </>
   );
 }
