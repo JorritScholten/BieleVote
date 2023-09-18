@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -38,7 +39,7 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ResponseEntity<Project> postProject(@RequestBody Project project) {
+    public ResponseEntity<Project> postProject(@Validated @RequestBody Project project) {
         try {
             var auth = SecurityContextHolder.getContext().getAuthentication();
             if (auth == null) {
@@ -46,7 +47,11 @@ public class ProjectController {
             }
             project.setAuthor(userService.getByUsername(auth.getName()).orElseThrow());
             project.setDatePublished(LocalDateTime.now());
-            project.setStatus(ProjectStatus.PROPOSED);
+            if (project.getStatus() == null) {
+                project.setStatus(ProjectStatus.PROPOSED);
+            } else if (!(project.getStatus() == ProjectStatus.PROPOSED || project.getStatus() == ProjectStatus.EDITING)) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
             return new ResponseEntity<>(projectRepository.save(project), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
