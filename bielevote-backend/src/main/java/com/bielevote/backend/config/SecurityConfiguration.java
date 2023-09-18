@@ -67,6 +67,7 @@ public class SecurityConfiguration {
                 .requestMatchers(new AntPathRequestMatcher("/api/v1/news/**", GET.name())).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/api/v1/news", POST.name())).hasAnyRole(municipality)
                 .requestMatchers(new AntPathRequestMatcher("/api/v1/news/**", DELETE.name())).hasAnyRole(ADMINISTRATOR.name())
+                .requestMatchers(new AntPathRequestMatcher("/api/v1/leaderboard", GET.name())).permitAll()
                 .anyRequest().authenticated()
         );
         http.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
