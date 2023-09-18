@@ -1,7 +1,7 @@
-import { Table } from "semantic-ui-react";
 import PropTypes from "prop-types";
-import { formatDate } from "../../../components/Utils";
 import { Link } from "react-router-dom";
+
+import { formatDate } from "../../../components/Utils";
 
 export default function ListProjects({ projectsList }) {
   return projectsList.projects == [] ? (

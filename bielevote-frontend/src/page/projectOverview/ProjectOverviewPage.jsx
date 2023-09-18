@@ -1,8 +1,9 @@
+import { useState, useEffect } from "react";
+import { Pagination } from "semantic-ui-react";
+
 import Header from "../../components/Header";
 import ListProjects from "./components/ListProjects";
-import { useState, useEffect } from "react";
 import { backendApi } from "../../misc/ApiMappings";
-import { Pagination } from "semantic-ui-react";
 import { emptyForms } from "../../misc/ApiForms";
 
 export default function ProjectOverviewPage() {

@@ -90,7 +90,7 @@ public class Seeder implements CommandLineRunner {
                         .author(userRepository.findByUsername("citizen1").orElseThrow())
                         .datePublished(LocalDateTime.now().minusMonths(3))
                         .status(ProjectStatus.ACCEPTED)
-                        .content("This proposal advocates for a transition to clean and renewable energy sources. It includes plans to install solar panels on public buildings, promote energy-efficient practices, and incentivize renewable energy adoption among businesses and residents")
+                        .content("This proposal advocates for a transition to clean and renewable energy sources. It includes plans to install solar panels on public buildings, promote energy-efficient practices, and incentivize renewable energy adoption among businesses and residents.")
                         .build(),
                 Project.builder()
                         .title("Youth Empowerment Centers")

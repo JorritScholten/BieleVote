@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Form, Button } from "semantic-ui-react";
-import { emptyForms } from "../../../misc/ApiForms";
-import { useAuth } from "../../../misc/AuthContext";
-import { backendApi, handleLogError } from "../../../misc/ApiMappings";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { HttpStatusCode } from "axios";
+
+import { emptyForms } from "../../../misc/ApiForms";
+import { useAuth } from "../../../misc/AuthContext";
+import { backendApi, handleLogError } from "../../../misc/ApiMappings";
 
 function ProjectForm() {
   const [newProject, setNewProject] = useState(emptyForms.newProject);
