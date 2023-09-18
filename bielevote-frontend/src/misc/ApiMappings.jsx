@@ -27,7 +27,7 @@ function authTest() {
 }
 
 function postProject(user, formData) {
-  return instance.post("/api/v1/project", formData, {
+  return instance.post("/api/v1/projects", formData, {
     headers: {
       Authorization: bearerAuth(user),
       "Content-type": "application/json",
@@ -35,8 +35,8 @@ function postProject(user, formData) {
   });
 }
 
-function getAllProjects() {
-  return instance.get("/api/v1/project");
+function getAllProjects(page, amount) {
+  return instance.get("/api/v1/projects" + "?page=" + page + "&size=" + amount);
 }
 
 function getAllNewsArticles(page, amount) {

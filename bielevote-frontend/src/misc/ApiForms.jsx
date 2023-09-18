@@ -7,6 +7,12 @@ export const emptyForms = {
     title: "",
     content: "",
   },
+  projectOverview: {
+    projects: [],
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0,
+  },
   newsArticle: {
     title: "",
     summary: "",
