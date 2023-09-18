@@ -6,6 +6,8 @@ import com.bielevote.backend.news.NewsArticleRepository;
 import com.bielevote.backend.project.Project;
 import com.bielevote.backend.project.ProjectRepository;
 import com.bielevote.backend.project.ProjectStatus;
+import com.bielevote.backend.reward_shop.Reward;
+import com.bielevote.backend.reward_shop.RewardRepository;
 import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRepository;
 import com.bielevote.backend.user.UserRole;
@@ -15,6 +17,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -29,6 +32,8 @@ public class Seeder implements CommandLineRunner {
     private UserRepository userRepository;
     @Autowired
     private ProjectRepository projectRepository;
+    @Autowired
+    private RewardRepository rewardRepository;
 
     @Override
     public void run(String... args) {
@@ -198,5 +203,19 @@ public class Seeder implements CommandLineRunner {
                         .build()
         ));
         System.out.println(newsArticleRepository.count() + " news articles seeded...");
+    }
+
+    private void seedRewards() {
+        rewardRepository.saveAllAndFlush(List.of(
+                Reward.builder()
+                        .name("Railway museum ticket")
+                        .description("This ticket provides entry to the Railway museum in Utrecht! Activating must be completed within 1 year after date of purchase, else it's ")
+                        .cost(1000)
+                        .inventory(0)
+                        .isLimited(false)
+                        .datePlaced(LocalDate.now())
+                        .build()
+        ));
+        System.out.println(rewardRepository.count() + " rewards seeded...");
     }
 }
