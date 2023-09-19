@@ -29,16 +29,11 @@ import java.util.List;
 @Component
 public class Seeder implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
-    @Autowired
-    private NewsArticleRepository newsArticleRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RewardPointRepository rewardPointRepository;
-    @Autowired
-    private ProjectRepository projectRepository;
-    @Autowired
-    private RewardRepository rewardRepository;
+    private final NewsArticleRepository newsArticleRepository;
+    private final UserRepository userRepository;
+    private final RewardPointRepository rewardPointRepository;
+    private final ProjectRepository projectRepository;
+    private final RewardRepository rewardRepository;
 
     @Override
     public void run(String... args) {
