@@ -1,4 +1,4 @@
-import Header from "../../components/Header";
+import { Header } from "../../components";
 import ListProjects from "./components/ListProjects";
 import { useState, useEffect } from "react";
 import { backendApi } from "../../misc/ApiMappings";

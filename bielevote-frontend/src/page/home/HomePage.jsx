@@ -1,7 +1,9 @@
-import DisplayAccountBalance from "../../components/DisplayAccountBalance";
-import Header from "../../components/Header";
-import PrintUserInfo from "../../components/PrintUserInfo";
-import TestBackendConnection from "../../components/TestBackendConnection";
+import { Header } from "../../components";
+import {
+  DisplayAccountBalance,
+  PrintUserInfo,
+  TestBackendConnection,
+} from "../../components/testing";
 
 export default function HomePage() {
   return (

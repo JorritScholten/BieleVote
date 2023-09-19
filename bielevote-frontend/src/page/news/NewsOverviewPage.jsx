@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Pagination } from "semantic-ui-react";
 import { emptyForms } from "../../misc/ApiForms";
-import Header from "../../components/Header";
+import { Header } from "../../components";
 import { backendApi } from "../../misc/ApiMappings";
 import ListNews from "./components/ListNews";
 
