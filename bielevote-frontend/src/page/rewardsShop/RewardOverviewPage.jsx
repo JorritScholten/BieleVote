@@ -20,7 +20,7 @@ export default function RewardOverviewPage() {
     } else {
       page = 0;
     }
-    const response = await backendApi.getAllRewards(page, 3);
+    const response = await backendApi.getAllRewards(page, 9);
     setRewardsList(response.data);
   };
 
