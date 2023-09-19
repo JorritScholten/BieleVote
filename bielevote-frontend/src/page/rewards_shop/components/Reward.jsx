@@ -25,24 +25,19 @@ export default function Reward({ rewardId }) {
       onClose={() => setOpen(false)}
       onOpen={() => setOpen(true)}
       open={open}
-      trigger={<Button>More Info</Button>}
+      trigger={<Button>More info / Buy</Button>}
     >
       <Modal.Header>{reward.name}</Modal.Header>
       <Modal.Content image>
-        <Image
-          size="medium"
-          src="https://react.semantic-ui.com/images/avatar/large/rachel.png"
-          wrapped
-        />
         <Modal.Description>
-          <Header>Description</Header>
-          <div>{reward.description}</div>
           <div className="flex flex-row items-center">
-            {reward.cost}
-            <div>
+            Cost: {reward.cost}
+            <div className="ml-1">
               <GiAcorn />
             </div>
           </div>
+          <Header>Description</Header>
+          <div>{reward.description}</div>
         </Modal.Description>
       </Modal.Content>
       <Modal.Actions>
