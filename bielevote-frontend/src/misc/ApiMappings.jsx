@@ -9,6 +9,7 @@ export const backendApi = {
   getAllProjects,
   getAllNewsArticles,
   getNewsArticleById,
+  getLeaderboard,
 };
 
 function login(formData) {
@@ -52,6 +53,10 @@ function getAllNewsArticles(page, amount) {
 
 function getNewsArticleById(articleId) {
   return instance.get(`/api/v1/news/${articleId}`);
+}
+
+function getLeaderboard() {
+  return instance.get("/api/v1/leaderboard");
 }
 
 // -- Axios calls

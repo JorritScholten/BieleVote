@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { backendApi, handleLogError } from "../misc/ApiMappings";
-import { useAuth } from "../misc/AuthContext";
+import { backendApi, handleLogError } from "../../misc/ApiMappings";
+import { useAuth } from "../../misc/AuthContext";
 
 export default function PrintUserInfo() {
   const Auth = useAuth();

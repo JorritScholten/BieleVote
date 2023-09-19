@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { backendApi } from "../misc/ApiMappings";
+import { backendApi } from "../../misc/ApiMappings";
 
 export default function TestBackendConnection() {
   const [authResponse, setAuthResponse] = useState("Untested");
