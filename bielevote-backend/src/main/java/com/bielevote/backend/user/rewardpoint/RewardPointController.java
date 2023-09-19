@@ -1,5 +1,6 @@
 package com.bielevote.backend.user.rewardpoint;
 
+import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -7,8 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
 import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
@@ -19,20 +21,26 @@ public class RewardPointController {
     private final RewardPointRepository rewardPointRepository;
 
     @GetMapping
-    public ResponseEntity<Map<String, Integer>> getHighScore() {
+    public ResponseEntity<List<scoreCard>> getHighScores() {
         try {
-            var merits = rewardPointRepository.findAll().stream().dropWhile(t -> t.getAmount() <= 0).toList();
+            var merits = rewardPointRepository.findAll().stream().filter(t -> t.getAmount() > 0).toList();
             var users = merits.stream().map(RewardPoint::getUser).distinct().toList();
-            Map<String, Integer> leaderboard = new HashMap<>();
+            TreeMap<Integer, User> leaderboard = new TreeMap<>();
             for (var key : users) {
-                leaderboard.put(key.getUsername(), merits.stream().filter(t -> t.getUser().equals(key))
-                        .flatMapToInt(t -> IntStream.of(t.getAmount())).sum()
+                leaderboard.put(merits.stream().filter(t -> t.getUser().equals(key))
+                        .flatMapToInt(t -> IntStream.of(t.getAmount())).sum(), key
                 );
             }
-            return ResponseEntity.ok(leaderboard);
+            List<scoreCard> leaderboardList = new ArrayList<>();
+            leaderboard.descendingMap()
+                    .forEach((score, user) -> leaderboardList.add(new scoreCard(user.getUsername(), score)));
+            return ResponseEntity.ok(leaderboardList);
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
             return ResponseEntity.internalServerError().build();
         }
+    }
+
+    record scoreCard(String username, Integer score) {
     }
 }

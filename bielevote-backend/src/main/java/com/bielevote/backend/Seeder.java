@@ -81,7 +81,7 @@ public class Seeder implements CommandLineRunner {
                         .build(),
                 RewardPoint.builder()
                         .amount(Integer.MIN_VALUE)
-                        .date(LocalDateTime.ofEpochSecond(1,0, ZoneOffset.UTC))
+                        .date(LocalDateTime.ofEpochSecond(1, 0, ZoneOffset.UTC))
                         .reason(TransactionReason.ADMINISTRATOR_CHANGE)
                         .user(userRepository.findByUsername("municipal1").orElseThrow())
                         .build()
