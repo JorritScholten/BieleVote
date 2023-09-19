@@ -1,5 +1,13 @@
 import axios from "axios";
 
+export const timeRanges = {
+  allTime: "ALL_TIME",
+  lastDay: "LAST_DAY",
+  lastWeek: "LAST_WEEK",
+  lastMonth: "LAST_MONTH",
+  lastYear: "LAST_YEAR",
+};
+
 export const backendApi = {
   userInfo,
   getAccountBalance,
@@ -55,8 +63,16 @@ function getNewsArticleById(articleId) {
   return instance.get(`/api/v1/news/${articleId}`);
 }
 
-function getLeaderboard() {
-  return instance.get("/api/v1/leaderboard");
+function getLeaderboard(timeRange) {
+  if (timeRange === null) {
+    return instance.get("/api/v1/leaderboard");
+  } else {
+    return instance.get("/api/v1/leaderboard", {
+      headers: {
+        timeRange: timeRange,
+      },
+    });
+  }
 }
 
 // -- Axios calls

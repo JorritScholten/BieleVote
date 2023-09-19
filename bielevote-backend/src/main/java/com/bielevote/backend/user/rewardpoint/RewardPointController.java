@@ -1,16 +1,16 @@
 package com.bielevote.backend.user.rewardpoint;
 
-import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
 import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
@@ -21,26 +21,37 @@ public class RewardPointController {
     private final RewardPointRepository rewardPointRepository;
 
     @GetMapping
-    public ResponseEntity<List<scoreCard>> getHighScores() {
+    public ResponseEntity<List<scoreCard>> getHighScores(@RequestHeader(value = "timeRange", defaultValue = "ALL_TIME") String timeRange) {
         try {
-            var merits = rewardPointRepository.findAll().stream().filter(t -> t.getAmount() > 0).toList();
+            var range = switch (timeRange) {
+                case "LAST_WEEK" -> LocalDateTime.now().minusWeeks(1);
+                case "LAST_MONTH" -> LocalDateTime.now().minusMonths(1);
+                case "LAST_YEAR" -> LocalDateTime.now().minusYears(1);
+                default -> LocalDateTime.MIN;
+            };
+            System.out.println("after: " + range);
+            var merits = rewardPointRepository.findAll().stream()
+                    .filter(t -> (t.getAmount() > 0 && t.getDate().isAfter(range))).toList();
             var users = merits.stream().map(RewardPoint::getUser).distinct().toList();
-            TreeMap<Integer, User> leaderboard = new TreeMap<>();
+            List<scoreCard> leaderboard = new ArrayList<>();
             for (var key : users) {
-                leaderboard.put(merits.stream().filter(t -> t.getUser().equals(key))
-                        .flatMapToInt(t -> IntStream.of(t.getAmount())).sum(), key
+                leaderboard.add(
+                        new scoreCard(key.getUsername(), merits.stream().filter(t -> t.getUser().equals(key))
+                                .flatMapToInt(t -> IntStream.of(t.getAmount())).sum())
                 );
             }
-            List<scoreCard> leaderboardList = new ArrayList<>();
-            leaderboard.descendingMap()
-                    .forEach((score, user) -> leaderboardList.add(new scoreCard(user.getUsername(), score)));
-            return ResponseEntity.ok(leaderboardList);
+            leaderboard.sort(null);
+            return ResponseEntity.ok(leaderboard);
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
             return ResponseEntity.internalServerError().build();
         }
     }
 
-    record scoreCard(String username, Integer score) {
+    record scoreCard(String username, Integer score) implements Comparable<scoreCard> {
+        @Override
+        public int compareTo(scoreCard o) {
+            return o.score - score;
+        }
     }
 }

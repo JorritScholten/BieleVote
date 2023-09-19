@@ -1,25 +1,47 @@
 import { useState } from "react";
-import { backendApi } from "../../misc/ApiMappings";
-import { Table } from "semantic-ui-react";
+import { backendApi, timeRanges } from "../../misc/ApiMappings";
+import { Button, Dropdown, Table } from "semantic-ui-react";
 
 export default function PrintLeaderboard() {
   const [authResponse, setAuthResponse] = useState(null);
-  async function getLeaderboard() {
+  const [range, setRange] = useState(timeRanges.allTime);
+  async function getLeaderboard(timeRange) {
     try {
-      const res = await backendApi.getLeaderboard();
+      const res = await backendApi.getLeaderboard(timeRange);
       setAuthResponse(res.data);
+      console.log(res.data);
     } catch (error) {
       setAuthResponse(null);
     }
   }
+  const rangeOptions = [
+    { key: 1, text: "All time", value: timeRanges.allTime },
+    { key: 2, text: "Last year", value: timeRanges.lastYear },
+    { key: 3, text: "Last month", value: timeRanges.lastMonth },
+    { key: 4, text: "Last week", value: timeRanges.lastWeek },
+  ];
 
   return (
     <div className="bg-slate-200 w-fit h-fit flex flex-col gap-2 p-2">
-      <button className="bg-green-300 p-1" onClick={getLeaderboard}>
-        get leaderboard
-      </button>
       <div className="p-1">
-        {/* test result: {JSON.stringify(authResponse, null, 2)} */}
+        <Button primary onClick={() => getLeaderboard(range)}>
+          get leaderboard
+        </Button>
+        <Dropdown
+          value={range}
+          options={rangeOptions}
+          onChange={(e) => {
+            const newRange = rangeOptions.find(
+              (option) => option.text === e.target.innerText
+            ).value;
+            setRange(newRange);
+            getLeaderboard(newRange);
+          }}
+          simple
+          item
+        />
+      </div>
+      <div className="p-1">
         <Table basic="very" celled collapsing>
           <Table.Header>
             <Table.Row>

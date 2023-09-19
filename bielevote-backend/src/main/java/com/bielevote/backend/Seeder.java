@@ -84,6 +84,18 @@ public class Seeder implements CommandLineRunner {
                         .date(LocalDateTime.ofEpochSecond(1, 0, ZoneOffset.UTC))
                         .reason(TransactionReason.ADMINISTRATOR_CHANGE)
                         .user(userRepository.findByUsername("municipal1").orElseThrow())
+                        .build(),
+                RewardPoint.builder()
+                        .amount(3)
+                        .date(LocalDateTime.now().minusMonths(2))
+                        .reason(TransactionReason.VOTED_ON_PROJECT)
+                        .user(userRepository.findByUsername("admin1").orElseThrow())
+                        .build(),
+                RewardPoint.builder()
+                        .amount(2)
+                        .date(LocalDateTime.now().minusWeeks(2))
+                        .reason(TransactionReason.VOTED_ON_PROJECT)
+                        .user(userRepository.findByUsername("municipal1").orElseThrow())
                         .build()
         ));
     }

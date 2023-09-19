@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import { useAuth } from "../../misc/AuthContext";
 import { useState } from "react";
 import { backendApi } from "../../misc/ApiMappings";
@@ -26,5 +25,3 @@ export default function DisplayAccountBalance() {
     <div />
   );
 }
-
-DisplayAccountBalance.propTypes = {};
