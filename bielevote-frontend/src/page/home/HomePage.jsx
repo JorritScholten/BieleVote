@@ -1,5 +1,5 @@
-import Header from "../../components/Header";
-import TestBackendConnection from "../../components/TestBackendConnection";
+import { Header } from "../../components";
+import { TestBackendConnection } from "../../components/testing";
 
 export default function HomePage() {
   return (

@@ -4,7 +4,7 @@ import { BsFillCalendarWeekFill } from "react-icons/bs";
 import { Link, useParams } from "react-router-dom";
 
 import { emptyForms } from "../../misc/ApiForms";
-import Header from "../../components/Header";
+import { Header } from "../../components";
 import { backendApi } from "../../misc/ApiMappings";
 import { formatDate } from "../../components/Utils";
 
