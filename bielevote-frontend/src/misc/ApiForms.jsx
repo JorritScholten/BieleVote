@@ -17,12 +17,22 @@ export const emptyForms = {
     content: "<p><br></p>",
     status: projectStatus.proposed,
   },
-  project:{
+  project: {
     title: "",
     content: "",
     author: "",
     datePublished: "",
     status: "",
+  },
+  projectInfoDTO: {
+    title: "",
+    content: "",
+    author: "",
+    datePublished: "",
+    status: "",
+    votesFor: 0,
+    votesNeutral: 0,
+    votesAgainst: 0,
   },
   projectOverview: {
     projects: [],

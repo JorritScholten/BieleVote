@@ -2,6 +2,7 @@ package com.bielevote.backend.project;
 
 import com.bielevote.backend.user.UserService;
 import com.bielevote.backend.user.UserViews;
+import com.bielevote.backend.votes.VoteType;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -53,11 +54,21 @@ public class ProjectController {
         }
     }
 
-    @JsonView(UserViews.getProject.class)
     @GetMapping("/{id}")
-    public ResponseEntity<Project> getProjectById(@PathVariable("id") long id) {
+    public ResponseEntity<ProjectInfoDTO> getProjectById(@PathVariable("id") long id) {
         try {
-            return new ResponseEntity<>(projectRepository.findById(id).orElseThrow(), HttpStatus.OK);
+            var project = projectRepository.findById(id).orElseThrow();
+            var dto = new ProjectInfoDTO(
+                    project.getTitle(),
+                    project.getContent(),
+                    project.getAuthor().getLegalName(),
+                    project.getDatePublished(),
+                    project.getStatus(),
+                    project.getVotes().stream().filter(v -> v.getType() == VoteType.POSITIVE).count(),
+                    project.getVotes().stream().filter(v -> v.getType() == VoteType.NEUTRAL).count(),
+                    project.getVotes().stream().filter(v -> v.getType() == VoteType.AGAINST).count()
+            );
+            return ResponseEntity.ok(dto);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -94,5 +105,15 @@ public class ProjectController {
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    record ProjectInfoDTO(String title,
+                          String content,
+                          String author,
+                          LocalDateTime datePublished,
+                          ProjectStatus status,
+                          Long votesFor,
+                          Long votesNeutral,
+                          Long votesAgainst) {
     }
 }

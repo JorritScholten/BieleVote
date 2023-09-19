@@ -10,7 +10,7 @@ import { formatDate } from "../../components/Utils";
 import { useAuth } from "../../misc/AuthContext";
 
 export default function ProjectPage() {
-  const [project, setProject] = useState(emptyForms.project);
+  const [project, setProject] = useState(emptyForms.projectInfoDTO);
   const { projectId } = useParams();
   const { userIsAuthenticated } = useAuth();
 
@@ -20,7 +20,9 @@ export default function ProjectPage() {
 
   async function fetchProject(projectId) {
     try {
+      console.log("performing get");
       const response = await backendApi.getProjectById(projectId);
+      console.log(response.data);
       setProject(response.data);
     } catch (error) {
       console.log(error);
@@ -61,9 +63,9 @@ export default function ProjectPage() {
             <div className="mt-5">
               {userIsAuthenticated() ? (
                 <>
-                <Button className="ui green button ">For</Button>
-                <Button className="ui teal button">Neutral</Button>
-                <Button className="ui red button">Against</Button>
+                  <Button className="ui green button ">For</Button>
+                  <Button className="ui teal button">Neutral</Button>
+                  <Button className="ui red button">Against</Button>
                 </>
               ) : (
                 <div />
