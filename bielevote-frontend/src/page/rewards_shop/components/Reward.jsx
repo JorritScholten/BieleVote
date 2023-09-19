@@ -1,9 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Header, Image, Modal } from "semantic-ui-react";
-
-export default function Reward() {
+import PropTypes from "prop-types";
+import { emptyForms } from "../../../misc/ApiForms";
+import { backendApi } from "../../../misc/ApiMappings";
+export default function Reward({ rewardId }) {
   const [open, setOpen] = useState(false);
+  const [reward, setRewardItem] = useState(emptyForms.rewardItem);
 
+  useEffect(() => {
+    fetchReward(rewardId);
+  }, [rewardId]);
+
+  async function fetchReward(rewardId) {
+    try {
+      const response = await backendApi.getRewardById(rewardId);
+      setRewardItem(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <Modal
       onClose={() => setOpen(false)}
@@ -11,7 +26,7 @@ export default function Reward() {
       open={open}
       trigger={<Button>More Info</Button>}
     >
-      <Modal.Header>Select a Photo</Modal.Header>
+      <Modal.Header>{reward.name}</Modal.Header>
       <Modal.Content image>
         <Image
           size="medium"
@@ -19,12 +34,8 @@ export default function Reward() {
           wrapped
         />
         <Modal.Description>
-          <Header>Default Profile Image</Header>
-          <p>
-            we`ve found the following gravatar image associated with your e-mail
-            address.
-          </p>
-          <p>Is it okay to use this photo?</p>
+          <Header>Description</Header>
+          <div>{reward.description}</div>
         </Modal.Description>
       </Modal.Content>
       <Modal.Actions>
@@ -42,3 +53,6 @@ export default function Reward() {
     </Modal>
   );
 }
+Reward.propTypes = {
+  rewardId: PropTypes.number.isRequired,
+};

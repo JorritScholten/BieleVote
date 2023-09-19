@@ -1,5 +1,6 @@
 package com.bielevote.backend.reward_shop;
 
+import com.bielevote.backend.news.NewsArticle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -45,4 +46,12 @@ public class RewardController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Reward> getRewardById(@PathVariable("id") long id) {
+        try {
+            return new ResponseEntity<>(rewardRepository.findById(id).orElseThrow(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

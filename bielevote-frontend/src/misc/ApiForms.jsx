@@ -43,4 +43,12 @@ export const emptyForms = {
     totalItems: 0,
     totalPages: 0,
   },
+  rewardItem: {
+    name: "",
+    description: "",
+    isLimited: false,
+    inventory: 0,
+    datePlaced: "",
+    cost: 0,
+  },
 };
