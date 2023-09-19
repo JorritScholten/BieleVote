@@ -6,6 +6,8 @@ import com.bielevote.backend.news.NewsArticleRepository;
 import com.bielevote.backend.project.Project;
 import com.bielevote.backend.project.ProjectRepository;
 import com.bielevote.backend.project.ProjectStatus;
+import com.bielevote.backend.reward_shop.Reward;
+import com.bielevote.backend.reward_shop.RewardRepository;
 import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRepository;
 import com.bielevote.backend.user.UserRole;
@@ -29,6 +31,8 @@ public class Seeder implements CommandLineRunner {
     private UserRepository userRepository;
     @Autowired
     private ProjectRepository projectRepository;
+    @Autowired
+    private RewardRepository rewardRepository;
 
     @Override
     public void run(String... args) {
@@ -36,6 +40,7 @@ public class Seeder implements CommandLineRunner {
         seedUsers();
         seedProjects();
         seedNewsArticles();
+        seedRewards();
     }
 
     private void seedUsers() {
@@ -135,7 +140,7 @@ public class Seeder implements CommandLineRunner {
                         .content("This proposal focuses on improving community policing efforts and enhancing overall public safety. It includes measures for community policing training, the establishment of neighborhood watch programs, and increased investment in mental health crisis response teams.")
                         .build()
         ));
-        System.out.println(projectRepository.count() + " projects seeded");
+        System.out.println(projectRepository.count() + " projects seeded...");
     }
 
     private void seedNewsArticles() {
@@ -198,5 +203,83 @@ public class Seeder implements CommandLineRunner {
                         .build()
         ));
         System.out.println(newsArticleRepository.count() + " news articles seeded...");
+    }
+
+    private void seedRewards() {
+        rewardRepository.saveAllAndFlush(List.of(
+                Reward.builder()
+                        .name("Railway museum ticket")
+                        .description("This ticket provides entry to the Railway museum in Utrecht! Activating must be completed within 1 year after date of purchase, else it's ")
+                        .cost(1000)
+                        .inventory(50)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now())
+                        .build(),
+                Reward.builder()
+                        .name("Family Pass Railway museum ticket")
+                        .description("Perfect for families! Provides entry for 2 adults and 2 children to the Railway museum in Utrecht. Must activate within 1 year.")
+                        .cost(2500)
+                        .inventory(30)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(1))
+                        .build(),
+                Reward.builder()
+                        .name("Concert Ticket - John Smith Live")
+                        .description("Admission to the live concert of John Smith at the City Arena. Show your ticket at the entrance.")
+                        .cost(1200)
+                        .inventory(40)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(2))
+                        .build(),
+                Reward.builder()
+                        .name("Movie Ticket - Avengers: Endgame")
+                        .description("Enjoy the latest Avengers movie on the big screen at the Silver Screen Cinema.")
+                        .cost(120)
+                        .inventory(20)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(3))
+                        .build(),
+                Reward.builder()
+                        .name("Museum Entry Ticket - Natural History Museum")
+                        .description("Explore the wonders of natural history at the renowned museum. Valid for one day.")
+                        .cost(70)
+                        .inventory(25)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(4))
+                        .build(),
+                Reward.builder()
+                        .name("Theme Park Season Pass - Adventure World")
+                        .description("Unlimited access to Adventure World theme park for the entire season. Fun for the whole family!")
+                        .cost(150)
+                        .inventory(15)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(5))
+                        .build(),
+                Reward.builder()
+                        .name("Men's Casual T-Shirt - Classic White")
+                        .description("A comfortable and stylish white t-shirt for men. Perfect for everyday wear.")
+                        .cost(250)
+                        .inventory(100)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(6))
+                        .build(),
+                Reward.builder()
+                        .name("Women's Running Shoes - Lightweight and Breathable")
+                        .description("High-performance running shoes designed for women. Ideal for jogging and workouts.")
+                        .cost(650)
+                        .inventory(10)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(7))
+                        .build(),
+                Reward.builder()
+                        .name("Kids' Denim Jeans - Blue Wash")
+                        .description("Durable and trendy denim jeans for kids. Available in various sizes.")
+                        .cost(300)
+                        .inventory(20)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(8))
+                        .build()
+        ));
+        System.out.println(rewardRepository.count() + " rewards seeded...");
     }
 }
