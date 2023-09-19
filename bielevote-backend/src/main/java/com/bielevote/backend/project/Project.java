@@ -2,6 +2,7 @@ package com.bielevote.backend.project;
 
 import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserViews;
+import com.bielevote.backend.votes.Vote;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
@@ -9,6 +10,7 @@ import lombok.*;
 import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Jacksonized
 @Entity
@@ -34,4 +36,7 @@ public class Project {
     private LocalDateTime datePublished;
     @Enumerated(value = EnumType.STRING)
     private ProjectStatus status;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "project")
+    private Set<Vote> votes;
 }

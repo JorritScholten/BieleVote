@@ -1,7 +1,9 @@
 package com.bielevote.backend.user;
 
 import com.bielevote.backend.project.Project;
+import com.bielevote.backend.votes.Vote;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.*;
@@ -44,6 +46,9 @@ public class User implements UserDetails {
     @JsonBackReference
     @OneToMany(mappedBy = "author")
     private Set<Project> projects;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user")
+    private Set<Vote> votes;
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.getAuthorities();
