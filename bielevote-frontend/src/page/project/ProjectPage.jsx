@@ -1,18 +1,16 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { IoReturnDownBack } from "react-icons/io5";
-import { Button } from "semantic-ui-react";
 
 import Header from "../../components/Header";
+import ProjectVote from "./components/ProjectVote";
 import { emptyForms } from "../../misc/ApiForms";
 import { backendApi } from "../../misc/ApiMappings";
 import { formatDate } from "../../components/Utils";
-import { useAuth } from "../../misc/AuthContext";
 
 export default function ProjectPage() {
   const [project, setProject] = useState(emptyForms.projectInfoDTO);
   const { projectId } = useParams();
-  const { userIsAuthenticated } = useAuth();
 
   useEffect(() => {
     fetchProject(projectId);
@@ -22,7 +20,6 @@ export default function ProjectPage() {
     try {
       console.log("performing get");
       const response = await backendApi.getProjectById(projectId);
-      console.log(response.data);
       setProject(response.data);
     } catch (error) {
       console.log(error);
@@ -58,18 +55,15 @@ export default function ProjectPage() {
             </div>
             <div className="text-xl mt-5">{project.content}</div>
 
-            <div className="text-xl mt-5">Amount of votes:</div>
+            <div className="text-xl mt-5">
+              Amount of votes:
+              <div>for: {project.votesFor}</div>
+              <div>neutral: {project.votesNeutral}</div>
+              <div>against: {project.votesAgainst}</div>
+            </div>
 
             <div className="mt-5">
-              {userIsAuthenticated() ? (
-                <>
-                  <Button className="ui green button ">For</Button>
-                  <Button className="ui teal button">Neutral</Button>
-                  <Button className="ui red button">Against</Button>
-                </>
-              ) : (
-                <div />
-              )}
+              <ProjectVote />
             </div>
           </div>
         </div>

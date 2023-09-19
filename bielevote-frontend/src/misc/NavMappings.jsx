@@ -5,6 +5,7 @@ import NewsOverviewPage from "../page/news/NewsOverviewPage";
 import NewsArticlePage from "../page/news/NewsArticlePage";
 import ProjectOverviewPage from "../page/projectOverview/ProjectOverviewPage";
 import ProjectPage from "../page/project/ProjectPage";
+import RewardOverviewPage from "../page/rewards_shop/RewardOverviewPage";
 
 // these are the Enum options of UserRole as defined in the backend, except the visitor type which is used to represent no account/anonymous visitor
 export const accountType = {
@@ -66,5 +67,12 @@ export const navList = [
     allowedAccountTypes: allAccountTypes,
     hideFromMenu: true,
     element: () => <ProjectPage />,
+  },
+  {
+    path: "/rewardsshop",
+    name: "Rewards Shop",
+    allowedAccountTypes: allAccountTypes,
+    hideFromMenu: false,
+    element: () => <RewardOverviewPage />,
   },
 ];
