@@ -13,11 +13,11 @@ export default function ListRewards({ rewardsList }) {
           <div className="text-xl text-black-700 font-bold">
             {rewardPreview.name}
           </div>
-          <div className="flex flex-row">
+          <div className="flex flex-row items-center">
             <div className="text-lg mr-1 text-gray-600">
               {rewardPreview.cost}
             </div>
-            <div className="flex items-center">
+            <div className="flex mr-4">
               <GiAcorn />
             </div>
             <Reward rewardId={rewardPreview.id} />

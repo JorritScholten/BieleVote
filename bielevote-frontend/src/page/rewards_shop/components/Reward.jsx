@@ -3,6 +3,7 @@ import { Button, Header, Image, Modal } from "semantic-ui-react";
 import PropTypes from "prop-types";
 import { emptyForms } from "../../../misc/ApiForms";
 import { backendApi } from "../../../misc/ApiMappings";
+import { GiAcorn } from "react-icons/gi";
 export default function Reward({ rewardId }) {
   const [open, setOpen] = useState(false);
   const [reward, setRewardItem] = useState(emptyForms.rewardItem);
@@ -36,6 +37,12 @@ export default function Reward({ rewardId }) {
         <Modal.Description>
           <Header>Description</Header>
           <div>{reward.description}</div>
+          <div className="flex flex-row items-center">
+            {reward.cost}
+            <div>
+              <GiAcorn />
+            </div>
+          </div>
         </Modal.Description>
       </Modal.Content>
       <Modal.Actions>
