@@ -8,7 +8,7 @@ export default function DisplayAccountBalance() {
   async function getBalance() {
     try {
       const res = await backendApi.getAccountBalance(getUser());
-      setBalance(res.data.balance);
+      setBalance(res.data);
     } catch (error) {
       setBalance(NaN);
     }

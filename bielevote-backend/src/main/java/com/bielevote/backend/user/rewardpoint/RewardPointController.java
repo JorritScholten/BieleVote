@@ -29,7 +29,6 @@ public class RewardPointController {
                 case "LAST_YEAR" -> LocalDateTime.now().minusYears(1);
                 default -> LocalDateTime.MIN;
             };
-            System.out.println("after: " + range);
             var merits = rewardPointRepository.findAll().stream()
                     .filter(t -> (t.getAmount() > 0 && t.getDate().isAfter(range))).toList();
             var users = merits.stream().map(RewardPoint::getUser).distinct().toList();

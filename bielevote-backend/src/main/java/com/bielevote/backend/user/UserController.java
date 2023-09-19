@@ -28,16 +28,17 @@ public class UserController {
     }
 
     @GetMapping("/balance")
-    public ResponseEntity<String> getUserPointBalance(@AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<Integer> getUserPointBalance(@AuthenticationPrincipal User currentUser) {
         try {
             var user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow();
             var transactionList = rewardPointRepository.findByUser(user);
             var balance = transactionList.stream().flatMapToInt(t -> IntStream.of(t.getAmount())).sum();
-            return ResponseEntity.ok("{\n  \"balance\": " + balance + "\n}\n");
+            return ResponseEntity.ok( balance );
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         } catch (RuntimeException e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            System.out.println(e.getMessage());
+            return ResponseEntity.internalServerError().build();
         }
     }
 }
