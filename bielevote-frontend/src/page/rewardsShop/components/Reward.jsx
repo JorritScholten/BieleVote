@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { Button, Header, Image, Modal } from "semantic-ui-react";
+import { Button, Header, Modal } from "semantic-ui-react";
 import PropTypes from "prop-types";
+import { GiAcorn } from "react-icons/gi";
+
 import { emptyForms } from "../../../misc/ApiForms";
 import { backendApi } from "../../../misc/ApiMappings";
-import { GiAcorn } from "react-icons/gi";
+
 export default function Reward({ rewardId }) {
   const [open, setOpen] = useState(false);
   const [reward, setRewardItem] = useState(emptyForms.rewardItem);
