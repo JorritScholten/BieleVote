@@ -17,6 +17,8 @@ export const backendApi = {
   getAllProjects,
   getAllNewsArticles,
   getNewsArticleById,
+  getAllRewards,
+  getRewardById,
   getLeaderboard,
 };
 
@@ -75,6 +77,13 @@ function getLeaderboard(timeRange) {
   }
 }
 
+function getAllRewards(page, amount) {
+  return instance.get("/api/v1/rewards" + "?page=" + page + "&size=" + amount);
+}
+
+function getRewardById(rewardId) {
+  return instance.get(`/api/v1/rewards/${rewardId}`);
+}
 // -- Axios calls
 
 const instance = axios.create({
