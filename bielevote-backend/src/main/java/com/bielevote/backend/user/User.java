@@ -35,18 +35,26 @@ public class User implements UserDetails {
     @JsonView(UserViews.getProject.class)
     private Long id;
 
-    @JsonView(UserViews.getProject.class)
+    @JsonView({UserViews.getProject.class, UserViews.viewMe.class})
     @Column(unique = true)
     private String username;
+
     private String password;
-    @JsonView(UserViews.getProject.class)
+
+    @JsonView({UserViews.getProject.class, UserViews.viewMe.class})
     private String legalName;
+
+    @JsonView(UserViews.viewMe.class)
     private String phone;
+
+    @JsonView(UserViews.viewMe.class)
     @Enumerated(EnumType.STRING)
     private UserRole role;
+
     @JsonBackReference
     @OneToMany(mappedBy = "author")
     private Set<Project> projects;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "user")
     private List<RewardPoint> rewardPointTransactions;

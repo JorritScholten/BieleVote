@@ -1,6 +1,7 @@
 package com.bielevote.backend.user;
 
 import com.bielevote.backend.user.rewardpoint.RewardPointRepository;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,6 +19,7 @@ public class UserController {
     private final UserRepository userRepository;
     private final RewardPointRepository rewardPointRepository;
 
+    @JsonView(UserViews.viewMe.class)
     @GetMapping("/me")
     public ResponseEntity<User> getCurrentUser(@AuthenticationPrincipal User currentUser) {
         try {
