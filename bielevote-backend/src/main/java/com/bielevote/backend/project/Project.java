@@ -27,6 +27,9 @@ public class Project {
     private String title;
 
     @Column(columnDefinition = "CLOB")
+    private String summary;
+
+    @Column(columnDefinition = "CLOB")
     private String content;
 
     @ManyToOne
@@ -39,6 +42,7 @@ public class Project {
 
     @Enumerated(value = EnumType.STRING)
     private ProjectStatus status;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "project")
     private Set<Vote> votes;

@@ -14,11 +14,13 @@ export const emptyForms = {
   },
   newProject: {
     title: "",
+    summary: "",
     content: "<p><br></p>",
     status: projectStatus.proposed,
   },
   project: {
     title: "",
+    summary: "",
     content: "",
     author: "",
     datePublished: "",
@@ -26,6 +28,7 @@ export const emptyForms = {
   },
   projectInfoDTO: {
     title: "",
+    summary: "",
     content: "",
     author: "",
     datePublished: "",

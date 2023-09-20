@@ -36,6 +36,16 @@ function ProjectForm() {
         }
         required={true}
       />
+      <Form.Input
+        label="Summary:"
+        name="summary"
+        placeholder="Summary of project..."
+        value={newProject.summary}
+        onChange={(e) =>
+          setNewProject({ ...newProject, summary: e.target.value })
+        }
+        required={true}
+      />
       <Form.Field required={true}>
         <ReactQuill
           theme="snow"

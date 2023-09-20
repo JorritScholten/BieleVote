@@ -17,10 +17,10 @@ export default function ListProjects({ projectsList }) {
                 {project.title}
               </div>
             </Link>
-            <div>{project.content}</div>
-            <div>{project.author.legalName}</div>
-            <div>{formatDate(project.datePublished)}</div>
-            <div>{project.status}</div>
+            <div>Author: {project.author.legalName}</div>
+            <div>Published on: {formatDate(project.datePublished)}</div>
+            <div>{project.summary}</div>
+            <div>Status: {project.status}</div>
           </div>
         ))}
       </div>

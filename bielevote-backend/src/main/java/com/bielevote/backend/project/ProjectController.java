@@ -60,6 +60,7 @@ public class ProjectController {
             var project = projectRepository.findById(id).orElseThrow();
             var dto = new ProjectInfoDTO(
                     project.getTitle(),
+                    project.getSummary(),
                     project.getContent(),
                     project.getAuthor().getLegalName(),
                     project.getDatePublished(),
@@ -107,13 +108,7 @@ public class ProjectController {
         }
     }
 
-    record ProjectInfoDTO(String title,
-                          String content,
-                          String author,
-                          LocalDateTime datePublished,
-                          ProjectStatus status,
-                          Long votesFor,
-                          Long votesNeutral,
-                          Long votesAgainst) {
+    record ProjectInfoDTO(String title, String summary, String content, String author, LocalDateTime datePublished,
+                          ProjectStatus status, Long votesFor, Long votesNeutral, Long votesAgainst) {
     }
 }
