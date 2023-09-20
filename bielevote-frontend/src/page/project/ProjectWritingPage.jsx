@@ -1,4 +1,4 @@
-import Header from "../../components/Header";
+import { Header } from "../../components";
 import ProjectForm from "./components/ProjectForm";
 
 export default function ProjectWritingPage() {

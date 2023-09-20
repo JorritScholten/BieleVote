@@ -2,6 +2,7 @@ package com.bielevote.backend.user;
 
 import com.bielevote.backend.project.Project;
 import com.bielevote.backend.votes.Vote;
+import com.bielevote.backend.user.rewardpoint.RewardPoint;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -13,6 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -37,15 +39,25 @@ public class User implements UserDetails {
     @JsonView(UserViews.getProject.class)
     @Column(unique = true)
     private String username;
+
     private String password;
+
     @JsonView(UserViews.getProject.class)
     private String legalName;
+
     private String phone;
+
     @Enumerated(EnumType.STRING)
     private UserRole role;
+
     @JsonBackReference
     @OneToMany(mappedBy = "author")
     private Set<Project> projects;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user")
+    private List<RewardPoint> rewardPointTransactions;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "user")
     private Set<Vote> votes;

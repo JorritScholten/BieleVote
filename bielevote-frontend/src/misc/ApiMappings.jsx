@@ -1,7 +1,16 @@
 import axios from "axios";
 
+export const timeRanges = {
+  allTime: "ALL_TIME",
+  lastDay: "LAST_DAY",
+  lastWeek: "LAST_WEEK",
+  lastMonth: "LAST_MONTH",
+  lastYear: "LAST_YEAR",
+};
+
 export const backendApi = {
   userInfo,
+  getAccountBalance,
   login,
   authTest,
   postProject,
@@ -11,6 +20,7 @@ export const backendApi = {
   getNewsArticleById,
   getAllRewards,
   getRewardById,
+  getLeaderboard,
 };
 
 function login(formData) {
@@ -21,6 +31,12 @@ function login(formData) {
 
 function userInfo(user) {
   return instance.get("/api/v1/users/me", {
+    headers: { Authorization: bearerAuth(user) },
+  });
+}
+
+function getAccountBalance(user) {
+  return instance.get("/api/v1/users/balance", {
     headers: { Authorization: bearerAuth(user) },
   });
 }
@@ -54,6 +70,18 @@ function getNewsArticleById(articleId) {
   return instance.get(`/api/v1/news/${articleId}`);
 }
 
+function getLeaderboard(timeRange) {
+  if (timeRange === null) {
+    return instance.get("/api/v1/leaderboard");
+  } else {
+    return instance.get("/api/v1/leaderboard", {
+      headers: {
+        timeRange: timeRange,
+      },
+    });
+  }
+}
+
 function getAllRewards(page, amount) {
   return instance.get("/api/v1/rewards" + "?page=" + page + "&size=" + amount);
 }
@@ -61,7 +89,7 @@ function getAllRewards(page, amount) {
 function getRewardById(rewardId) {
   return instance.get(`/api/v1/rewards/${rewardId}`);
 }
-// Axios calls
+// -- Axios calls
 
 const instance = axios.create({
   baseURL: "http://localhost:8080",
