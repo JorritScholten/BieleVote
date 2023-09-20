@@ -51,10 +51,13 @@ export const emptyForms = {
     datePlaced: "",
     cost: 0,
   },
-  user:{
+  user: {
     username: "",
     legalName: "",
     phone: "",
     role: "",
-  }
+  },
+  updateUsername: {
+    newUsername: "",
+  },
 };
