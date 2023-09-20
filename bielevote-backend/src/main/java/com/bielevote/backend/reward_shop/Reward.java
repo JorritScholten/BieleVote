@@ -1,9 +1,7 @@
 package com.bielevote.backend.reward_shop;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.bielevote.backend.user.rewardpoint.RewardPoint;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
 
@@ -28,4 +26,7 @@ public class Reward {
     @Column(columnDefinition = "TIMESTAMP(0)")
     private LocalDateTime datePlaced;
     private int cost;
+    @OneToOne
+    @JoinColumn(name = "reward_point_transaction_id")
+    private RewardPoint transaction;
 }

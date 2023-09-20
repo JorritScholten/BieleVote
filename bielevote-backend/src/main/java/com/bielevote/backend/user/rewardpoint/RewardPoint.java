@@ -1,5 +1,6 @@
 package com.bielevote.backend.user.rewardpoint;
 
+import com.bielevote.backend.reward_shop.Reward;
 import com.bielevote.backend.user.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -30,4 +31,8 @@ public class RewardPoint {
     private User user;
     @Enumerated(value = EnumType.STRING)
     private TransactionReason reason;
+    @JoinColumn(name = "reward_id")
+    @OneToOne
+    private Reward reward;
+    private Integer rewardsAmount;
 }
