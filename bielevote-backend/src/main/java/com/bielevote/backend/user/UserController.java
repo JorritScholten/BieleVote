@@ -45,7 +45,7 @@ public class UserController {
         }
     }
 
-    @PatchMapping
+    @PatchMapping("/update/username")
     public ResponseEntity<User> patchUsername(@Validated @RequestBody String newUsername,
                                               @AuthenticationPrincipal User currentUser) {
         if (newUsername.isBlank()) {
