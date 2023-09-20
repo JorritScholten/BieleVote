@@ -1,7 +1,6 @@
 package com.bielevote.backend.project;
 
 import com.bielevote.backend.user.UserService;
-import com.bielevote.backend.user.UserViews;
 import com.bielevote.backend.votes.VoteType;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,9 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+//import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.exact;
 
 @RestController
 @CrossOrigin
@@ -35,12 +37,10 @@ public class ProjectController {
             @RequestParam(defaultValue = "10") int size
     ) {
         try {
-            List<Project> projects;
-            PageRequest paging = PageRequest.of(page, size, Sort.by("datePublished").descending());
-
-            Page<Project> pageProject = projectRepository.findAll(paging);
-
-            projects = pageProject.getContent();
+            var paging = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "datePublished"));
+            var allowedPublicTypes = Set.of(ProjectStatus.ACTIVE, ProjectStatus.OLD, ProjectStatus.ACCEPTED, ProjectStatus.REJECTED);
+            Page<Project> pageProject = projectRepository.findByStatusIn(allowedPublicTypes, paging);
+            List<Project> projects = pageProject.getContent();
 
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("projects", projects);
