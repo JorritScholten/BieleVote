@@ -3,7 +3,7 @@ package com.bielevote.backend.project;
 import com.bielevote.backend.user.UserService;
 import com.bielevote.backend.votes.VoteType;
 import com.fasterxml.jackson.annotation.JsonView;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -19,16 +19,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-//import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.exact;
-
+@RequiredArgsConstructor
 @RestController
 @CrossOrigin
 @RequestMapping("/api/v1/projects")
 public class ProjectController {
-    @Autowired
-    ProjectRepository projectRepository;
-    @Autowired
-    private UserService userService;
+    private static final Set<ProjectStatus> allowedPublicTypes = Set.of(
+            ProjectStatus.ACTIVE,
+            ProjectStatus.OLD,
+            ProjectStatus.ACCEPTED,
+            ProjectStatus.REJECTED
+    );
+    private final ProjectRepository projectRepository;
+    private final UserService userService;
 
     @JsonView(ProjectViews.GetProjectList.class)
     @GetMapping()
@@ -38,7 +41,6 @@ public class ProjectController {
     ) {
         try {
             var paging = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "datePublished"));
-            var allowedPublicTypes = Set.of(ProjectStatus.ACTIVE, ProjectStatus.OLD, ProjectStatus.ACCEPTED, ProjectStatus.REJECTED);
             Page<Project> pageProject = projectRepository.findByStatusIn(allowedPublicTypes, paging);
             List<Project> projects = pageProject.getContent();
 
@@ -58,6 +60,9 @@ public class ProjectController {
     public ResponseEntity<ProjectInfoDTO> getProjectById(@PathVariable("id") long id) {
         try {
             var project = projectRepository.findById(id).orElseThrow();
+            if (!allowedPublicTypes.contains(project.getStatus())) {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
             var dto = new ProjectInfoDTO(
                     project.getTitle(),
                     project.getSummary(),
