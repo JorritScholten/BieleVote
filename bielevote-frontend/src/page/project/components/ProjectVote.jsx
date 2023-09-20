@@ -12,11 +12,8 @@ export default function ProjectVote({ projectId }) {
   useEffect(() => {
     async function getVotingStatus() {
       try {
-        let form = emptyForms.checkIfUserHasVoted;
-        form.projectId = projectId;
-        console.log(form);
-        const response = await backendApi.getHasVoted(form, getUser());
-        console.log(response.data);
+        const response = await backendApi.getHasVoted(projectId, getUser());
+        setHasAlreadyVoted(response.data);
       } catch (error) {
         handleLogError(error);
       }
@@ -28,13 +25,11 @@ export default function ProjectVote({ projectId }) {
     <div>
       {userIsAuthenticated() ? (
         <Button.Group widths={3}>
-          <Button color="green" disabled={hasAlreadyVoted}>
+          <Button positive disabled={hasAlreadyVoted}>
             For
           </Button>
-          <Button color="grey" disabled={hasAlreadyVoted}>
-            Neutral
-          </Button>
-          <Button color="red" disabled={hasAlreadyVoted}>
+          <Button disabled={hasAlreadyVoted}>Neutral</Button>
+          <Button negative disabled={hasAlreadyVoted}>
             Against
           </Button>
         </Button.Group>
@@ -46,5 +41,5 @@ export default function ProjectVote({ projectId }) {
 }
 
 ProjectVote.propTypes = {
-  projectId: PropTypes.number.isRequired,
+  projectId: PropTypes.string.isRequired,
 };

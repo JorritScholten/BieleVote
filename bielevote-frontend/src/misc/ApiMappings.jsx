@@ -92,8 +92,8 @@ function getRewardById(rewardId) {
   return instance.get(`/api/v1/rewards/${rewardId}`);
 }
 
-function getHasVoted(formData, user) {
-  return instance.get("/api/v1/votes", formData, {
+function getHasVoted(projectId, user) {
+  return instance.get(`/api/v1/votes/${projectId}`, {
     headers: {
       Authorization: bearerAuth(user),
       "Content-type": "application/json",
@@ -101,11 +101,12 @@ function getHasVoted(formData, user) {
   });
 }
 
-function postVote(formData, user) {
-  return instance.post("/api/v1/votes", formData, {
+function postVote(voteType, projectId, user) {
+  return instance.post(`/api/v1/votes/${projectId}`, {
     headers: {
       Authorization: bearerAuth(user),
       "Content-type": "application/json",
+      voteType: voteType,
     },
   });
 }
