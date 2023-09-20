@@ -31,24 +31,25 @@ public class VoteController {
         }
     }
 
-//    @PostMapping("/{id}")
-//    ResponseEntity<Void> performVote(@AuthenticationPrincipal User currentUser, @PathVariable("id") long id) {
-//        try {
-//            var vote = Vote.builder()
-//                    .type(postVote.type)
-//                    .date(LocalDateTime.now())
-//                    .user(userRepository.findByUsername(currentUser.getUsername()).orElseThrow())
-//                    .project(projectRepository.findById(postVote.projectId).orElseThrow())
-//                    .build();
-//            voteRepository.save(vote);
-//            return new ResponseEntity<>(HttpStatus.CREATED);
-//        } catch (NoSuchElementException e) {
-//            return ResponseEntity.notFound().build();
-//        } catch (RuntimeException e) {
-//            return ResponseEntity.internalServerError().build();
-//        }
-//    }
-
-    record PostVoteDTO(Long projectId, VoteType type) {
+    @PostMapping("/{id}")
+    ResponseEntity<Void> performVote(@AuthenticationPrincipal User currentUser, @PathVariable("id") long id,
+                                     @RequestHeader(name = "voteType") String voteType) {
+        System.out.println("  -voteType: " + voteType);
+        try {
+            var vote = Vote.builder()
+                    .type(VoteType.valueOf(voteType))
+                    .date(LocalDateTime.now())
+                    .user(userRepository.findByUsername(currentUser.getUsername()).orElseThrow())
+                    .project(projectRepository.findById(id).orElseThrow())
+                    .build();
+            voteRepository.save(vote);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }

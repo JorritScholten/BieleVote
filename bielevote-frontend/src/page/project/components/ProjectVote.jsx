@@ -4,7 +4,8 @@ import { Button } from "semantic-ui-react";
 import { useAuth } from "../../../misc/AuthContext";
 import { backendApi, handleLogError } from "../../../misc/ApiMappings";
 import { useEffect, useState } from "react";
-import { emptyForms } from "../../../misc/ApiForms";
+import { voteTypes } from "../../../misc/ApiForms";
+import { HttpStatusCode } from "axios";
 
 export default function ProjectVote({ projectId }) {
   const { userIsAuthenticated, getUser } = useAuth();
@@ -21,15 +22,45 @@ export default function ProjectVote({ projectId }) {
     getVotingStatus();
   }, [projectId, getUser]);
 
+  async function castVote(voteType) {
+    setHasAlreadyVoted(true);
+    try {
+      const response = await backendApi.postVote(
+        voteType,
+        projectId,
+        getUser()
+      );
+      console.log(response);
+      if (response.status !== HttpStatusCode.Created) {
+        setHasAlreadyVoted(false);
+      }
+    } catch (error) {
+      handleLogError(error);
+    }
+  }
+
   return (
     <div>
       {userIsAuthenticated() ? (
         <Button.Group widths={3}>
-          <Button positive disabled={hasAlreadyVoted}>
+          <Button
+            positive
+            disabled={hasAlreadyVoted}
+            onClick={() => castVote(voteTypes.for)}
+          >
             For
           </Button>
-          <Button disabled={hasAlreadyVoted}>Neutral</Button>
-          <Button negative disabled={hasAlreadyVoted}>
+          <Button
+            disabled={hasAlreadyVoted}
+            onClick={() => castVote(voteTypes.neutral)}
+          >
+            Neutral
+          </Button>
+          <Button
+            negative
+            disabled={hasAlreadyVoted}
+            onClick={() => castVote(voteTypes.against)}
+          >
             Against
           </Button>
         </Button.Group>

@@ -7,6 +7,12 @@ export const projectStatus = {
   archived: "OLD",
 };
 
+export const voteTypes = {
+  for: "POSITIVE",
+  neutral: "NEUTRAL",
+  against: "AGAINST",
+};
+
 export const emptyForms = {
   login: {
     username: "",

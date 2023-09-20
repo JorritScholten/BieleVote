@@ -96,7 +96,6 @@ function getHasVoted(projectId, user) {
   return instance.get(`/api/v1/votes/${projectId}`, {
     headers: {
       Authorization: bearerAuth(user),
-      "Content-type": "application/json",
     },
   });
 }
@@ -105,7 +104,6 @@ function postVote(voteType, projectId, user) {
   return instance.post(`/api/v1/votes/${projectId}`, {
     headers: {
       Authorization: bearerAuth(user),
-      "Content-type": "application/json",
       voteType: voteType,
     },
   });
@@ -124,7 +122,7 @@ instance.interceptors.request.use(
       const token = config.headers.Authorization.split(" ")[1];
       const data = parseJwt(token);
       if (Date.now() > data.exp * 1000) {
-        window.location.href = "/login";
+        window.location.href = "/";
       }
     }
     return config;
