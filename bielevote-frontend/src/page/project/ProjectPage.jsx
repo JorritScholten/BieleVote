@@ -1,13 +1,18 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { IoReturnDownBack } from "react-icons/io5";
+import {
+  Container,
+  Icon,
+  Placeholder,
+  Header as SemanticHeader,
+} from "semantic-ui-react";
 
 import Header from "../../components/Header";
 import ProjectVote from "./components/ProjectVote";
 import { emptyForms } from "../../misc/ApiForms";
 import { backendApi } from "../../misc/ApiMappings";
 import { formatDate } from "../../components/Utils";
-import { Placeholder } from "semantic-ui-react";
 
 export default function ProjectPage() {
   const [project, setProject] = useState(emptyForms.projectInfoDTO);
@@ -28,43 +33,40 @@ export default function ProjectPage() {
   }
 
   return (
-    <div className="flex flex-col gap-2 w-screen">
+    <div className="flex flex-col gap-5 w-screen">
       <Header pageTitle={project.title} />
-      <div className="flex m-auto text-6xl ml-10">
-        <Link to={"/projects"}>
+      <div className="grid grid-cols-5 items-start">
+        <Link to={"/projects"} className=" text-6xl font-bold m-5">
           <IoReturnDownBack />
         </Link>
-      </div>
-      <div className="flex justify-center">
-        <div className="flex items-center place-self-center w-3/5">
-          <div className="flex flex-col w-3/4 gap-5">
-            <div className="flex items-center justify-between">
-              <div className="text-4xl font-bold">{project.title}</div>
-            </div>
-            <div className="flex flex-row  items-center">
-              <div className="mr-5 text-gray-600">
-                {formatDate(project.datePublished)}
-              </div>
-              <div className="text-gray-600 "> Author: {project.author}</div>
-            </div>
-            <div className="text-xl font-semibold  w-4/5">
-              Status: {project.status}
-            </div>
-            <div className="text-xl font-bold">{project.summary}</div>
-            {project.content === null ? (
-              placeHolderText(4)
-            ) : (
-              <div className="">{project.content}</div>
-            )}
-            <div className="text-xl ">
-              Amount of votes:
-              <div>for: {project.votesFor}</div>
-              <div>neutral: {project.votesNeutral}</div>
-              <div>against: {project.votesAgainst}</div>
-            </div>
-            <div className="">
-              <ProjectVote />
-            </div>
+        <div className="col-span-3 flex flex-col gap-2">
+          <SemanticHeader as="h1">{project.title}</SemanticHeader>
+          <div>
+            <Icon name="calendar alternate" />{" "}
+            {formatDate(project.datePublished)}
+          </div>
+          <div>
+            <Icon name="user" /> {project.author}
+          </div>
+          <div className="text-xl font-semibold  w-4/5">
+            Status: {project.status}
+          </div>
+          <div className="text-xl ">{project.summary}</div>
+          {project.content === null ? (
+            placeHolderText(4)
+          ) : (
+            <Container text> {project.content}</Container>
+          )}
+        </div>
+        <div className="m-5 text-center">
+          <div className="text-xl ">
+            <SemanticHeader as="h3">Votes:</SemanticHeader>
+            <div>for: {project.votesFor}</div>
+            <div>neutral: {project.votesNeutral}</div>
+            <div>against: {project.votesAgainst}</div>
+          </div>
+          <div className="">
+            <ProjectVote />
           </div>
         </div>
       </div>

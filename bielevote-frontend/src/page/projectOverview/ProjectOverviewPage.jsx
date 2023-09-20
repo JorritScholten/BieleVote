@@ -25,7 +25,7 @@ export default function ProjectOverviewPage() {
   };
 
   return (
-    <div className="flex flex-col gap-2 w-screen">
+    <div className="flex flex-col gap-5 w-screen">
       <Header pageTitle="Projects" />
       <div className="flex flex-col items-center">
         <ListProjects projectsList={projectsList} />
