@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./misc/AuthContext";
 import { navList } from "./misc/NavMappings";
 import PrivateRoute from "./misc/PrivateRoute";
@@ -21,7 +21,7 @@ export default function App() {
                 }
               />
             ))}
-            <Route path="*" element={<h1>Not Found</h1>} />
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
