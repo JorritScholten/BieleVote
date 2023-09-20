@@ -1,6 +1,7 @@
 package com.bielevote.backend.user;
 
 import com.bielevote.backend.project.Project;
+import com.bielevote.backend.project.ProjectViews;
 import com.bielevote.backend.votes.Vote;
 import com.bielevote.backend.user.rewardpoint.RewardPoint;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -33,16 +34,14 @@ import java.util.Set;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(UserViews.getProject.class)
     private Long id;
 
-    @JsonView(UserViews.getProject.class)
     @Column(unique = true)
     private String username;
 
     private String password;
 
-    @JsonView(UserViews.getProject.class)
+    @JsonView(ProjectViews.GetProjectList.class)
     private String legalName;
 
     private String phone;

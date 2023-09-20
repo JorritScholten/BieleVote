@@ -28,7 +28,7 @@ public class ProjectController {
     @Autowired
     private UserService userService;
 
-    @JsonView(UserViews.getProject.class)
+    @JsonView(ProjectViews.GetProjectList.class)
     @GetMapping()
     public ResponseEntity<Map<String, Object>> getAllProjects(
             @RequestParam(defaultValue = "0") int page,
