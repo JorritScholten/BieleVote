@@ -21,6 +21,8 @@ export const backendApi = {
   getAllRewards,
   getRewardById,
   getLeaderboard,
+  getHasVoted,
+  postVote,
 };
 
 function login(formData) {
@@ -89,6 +91,25 @@ function getAllRewards(page, amount) {
 function getRewardById(rewardId) {
   return instance.get(`/api/v1/rewards/${rewardId}`);
 }
+
+function getHasVoted(formData, user) {
+  return instance.get("/api/v1/votes", formData, {
+    headers: {
+      Authorization: bearerAuth(user),
+      "Content-type": "application/json",
+    },
+  });
+}
+
+function postVote(formData, user) {
+  return instance.post("/api/v1/votes", formData, {
+    headers: {
+      Authorization: bearerAuth(user),
+      "Content-type": "application/json",
+    },
+  });
+}
+
 // -- Axios calls
 
 const instance = axios.create({

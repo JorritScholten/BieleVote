@@ -3,8 +3,6 @@ package com.bielevote.backend.votes;
 import com.bielevote.backend.project.ProjectRepository;
 import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +21,21 @@ public class VoteController {
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
 
+    @GetMapping
+    ResponseEntity<Boolean> hasVoted(@AuthenticationPrincipal User currentUser,
+                                     @Validated @RequestBody Long projectId) {
+        try {
+            var user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow();
+            var project = projectRepository.findById(projectId).orElseThrow();
+            return ResponseEntity.ok(voteRepository.findByUserAndProject(user, project).isPresent());
+        } catch (RuntimeException e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
     @PostMapping
     ResponseEntity<Void> performVote(@AuthenticationPrincipal User currentUser,
-                                     @Validated @RequestBody(required = true) PostVote postVote) {
+                                     @Validated @RequestBody(required = true) PostVoteDTO postVote) {
         try {
             var vote = Vote.builder()
                     .type(postVote.type)
@@ -42,6 +52,6 @@ public class VoteController {
         }
     }
 
-    record PostVote(Long projectId, VoteType type) {
+    record PostVoteDTO(Long projectId, VoteType type) {
     }
 }

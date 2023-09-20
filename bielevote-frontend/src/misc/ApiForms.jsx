@@ -71,4 +71,11 @@ export const emptyForms = {
     datePlaced: "",
     cost: 0,
   },
+  checkIfUserHasVoted: {
+    projectId: -1,
+  },
+  postVoteDTO: {
+    projectId: -1,
+    type: "",
+  },
 };
