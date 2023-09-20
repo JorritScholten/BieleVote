@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useEffect } from "react";
 import LoginForm from "./LoginForm";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../misc/AuthContext";
 import { Button, Icon, Popup } from "semantic-ui-react";
 import NavBar from "./NavBar";
@@ -12,6 +12,7 @@ export default function Header({ pageTitle }) {
     document.title = pageTitle;
   }, [pageTitle]);
   const { userIsAuthenticated, getUsername, userLogout } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <div className="p-2 gap-2 flex justify-between items-center bg-slate-300">
@@ -34,7 +35,12 @@ export default function Header({ pageTitle }) {
       <div className="w-1/4 self-center">
         {userIsAuthenticated() ? (
           <Button.Group fluid size="small">
-            <Button active className="w-3/4" content={getUsername()} />
+            <Button
+              active
+              className="w-3/4"
+              content={getUsername()}
+              onClick={() => navigate("/settings")}
+            />
             <Button negative onClick={() => userLogout()} content="Logout" />
           </Button.Group>
         ) : (

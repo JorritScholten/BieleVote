@@ -51,4 +51,10 @@ export const emptyForms = {
     datePlaced: "",
     cost: 0,
   },
+  user:{
+    username: "",
+    legalName: "",
+    phone: "",
+    role: "",
+  }
 };
