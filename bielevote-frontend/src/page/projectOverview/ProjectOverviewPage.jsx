@@ -25,18 +25,16 @@ export default function ProjectOverviewPage() {
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-2 w-screen">
       <Header pageTitle="Projects" />
-      <div className="flex flex-col items-center justify-center">
+      <div className="flex flex-col items-center">
         <ListProjects projectsList={projectsList} />
-      </div>
-      <div className="flex flex-col items-center justify-center">
         <Pagination
           defaultActivePage={1}
           totalPages={projectsList.totalPages}
           onPageChange={handlePageChange}
         />
       </div>
-    </>
+    </div>
   );
 }
