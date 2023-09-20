@@ -66,7 +66,7 @@ export default function ProjectPage() {
             <div>against: {project.votesAgainst}</div>
           </div>
           <div className="">
-            <ProjectVote />
+            <ProjectVote projectId={Number.parseInt(projectId)} />
           </div>
         </div>
       </div>
