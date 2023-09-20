@@ -57,11 +57,13 @@ public class Seeder implements CommandLineRunner {
                         .username("admin1")
                         .password(passwordEncoder.encode("admin"))
                         .legalName("Jack Admin")
+                        .phone("0612345678")
                         .build(),
                 User.builder()
                         .role(UserRole.MUNICIPAL)
                         .username("municipal1")
                         .legalName("Jane Doe")
+                        .phone("123")
                         .password(passwordEncoder.encode("123"))
                         .build()
         ));

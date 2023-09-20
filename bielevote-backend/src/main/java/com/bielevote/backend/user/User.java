@@ -2,8 +2,8 @@ package com.bielevote.backend.user;
 
 import com.bielevote.backend.project.Project;
 import com.bielevote.backend.project.ProjectViews;
-import com.bielevote.backend.votes.Vote;
 import com.bielevote.backend.user.rewardpoint.RewardPoint;
+import com.bielevote.backend.votes.Vote;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -25,27 +25,32 @@ import java.util.Set;
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "legalName"),
-        @UniqueConstraint(columnNames = "phone")
+        @UniqueConstraint(columnNames = {"legalName", "phone"})
 })
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NonNull
     @Column(unique = true)
     private String username;
 
+    @NonNull
     private String password;
 
+    @NonNull
     @JsonView(ProjectViews.GetProjectList.class)
     private String legalName;
 
+    @NonNull
     private String phone;
 
+    @NonNull
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
