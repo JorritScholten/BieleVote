@@ -61,3 +61,11 @@ export default function AccountSettingsPage() {
     </div>
   );
 }
+
+function UpdateUsernameForm(){
+  const { getUser } = useAuth();
+  const [formData, setFormData]=useState(emptyForms.updateUsername);
+  return(
+
+  )
+}
