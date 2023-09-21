@@ -26,7 +26,6 @@ import java.util.Set;
 public class ProjectController {
     private static final Set<ProjectStatus> allowedPublicTypes = Set.of(
             ProjectStatus.ACTIVE,
-            ProjectStatus.OLD,
             ProjectStatus.ACCEPTED,
             ProjectStatus.REJECTED
     );
@@ -89,9 +88,7 @@ public class ProjectController {
             }
             project.setAuthor(userService.getByUsername(auth.getName()).orElseThrow());
             project.setDatePublished(LocalDateTime.now());
-            if (project.getStatus() == null) {
-                project.setStatus(ProjectStatus.PROPOSED);
-            } else if (!(project.getStatus() == ProjectStatus.PROPOSED || project.getStatus() == ProjectStatus.EDITING)) {
+            if (!(project.getStatus() == ProjectStatus.PROPOSED || project.getStatus() == ProjectStatus.EDITING)) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(projectRepository.save(project), HttpStatus.CREATED);
@@ -113,7 +110,8 @@ public class ProjectController {
         }
     }
 
-    record ProjectInfoDTO(String title, String summary, String content, String author, LocalDateTime datePublished,
-                          ProjectStatus status, Long votesFor, Long votesNeutral, Long votesAgainst) {
+    public record ProjectInfoDTO(String title, String summary, String content, String author,
+                                 LocalDateTime datePublished, ProjectStatus status, Long votesFor, Long votesNeutral,
+                                 Long votesAgainst) {
     }
 }

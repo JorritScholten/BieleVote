@@ -4,7 +4,6 @@ export const projectStatus = {
   active: "ACTIVE",
   accepted: "ACCEPTED",
   rejected: "REJECTED",
-  archived: "OLD",
 };
 
 export const voteTypes = {

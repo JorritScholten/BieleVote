@@ -18,32 +18,39 @@ import java.util.Set;
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Project {
     @JsonView(ProjectViews.GetProjectList.class)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NonNull
     @JsonView(ProjectViews.GetProjectList.class)
     private String title;
 
+    @NonNull
     @JsonView(ProjectViews.GetProjectList.class)
     @Column(columnDefinition = "CLOB")
     private String summary;
 
+    @NonNull
     @Column(columnDefinition = "CLOB")
     private String content;
 
+    @NonNull
     @JsonView(ProjectViews.GetProjectList.class)
     @ManyToOne
     @JoinColumn(nullable = false)
     @JsonManagedReference
     private User author;
 
+    @NonNull
     @JsonView(ProjectViews.GetProjectList.class)
     @Column(columnDefinition = "TIMESTAMP(0)")
     private LocalDateTime datePublished;
 
+    @NonNull
     @JsonView(ProjectViews.GetProjectList.class)
     @Enumerated(value = EnumType.STRING)
     private ProjectStatus status;
