@@ -101,7 +101,7 @@ function getHasVoted(projectId, user) {
 }
 
 function postVote(voteType, projectId, user) {
-  return instance.post(`/api/v1/votes/${projectId}`, {
+  return instance.post(`/api/v1/votes/${projectId}`, null, {
     headers: {
       Authorization: bearerAuth(user),
       voteType: voteType,
