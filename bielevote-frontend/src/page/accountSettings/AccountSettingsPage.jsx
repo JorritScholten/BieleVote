@@ -6,6 +6,7 @@ import { backendApi, handleLogError } from "../../misc/ApiMappings";
 import { useAuth } from "../../misc/AuthContext";
 import { emptyForms } from "../../misc/ApiForms";
 import { Header } from "../../components";
+import UpdateUsernameForm from "./components/UpdateUsernameForm";
 
 export default function AccountSettingsPage() {
   const [user, setUser] = useState(emptyForms.user);
@@ -31,7 +32,7 @@ export default function AccountSettingsPage() {
     }
     fetchData();
     getBalance();
-  }, []);
+  }, [getUser]);
 
   return (
     <div className="flex flex-col gap-2 w-screen">
@@ -56,16 +57,11 @@ export default function AccountSettingsPage() {
             </List.Icon>
             <List.Content>Balance: {balance}</List.Content>
           </List.Item>
+          <List.Item>
+            <UpdateUsernameForm />
+          </List.Item>
         </List>
       </div>
     </div>
   );
-}
-
-function UpdateUsernameForm(){
-  const { getUser } = useAuth();
-  const [formData, setFormData]=useState(emptyForms.updateUsername);
-  return(
-
-  )
 }
