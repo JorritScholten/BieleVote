@@ -83,11 +83,12 @@ public class RewardController {
         try {
             var user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow();
             var reward = rewardRepository.findById(rewardPurchasedDto.rewardId).orElseThrow();
+            var date = LocalDateTime.now();
             List<RewardPoint> rewardsBought = new ArrayList<>();
             for (int i = 0; i < rewardPurchasedDto.rewardsAmount; i++) {
                 rewardsBought.add(RewardPoint.builder()
                         .reward(reward)
-                        .date(LocalDateTime.now())
+                        .date(date)
                         .user(user)
                         .reason(TransactionReason.REDEEMED_REWARD)
                         .amount(-reward.getCost())
