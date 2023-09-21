@@ -26,8 +26,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "legalName"),
-        @UniqueConstraint(columnNames = "phone")
+        @UniqueConstraint(columnNames = {"legalName", "phone"})
 })
 public class User implements UserDetails {
     @Id
