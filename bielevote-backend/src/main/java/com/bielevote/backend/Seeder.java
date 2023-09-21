@@ -85,7 +85,7 @@ public class Seeder implements CommandLineRunner {
                         .user(userRepository.findByUsername("municipal1").orElseThrow())
                         .build(),
                 RewardPoint.builder()
-                        .amount(3)
+                        .amount(256)
                         .date(LocalDateTime.now().minusMonths(2))
                         .reason(TransactionReason.VOTED_ON_PROJECT)
                         .user(userRepository.findByUsername("admin1").orElseThrow())
