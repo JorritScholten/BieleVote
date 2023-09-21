@@ -13,15 +13,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -82,22 +78,31 @@ public class RewardController {
     }
 
     @PostMapping("/redeemed")
-    public ResponseEntity<RewardPoint> postRedeemedReward(@Validated @RequestBody RewardPoint rewardRedeemed,
-                                                          @AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<Void> postRedeemedReward(@Validated @RequestBody RewardPurchasedDto rewardPurchasedDto,
+                                                   @AuthenticationPrincipal User currentUser) {
         try {
-//            var rewardBought = new Reward();
             var user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow();
-            rewardRedeemed.setUser(user);
-            rewardRedeemed.setDate(LocalDateTime.now());
-//            rewardRedeemed.setReason(TransactionReason.REDEEMED_REWARD);
-//            rewardRedeemed.setReward(rewardBought);
-//            rewardRedeemed.setAmount(rewardRedeemed.getRewardsAmount() * -rewardBought.getCost());
-            return ResponseEntity.ok(rewardPointRepository.save(rewardRedeemed));
+            var reward = rewardRepository.findById(rewardPurchasedDto.rewardId).orElseThrow();
+            List<RewardPoint> rewardsBought = new ArrayList<>();
+            for (int i = 0; i < rewardPurchasedDto.rewardsAmount; i++) {
+                rewardsBought.add(RewardPoint.builder()
+                        .reward(reward)
+                        .date(LocalDateTime.now())
+                        .user(user)
+                        .reason(TransactionReason.REDEEMED_REWARD)
+                        .amount(-reward.getCost())
+                        .build());
+            }
+            rewardPointRepository.saveAll(rewardsBought);
+            return new ResponseEntity<>(null, HttpStatus.CREATED);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
             return ResponseEntity.internalServerError().build();
         }
+    }
+
+    record RewardPurchasedDto(int rewardsAmount, Long rewardId) {
     }
 }

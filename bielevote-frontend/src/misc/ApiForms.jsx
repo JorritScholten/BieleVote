@@ -51,11 +51,8 @@ export const emptyForms = {
     datePlaced: "",
     cost: 0,
   },
-  rewardTransaction: {
-    reason: "",
-    reward: {},
-    rewardsAmount: 0,
-    datePlaced: "",
-    amount: 0,
+  rewardTransactionDto: {
+    rewardId: -1,
+    rewardsAmount: 1,
   },
 };

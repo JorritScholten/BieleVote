@@ -4,15 +4,38 @@ import PropTypes from "prop-types";
 import { GiAcorn } from "react-icons/gi";
 
 import { emptyForms } from "../../../misc/ApiForms";
-import { backendApi } from "../../../misc/ApiMappings";
+import { backendApi, handleLogError } from "../../../misc/ApiMappings";
+import { useAuth } from "../../../misc/AuthContext";
+import { HttpStatusCode } from "axios";
 
 export default function Reward({ rewardId }) {
+  const { getUser } = useAuth();
   const [open, setOpen] = useState(false);
   const [reward, setRewardItem] = useState(emptyForms.rewardItem);
+  const [newTransaction, setNewTransaction] = useState(
+    emptyForms.rewardTransactionDto
+  );
 
   useEffect(() => {
     fetchReward(rewardId);
   }, [rewardId]);
+
+  async function makePurchase() {
+    const transaction = { ...newTransaction, rewardId: rewardId };
+    setNewTransaction(transaction);
+    try {
+      const response = await backendApi.postRewardTransaction(
+        getUser(),
+        transaction
+      );
+      setOpen(false);
+      if (response.status === HttpStatusCode.Created) {
+        setNewTransaction(emptyForms.rewardTransactionDto);
+      }
+    } catch (error) {
+      handleLogError(error);
+    }
+  }
 
   async function fetchReward(rewardId) {
     try {
