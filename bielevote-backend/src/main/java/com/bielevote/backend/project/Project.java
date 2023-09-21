@@ -25,6 +25,9 @@ public class Project {
     private String title;
 
     @Column(columnDefinition = "CLOB")
+    private String summary;
+
+    @Column(columnDefinition = "CLOB")
     private String content;
 
     @JsonIdentityInfo(property = "username", generator = ObjectIdGenerators.PropertyGenerator.class)
