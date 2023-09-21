@@ -21,10 +21,10 @@ public class VoteController {
     private final ProjectRepository projectRepository;
 
     @GetMapping("/{id}")
-    ResponseEntity<Boolean> hasVoted(@AuthenticationPrincipal User currentUser, @PathVariable("id") long id) {
+    ResponseEntity<Boolean> hasVoted(@AuthenticationPrincipal User currentUser, @PathVariable("id") long projectId) {
         try {
             var user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow();
-            var project = projectRepository.findById(id).orElseThrow();
+            var project = projectRepository.findById(projectId).orElseThrow();
             return ResponseEntity.ok(voteRepository.findByUserAndProject(user, project).isPresent());
         } catch (RuntimeException e) {
             return ResponseEntity.internalServerError().build();
@@ -32,7 +32,7 @@ public class VoteController {
     }
 
     @PostMapping("/{id}")
-    ResponseEntity<Void> performVote(@AuthenticationPrincipal User currentUser, @PathVariable("id") long id,
+    ResponseEntity<Void> performVote(@AuthenticationPrincipal User currentUser, @PathVariable("id") long projectId,
                                      @RequestHeader(name = "voteType") String voteType) {
         System.out.println("  -voteType: " + voteType);
         try {
@@ -40,7 +40,7 @@ public class VoteController {
                     .type(VoteType.valueOf(voteType))
                     .date(LocalDateTime.now())
                     .user(userRepository.findByUsername(currentUser.getUsername()).orElseThrow())
-                    .project(projectRepository.findById(id).orElseThrow())
+                    .project(projectRepository.findById(projectId).orElseThrow())
                     .build();
             voteRepository.save(vote);
             return new ResponseEntity<>(HttpStatus.CREATED);

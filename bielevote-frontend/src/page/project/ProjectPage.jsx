@@ -26,7 +26,6 @@ export default function ProjectPage() {
     try {
       const response = await backendApi.getProjectById(projectId);
       setProject(response.data);
-      // console.log(response.data);
     } catch (error) {
       console.log(error);
     }

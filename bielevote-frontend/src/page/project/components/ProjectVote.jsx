@@ -1,11 +1,11 @@
 import PropTypes from "prop-types";
 import { Button } from "semantic-ui-react";
+import { HttpStatusCode } from "axios";
 
 import { useAuth } from "../../../misc/AuthContext";
 import { backendApi, handleLogError } from "../../../misc/ApiMappings";
 import { useEffect, useState } from "react";
 import { voteTypes } from "../../../misc/ApiForms";
-import { HttpStatusCode } from "axios";
 
 export default function ProjectVote({ projectId }) {
   const { userIsAuthenticated, getUser } = useAuth();
@@ -30,7 +30,6 @@ export default function ProjectVote({ projectId }) {
         projectId,
         getUser()
       );
-      console.log(response);
       if (response.status !== HttpStatusCode.Created) {
         setHasAlreadyVoted(false);
       }
