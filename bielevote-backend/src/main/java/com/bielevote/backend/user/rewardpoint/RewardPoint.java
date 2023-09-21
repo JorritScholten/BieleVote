@@ -2,6 +2,7 @@ package com.bielevote.backend.user.rewardpoint;
 
 import com.bielevote.backend.user.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
@@ -39,4 +40,11 @@ public class RewardPoint {
     @NonNull
     @Enumerated(value = EnumType.STRING)
     private TransactionReason reason;
+
+    @JsonIgnore
+    @Transient
+    public static final int AMOUNT_FOR_VOTE = 5;
+    @JsonIgnore
+    @Transient
+    public static final int AMOUNT_FOR_PROJECT_ACCEPTED = 100;
 }

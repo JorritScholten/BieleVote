@@ -4,6 +4,9 @@ import com.bielevote.backend.project.ProjectRepository;
 import com.bielevote.backend.project.ProjectStatus;
 import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRepository;
+import com.bielevote.backend.user.rewardpoint.RewardPoint;
+import com.bielevote.backend.user.rewardpoint.RewardPointRepository;
+import com.bielevote.backend.user.rewardpoint.TransactionReason;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,7 @@ public class VoteController {
     private final VoteRepository voteRepository;
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
+    private final RewardPointRepository rewardPointRepository;
 
     @GetMapping("/{id}")
     ResponseEntity<Boolean> hasVoted(@AuthenticationPrincipal User currentUser, @PathVariable("id") long projectId) {
@@ -42,10 +46,17 @@ public class VoteController {
                     .user(userRepository.findByUsername(currentUser.getUsername()).orElseThrow())
                     .project(projectRepository.findById(projectId).orElseThrow())
                     .build();
-            if(vote.getProject().getStatus() != ProjectStatus.ACTIVE){
+            if (vote.getProject().getStatus() != ProjectStatus.ACTIVE) {
                 throw new IllegalArgumentException();
             }
             voteRepository.save(vote);
+            rewardPointRepository.save(RewardPoint.builder()
+                    .amount(RewardPoint.AMOUNT_FOR_VOTE)
+                    .reason(TransactionReason.VOTED_ON_PROJECT)
+                    .date(LocalDateTime.now())
+                    .user(vote.getUser())
+                    .build()
+            );
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
