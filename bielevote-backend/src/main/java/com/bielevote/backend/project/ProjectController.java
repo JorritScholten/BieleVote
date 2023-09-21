@@ -14,10 +14,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -36,13 +34,17 @@ public class ProjectController {
     @GetMapping()
     public ResponseEntity<Map<String, Object>> getAllProjects(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) List<String> statusList
     ) {
         try {
             var paging = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "datePublished"));
-            Page<Project> pageProject = projectRepository.findByStatusIn(allowedPublicTypes, paging);
-            List<Project> projects = pageProject.getContent();
+            final Set<ProjectStatus> statusFilter = new HashSet<>(statusList == null ? allowedPublicTypes :
+                    statusList.stream().map(ProjectStatus::valueOf).collect(Collectors.toSet()));
+            statusFilter.retainAll(allowedPublicTypes);
+            Page<Project> pageProject = projectRepository.findByStatusIn(statusFilter, paging);
 
+            List<Project> projects = pageProject.getContent();
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("projects", projects);
             responseBody.put("currentPage", pageProject.getNumber());
