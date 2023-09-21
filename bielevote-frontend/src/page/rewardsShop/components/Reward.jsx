@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button, Header, Modal } from "semantic-ui-react";
 import PropTypes from "prop-types";
-import { GiAcorn } from "react-icons/gi";
+import { BiBug } from "react-icons/bi";
 
 import { emptyForms } from "../../../misc/ApiForms";
 import { backendApi, handleLogError } from "../../../misc/ApiMappings";
@@ -42,15 +42,21 @@ export default function Reward({ rewardId }) {
       const response = await backendApi.getRewardById(rewardId);
       setRewardItem(response.data);
     } catch (error) {
-      console.log(error);
+      handleLogError(error);
     }
   }
+
   return (
     <Modal
       onClose={() => setOpen(false)}
       onOpen={() => setOpen(true)}
       open={open}
-      trigger={<Button>More info / Buy</Button>}
+      trigger={
+        <Button.Group>
+          <Button>More info</Button>
+          <Button positive>Purchase</Button>
+        </Button.Group>
+      }
     >
       <Modal.Header>{reward.name}</Modal.Header>
       <Modal.Content image>
@@ -58,7 +64,7 @@ export default function Reward({ rewardId }) {
           <div className="flex flex-row items-center">
             Cost: {reward.cost}
             <div className="ml-1">
-              <GiAcorn />
+              <BiBug />
             </div>
           </div>
           <Header>Description</Header>
@@ -73,13 +79,14 @@ export default function Reward({ rewardId }) {
           content="Purchase"
           labelPosition="right"
           icon="checkmark"
-          onClick={() => setOpen(false)}
+          onClick={() => makePurchase()}
           positive
         />
       </Modal.Actions>
     </Modal>
   );
 }
+
 Reward.propTypes = {
   rewardId: PropTypes.number.isRequired,
 };
