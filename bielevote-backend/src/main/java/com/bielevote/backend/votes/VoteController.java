@@ -1,6 +1,7 @@
 package com.bielevote.backend.votes;
 
 import com.bielevote.backend.project.ProjectRepository;
+import com.bielevote.backend.project.ProjectStatus;
 import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,6 @@ public class VoteController {
     @PostMapping("/{id}")
     ResponseEntity<Void> performVote(@AuthenticationPrincipal User currentUser, @PathVariable("id") long projectId,
                                      @RequestHeader(name = "voteType") String voteType) {
-        System.out.println("  -voteType: " + voteType);
         try {
             var vote = Vote.builder()
                     .type(VoteType.valueOf(voteType))
@@ -42,6 +42,9 @@ public class VoteController {
                     .user(userRepository.findByUsername(currentUser.getUsername()).orElseThrow())
                     .project(projectRepository.findById(projectId).orElseThrow())
                     .build();
+            if(vote.getProject().getStatus() != ProjectStatus.ACTIVE){
+                throw new IllegalArgumentException();
+            }
             voteRepository.save(vote);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
