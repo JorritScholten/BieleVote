@@ -1,11 +1,13 @@
 package com.bielevote.backend.reward_shop;
 
 import com.bielevote.backend.user.rewardpoint.RewardPoint;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -26,7 +28,8 @@ public class Reward {
     @Column(columnDefinition = "TIMESTAMP(0)")
     private LocalDateTime datePlaced;
     private int cost;
-    @OneToOne
-    @JoinColumn(name = "reward_point_transaction_id")
-    private RewardPoint transaction;
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "reward")
+    private List<RewardPoint> transactions;
 }
