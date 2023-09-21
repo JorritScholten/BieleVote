@@ -10,17 +10,18 @@ import {
 
 import Header from "../../components/Header";
 import ProjectVote from "./components/ProjectVote";
-import { emptyForms } from "../../misc/ApiForms";
+import { emptyForms, projectStatus } from "../../misc/ApiForms";
 import { backendApi } from "../../misc/ApiMappings";
 import { formatDate } from "../../components/Utils";
 
 export default function ProjectPage() {
   const [project, setProject] = useState(emptyForms.projectInfoDTO);
+  const [version, setVersion] = useState(0);
   const { projectId } = useParams();
 
   useEffect(() => {
     fetchProject(projectId);
-  }, [projectId]);
+  }, [projectId, version]);
 
   async function fetchProject(projectId) {
     try {
@@ -65,7 +66,11 @@ export default function ProjectPage() {
             <div>against: {project.votesAgainst}</div>
           </div>
           <div className="">
-            <ProjectVote projectId={projectId} />
+            {project.status === projectStatus.active ? (
+              <ProjectVote projectId={projectId} updateVersion={setVersion} />
+            ) : (
+              <div />
+            )}
           </div>
         </div>
       </div>

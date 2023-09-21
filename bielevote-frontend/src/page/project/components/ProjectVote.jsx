@@ -7,20 +7,22 @@ import { backendApi, handleLogError } from "../../../misc/ApiMappings";
 import { useEffect, useState } from "react";
 import { voteTypes } from "../../../misc/ApiForms";
 
-export default function ProjectVote({ projectId }) {
+export default function ProjectVote({ projectId, updateVersion }) {
   const { userIsAuthenticated, getUser } = useAuth();
   const [hasAlreadyVoted, setHasAlreadyVoted] = useState(true);
   useEffect(() => {
     async function getVotingStatus() {
       try {
-        const response = await backendApi.getHasVoted(projectId, getUser());
-        setHasAlreadyVoted(response.data);
+        if (userIsAuthenticated()) {
+          const response = await backendApi.getHasVoted(projectId, getUser());
+          setHasAlreadyVoted(response.data);
+        }
       } catch (error) {
         handleLogError(error);
       }
     }
     getVotingStatus();
-  }, [projectId, getUser]);
+  }, [projectId, getUser, userIsAuthenticated]);
 
   async function castVote(voteType) {
     setHasAlreadyVoted(true);
@@ -32,6 +34,8 @@ export default function ProjectVote({ projectId }) {
       );
       if (response.status !== HttpStatusCode.Created) {
         setHasAlreadyVoted(false);
+      } else {
+        updateVersion((version) => (version = version + 1));
       }
     } catch (error) {
       handleLogError(error);
@@ -72,4 +76,5 @@ export default function ProjectVote({ projectId }) {
 
 ProjectVote.propTypes = {
   projectId: PropTypes.string.isRequired,
+  updateVersion: PropTypes.func,
 };
