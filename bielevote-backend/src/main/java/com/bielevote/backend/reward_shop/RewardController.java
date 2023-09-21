@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.IntStream;
 
 @RestController
 @RequiredArgsConstructor
@@ -83,6 +84,11 @@ public class RewardController {
         try {
             var user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow();
             var reward = rewardRepository.findById(rewardPurchasedDto.rewardId).orElseThrow();
+            var transactionList = rewardPointRepository.findByUser(user);
+            var balance = transactionList.stream().flatMapToInt(t -> IntStream.of(t.getAmount())).sum();
+            if (balance < rewardPurchasedDto.rewardsAmount * reward.getCost()) {
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
             var date = LocalDateTime.now();
             List<RewardPoint> rewardsBought = new ArrayList<>();
             for (int i = 0; i < rewardPurchasedDto.rewardsAmount; i++) {
