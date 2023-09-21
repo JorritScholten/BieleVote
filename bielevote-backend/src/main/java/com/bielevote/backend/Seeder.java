@@ -546,7 +546,7 @@ public class Seeder implements CommandLineRunner {
                         .datePublished(LocalDateTime.now().minusMonths(5))
                         .status(ProjectStatus.PROPOSED)
                         .summary("This proposal focuses on preserving our city's historical landmarks and promoting its rich cultural heritage. It includes plans for restoring historical buildings, creating cultural festivals, and supporting local artists and artisans.")
-                        .content("Good afternoon! The proposal at hand is a comprehensive initiative aimed at safeguarding the invaluable historical landmarks that grace our beloved city while simultaneously celebrating its vibrant cultural heritage. To achieve these objectives, the proposal encompasses a multifaceted approach that spans various aspects of preservation and promotion.\n" +
+                        .content("The proposal at hand is a comprehensive initiative aimed at safeguarding the invaluable historical landmarks that grace our beloved city while simultaneously celebrating its vibrant cultural heritage. To achieve these objectives, the proposal encompasses a multifaceted approach that spans various aspects of preservation and promotion.\n" +
                                 "\n" +
                                 "Firstly, a significant portion of the proposal is dedicated to the restoration of historical buildings. These architectural gems hold within them the stories of our city's past, and their preservation is paramount to maintaining a strong connection to our roots. Funds will be allocated for meticulous restoration work, ensuring that these landmarks not only retain their original charm but also adhere to modern safety and accessibility standards.\n" +
                                 "\n" +
@@ -562,7 +562,7 @@ public class Seeder implements CommandLineRunner {
                         .datePublished(LocalDateTime.now().minusMonths(6))
                         .status(ProjectStatus.ACTIVE)
                         .summary("This proposal addresses the city's housing affordability crisis. It includes measures to increase affordable housing units, rent control policies, and housing assistance programs.")
-                        .content("Good afternoon! This proposal presents a comprehensive approach to tackle the city's pressing housing affordability crisis, which has been a growing concern for both residents and policymakers. The multifaceted plan consists of a range of initiatives aimed at alleviating the burden on residents struggling to find affordable housing.\n" +
+                        .content("This proposal presents a comprehensive approach to tackle the city's pressing housing affordability crisis, which has been a growing concern for both residents and policymakers. The multifaceted plan consists of a range of initiatives aimed at alleviating the burden on residents struggling to find affordable housing.\n" +
                                 "\n" +
                                 "Firstly, the proposal emphasizes the need to increase the number of affordable housing units within the city. To achieve this, it suggests collaboration with developers and nonprofits to create new affordable housing projects. These developments would be strategically placed in areas where housing costs have surged, helping to maintain neighborhood diversity and accessibility to urban amenities. Additionally, incentives for affordable housing construction, such as tax breaks and zoning modifications, are outlined to encourage private investment in this critical sector.\n" +
                                 "\n" +
@@ -578,7 +578,7 @@ public class Seeder implements CommandLineRunner {
                         .datePublished(LocalDateTime.now().minusMonths(7))
                         .status(ProjectStatus.ACCEPTED)
                         .summary("This proposal advocates for improved access to clean and safe drinking water. It includes plans for upgrading the city's water infrastructure, removing lead pipes, and implementing water quality monitoring systems.")
-                        .content("Good afternoon! This proposal represents a crucial initiative aimed at enhancing the accessibility of clean and safe drinking water within our community. Access to clean water is a fundamental human right, and this proposal outlines a comprehensive plan to address the pressing issues related to our city's water supply.\n" +
+                        .content("This proposal represents a crucial initiative aimed at enhancing the accessibility of clean and safe drinking water within our community. Access to clean water is a fundamental human right, and this proposal outlines a comprehensive plan to address the pressing issues related to our city's water supply.\n" +
                                 "\n" +
                                 "First and foremost, the proposal underscores the importance of upgrading our aging water infrastructure. Many parts of our city's water distribution system are outdated and in dire need of renovation. By investing in infrastructure upgrades, we can ensure a more reliable and efficient water supply system that can meet the growing demands of our population.\n" +
                                 "\n" +
@@ -594,7 +594,7 @@ public class Seeder implements CommandLineRunner {
                         .datePublished(LocalDateTime.now().minusMonths(8))
                         .status(ProjectStatus.ACCEPTED)
                         .summary("This initiative aims to establish a technology innovation hub within the city. The hub would provide resources and support for startups and tech companies, fostering economic growth and job creation.")
-                        .content("Good afternoon! The proposed initiative represents an ambitious endeavor geared towards catalyzing technological innovation within our city. At its core, this initiative seeks to create a dedicated technology innovation hub that will serve as a dynamic epicenter for entrepreneurial growth. The envisioned hub will not only be a physical space but also a comprehensive ecosystem of resources and support structures for startups and tech companies. By doing so, it endeavors to bolster economic development and generate employment opportunities, making it a crucial asset for our community's prosperity.\n" +
+                        .content("The proposed initiative represents an ambitious endeavor geared towards catalyzing technological innovation within our city. At its core, this initiative seeks to create a dedicated technology innovation hub that will serve as a dynamic epicenter for entrepreneurial growth. The envisioned hub will not only be a physical space but also a comprehensive ecosystem of resources and support structures for startups and tech companies. By doing so, it endeavors to bolster economic development and generate employment opportunities, making it a crucial asset for our community's prosperity.\n" +
                                 "\n" +
                                 "The technology innovation hub will serve as a vibrant space where aspiring entrepreneurs, inventors, and tech enthusiasts can converge to transform their ideas into thriving businesses. It will offer state-of-the-art facilities and infrastructure, including co-working spaces, advanced laboratories, and cutting-edge equipment, facilitating collaboration and experimentation. Furthermore, this hub will provide a wide array of support services, such as mentorship programs, access to venture capital, and educational workshops, designed to nurture and guide fledgling enterprises towards success.\n" +
                                 "\n" +
@@ -608,7 +608,7 @@ public class Seeder implements CommandLineRunner {
                         .datePublished(LocalDateTime.now().minusMonths(9))
                         .status(ProjectStatus.REJECTED)
                         .summary("This proposal focuses on improving community policing efforts and enhancing overall public safety. It includes measures for community policing training, the establishment of neighborhood watch programs, and increased investment in mental health crisis response teams.")
-                        .content("Good afternoon! This proposal is centered on bolstering community policing initiatives and elevating the level of public safety within our communities. It encompasses a comprehensive approach with several key components aimed at fostering positive relationships between law enforcement agencies and the communities they serve, thereby creating a safer and more harmonious living environment.\n" +
+                        .content("This proposal is centered on bolstering community policing initiatives and elevating the level of public safety within our communities. It encompasses a comprehensive approach with several key components aimed at fostering positive relationships between law enforcement agencies and the communities they serve, thereby creating a safer and more harmonious living environment.\n" +
                                 "\n" +
                                 "To begin, the proposal emphasizes the importance of community policing training. This training would equip law enforcement officers with the necessary skills and knowledge to engage effectively with community members, understand local concerns, and build trust. By promoting community-oriented policing practices, officers can work collaboratively with residents to identify and address public safety issues in a more proactive and community-driven manner. This not only improves the perception of law enforcement but also enhances the quality of policing.\n" +
                                 "\n" +
@@ -973,7 +973,7 @@ public class Seeder implements CommandLineRunner {
                 Reward.builder()
                         .name("Railway museum ticket")
                         .description("This ticket provides entry to the Railway museum in Utrecht! Activating must be completed within 1 year after date of purchase, else it's ")
-                        .cost(1000)
+                        .cost(50)
                         .inventory(50)
                         .isLimited(true)
                         .datePlaced(LocalDateTime.now())
@@ -981,7 +981,7 @@ public class Seeder implements CommandLineRunner {
                 Reward.builder()
                         .name("Family Pass Railway museum ticket")
                         .description("Perfect for families! Provides entry for 2 adults and 2 children to the Railway museum in Utrecht. Must activate within 1 year.")
-                        .cost(2500)
+                        .cost(100)
                         .inventory(30)
                         .isLimited(true)
                         .datePlaced(LocalDateTime.now().plusMinutes(1))
@@ -989,7 +989,7 @@ public class Seeder implements CommandLineRunner {
                 Reward.builder()
                         .name("Concert Ticket - John Smith Live")
                         .description("Admission to the live concert of John Smith at the City Arena. Show your ticket at the entrance.")
-                        .cost(1200)
+                        .cost(150)
                         .inventory(40)
                         .isLimited(true)
                         .datePlaced(LocalDateTime.now().plusMinutes(2))
@@ -997,7 +997,7 @@ public class Seeder implements CommandLineRunner {
                 Reward.builder()
                         .name("Movie Ticket - Avengers: Endgame")
                         .description("Enjoy the latest Avengers movie on the big screen at the Silver Screen Cinema.")
-                        .cost(120)
+                        .cost(130)
                         .inventory(20)
                         .isLimited(true)
                         .datePlaced(LocalDateTime.now().plusMinutes(3))
@@ -1005,7 +1005,7 @@ public class Seeder implements CommandLineRunner {
                 Reward.builder()
                         .name("Museum Entry Ticket - Natural History Museum")
                         .description("Explore the wonders of natural history at the renowned museum. Valid for one day.")
-                        .cost(70)
+                        .cost(200)
                         .inventory(25)
                         .isLimited(true)
                         .datePlaced(LocalDateTime.now().plusMinutes(4))
@@ -1013,7 +1013,7 @@ public class Seeder implements CommandLineRunner {
                 Reward.builder()
                         .name("Theme Park Season Pass - Adventure World")
                         .description("Unlimited access to Adventure World theme park for the entire season. Fun for the whole family!")
-                        .cost(150)
+                        .cost(250)
                         .inventory(15)
                         .isLimited(true)
                         .datePlaced(LocalDateTime.now().plusMinutes(5))
@@ -1021,7 +1021,7 @@ public class Seeder implements CommandLineRunner {
                 Reward.builder()
                         .name("Men's Casual T-Shirt - Classic White")
                         .description("A comfortable and stylish white t-shirt for men. Perfect for everyday wear.")
-                        .cost(250)
+                        .cost(110)
                         .inventory(100)
                         .isLimited(true)
                         .datePlaced(LocalDateTime.now().plusMinutes(6))
@@ -1029,7 +1029,7 @@ public class Seeder implements CommandLineRunner {
                 Reward.builder()
                         .name("Women's Running Shoes - Lightweight and Breathable")
                         .description("High-performance running shoes designed for women. Ideal for jogging and workouts.")
-                        .cost(650)
+                        .cost(250)
                         .inventory(10)
                         .isLimited(true)
                         .datePlaced(LocalDateTime.now().plusMinutes(7))
@@ -1037,10 +1037,178 @@ public class Seeder implements CommandLineRunner {
                 Reward.builder()
                         .name("Kids' Denim Jeans - Blue Wash")
                         .description("Durable and trendy denim jeans for kids. Available in various sizes.")
-                        .cost(300)
+                        .cost(250)
                         .inventory(20)
                         .isLimited(true)
                         .datePlaced(LocalDateTime.now().plusMinutes(8))
+                        .build(),
+                Reward.builder()
+                        .name("VIP City Tour")
+                        .description("A guided tour of the city's landmarks and attractions.")
+                        .cost(100)
+                        .inventory(50)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(9))
+                        .build(),
+                Reward.builder()
+                        .name("Public Art Workshop Pass")
+                        .description("Access to art classes or workshops to beautify the city.")
+                        .cost(150)
+                        .inventory(100)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(10))
+                        .build(),
+                Reward.builder()
+                        .name("Community Garden Plot")
+                        .description("A space in a local community garden to grow their own produce.")
+                        .cost(300)
+                        .inventory(20)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(11))
+                        .build(),
+                Reward.builder()
+                        .name("Free Public Transportation Pass")
+                        .description("A pass for free rides on public transportation for a set period.")
+                        .cost(500)
+                        .inventory(50)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(12))
+                        .build(),
+                Reward.builder()
+                        .name("Gift Cards")
+                        .description("Offer gift cards to popular local restaurants, shops, or entertainment venues.")
+                        .cost(200)
+                        .inventory(100)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(13))
+                        .build(),
+                Reward.builder()
+                        .name("Customized Park Bench Plaque")
+                        .description("A plaque with their name on a park bench.")
+                        .cost(400)
+                        .inventory(20)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(14))
+                        .build(),
+                Reward.builder()
+                        .name("Library Fine Amnesty")
+                        .description("Forgiveness of overdue fines at the city library.")
+                        .cost(200)
+                        .inventory(50)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(15))
+                        .build(),
+                Reward.builder()
+                        .name("Street Naming Rights")
+                        .description("The opportunity to name a street or alley in their honor.")
+                        .cost(500)
+                        .inventory(10)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(16))
+                        .build(),
+                Reward.builder()
+                        .name("Annual Festival VIP Pass")
+                        .description("Access to all city-sponsored festivals and events for a year.")
+                        .cost(200)
+                        .inventory(30)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(17))
+                        .build(),
+                Reward.builder()
+                        .name("Sports Equipment")
+                        .description("Sports equipment or gear for those passionate about physical activity.")
+                        .cost(300)
+                        .inventory(70)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(18))
+                        .build(),
+                Reward.builder()
+                        .name("Volunteer Recognition Dinner")
+                        .description("An invitation to an exclusive dinner event for city volunteers.")
+                        .cost(150)
+                        .inventory(30)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(19))
+                        .build(),
+                Reward.builder()
+                        .name("Public Mural Commission")
+                        .description("The chance to have their art featured in a public mural.")
+                        .cost(600)
+                        .inventory(10)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(20))
+                        .build(),
+                Reward.builder()
+                        .name("City Swag Bag")
+                        .description("A bag filled with city-branded merchandise, such as shirts, hats, and mugs.")
+                        .cost(320)
+                        .inventory(100)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(21))
+                        .build(),
+                Reward.builder()
+                        .name("Community Cleanup Supplies Kit")
+                        .description("Tools and supplies for organizing a neighborhood cleanup.")
+                        .cost(180)
+                        .inventory(120)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(22))
+                        .build(),
+                Reward.builder()
+                        .name("Community Cookbook Inclusion")
+                        .description("Their recipe featured in a city-wide cookbook.")
+                        .cost(150)
+                        .inventory(10)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(23))
+                        .build(),
+                Reward.builder()
+                        .name("Personalized Paver Stone")
+                        .description("A stone with their name in a prominent public walkway.")
+                        .cost(400)
+                        .inventory(50)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(24))
+                        .build(),
+                Reward.builder()
+                        .name("Exclusive Farmers' Market Access")
+                        .description("Early entry and discounts at the local farmers' market.")
+                        .cost(30)
+                        .inventory(100)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(25))
+                        .build(),
+                Reward.builder()
+                        .name("Customized Plaque")
+                        .description("A plaque or engraved stone to commemorate their contribution, suitable for display in their home.")
+                        .cost(240)
+                        .inventory(50)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(26))
+                        .build(),
+                Reward.builder()
+                        .name("Outdoor Adventure Excursion")
+                        .description("An outdoor experience like hiking, kayaking, or a hot air balloon ride.")
+                        .cost(250)
+                        .inventory(100)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(27))
+                        .build(),
+                Reward.builder()
+                        .name("Spa or Wellness Package")
+                        .description("A spa day or wellness package to help them relax and rejuvenate.")
+                        .cost(400)
+                        .inventory(50)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(28))
+                        .build(),
+                Reward.builder()
+                        .name("Tech Gadgets")
+                        .description("High-quality tech gadgets like headphones, tablets, or smartwatches.")
+                        .cost(350)
+                        .inventory(80)
+                        .isLimited(true)
+                        .datePlaced(LocalDateTime.now().plusMinutes(29))
                         .build()
         ));
         System.out.println(rewardRepository.count() + " rewards seeded...");
