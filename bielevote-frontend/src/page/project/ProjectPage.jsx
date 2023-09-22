@@ -40,6 +40,7 @@ export default function ProjectPage() {
           <IoReturnDownBack />
         </Link>
         <div className="col-span-3 flex flex-col gap-2">
+          {project.status ===projectStatus.active?<div>progress bar</div>:<div hidden />}
           <SemanticHeader as="h1">{project.title}</SemanticHeader>
           <div>
             <Icon name="calendar alternate" />{" "}
@@ -55,7 +56,7 @@ export default function ProjectPage() {
           {project.content === null ? (
             placeHolderText(4)
           ) : (
-            <Container text> {project.content}</Container>
+            <Container text>{project.content}</Container>
           )}
         </div>
         <div className="m-5 text-center">
@@ -69,7 +70,7 @@ export default function ProjectPage() {
             {project.status === projectStatus.active ? (
               <ProjectVote projectId={projectId} updateVersion={setVersion} />
             ) : (
-              <div />
+              <div hidden />
             )}
           </div>
         </div>

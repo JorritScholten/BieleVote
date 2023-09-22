@@ -68,7 +68,7 @@ export default function ProjectVote({ projectId, updateVersion }) {
           </Button>
         </Button.Group>
       ) : (
-        <div />
+        <div hidden />
       )}
     </div>
   );
