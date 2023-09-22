@@ -116,7 +116,13 @@ public class Seeder implements CommandLineRunner {
                         .author(userRepository.findByUsername("citizen1").orElseThrow())
                         .datePublished(LocalDateTime.now().minusMonths(1))
                         .status(ProjectStatus.ACTIVE)
-                        .content("")
+                        .content("The proposal seeks to address pressing transportation issues within our city. It envisions a comprehensive transformation of the current transportation infrastructure to enhance its functionality and sustainability.\n" +
+                                "\n" +
+                                "Firstly, the initiative prioritizes the development of a smart transportation system. This entails the integration of advanced technologies to improve traffic flow, reduce congestion, and enhance overall efficiency. Smart traffic signals, real-time transit updates, and predictive analytics will play pivotal roles in achieving this goal.\n" +
+                                "\n" +
+                                "Secondly, there will be a significant focus on bolstering public transit options. This includes expanding bus routes, increasing the frequency of services, and introducing new modes of public transportation such as electric buses and tram lines. The goal is to make public transit more accessible and appealing to a wider population.\n" +
+                                "\n" +
+                                "Thirdly, the proposal emphasizes the creation of extensive bike lanes and pedestrian-friendly streets. These measures are intended to promote eco-friendly commuting options and reduce the reliance on cars, ultimately decreasing carbon emissions and improving air quality.")
                         .summary("This initiative focuses on improving our city's transportation infrastructure. It aims to create a smart, efficient, and eco-friendly transportation system through investments in public transit, bike lanes, and pedestrian-friendly streets. ")
                         .build(),
                 Project.builder()
