@@ -4,7 +4,9 @@ import { IoReturnDownBack } from "react-icons/io5";
 import {
   Container,
   Icon,
+  Label,
   Placeholder,
+  Progress,
   Header as SemanticHeader,
 } from "semantic-ui-react";
 
@@ -40,7 +42,6 @@ export default function ProjectPage() {
           <IoReturnDownBack />
         </Link>
         <div className="col-span-3 flex flex-col gap-2">
-          {project.status ===projectStatus.active?<div>progress bar</div>:<div hidden />}
           <SemanticHeader as="h1">{project.title}</SemanticHeader>
           <div>
             <Icon name="calendar alternate" />{" "}
@@ -49,11 +50,18 @@ export default function ProjectPage() {
           <div>
             <Icon name="user" /> {project.author}
           </div>
-          <div className="text-xl font-semibold  w-4/5">
-            Status: {project.status}
+          <div className=" flex flex-row gap-5">
+            <div className="text-xl font-semibold">
+              Status: {project.status}
+            </div>
+            {project.status === projectStatus.active ? (
+              <Progress className="grow last:m-0" />
+            ) : (
+              <div hidden />
+            )}
           </div>
           <div className="text-xl ">{project.summary}</div>
-          {project.content === null ? (
+          {project.content === null || project.content.length === 0 ? (
             placeHolderText(4)
           ) : (
             <Container text>{project.content}</Container>
