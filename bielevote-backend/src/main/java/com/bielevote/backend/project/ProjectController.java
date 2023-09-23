@@ -1,9 +1,9 @@
 package com.bielevote.backend.project;
 
 import com.bielevote.backend.user.UserService;
-import com.bielevote.backend.user.UserViews;
+import com.bielevote.backend.votes.VoteType;
 import com.fasterxml.jackson.annotation.JsonView;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -14,33 +14,37 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @RestController
 @CrossOrigin
 @RequestMapping("/api/v1/projects")
 public class ProjectController {
-    @Autowired
-    ProjectRepository projectRepository;
-    @Autowired
-    private UserService userService;
+    private static final Set<ProjectStatus> allowedPublicTypes = Set.of(
+            ProjectStatus.ACTIVE,
+            ProjectStatus.ACCEPTED,
+            ProjectStatus.REJECTED
+    );
+    private final ProjectRepository projectRepository;
+    private final UserService userService;
 
-    @JsonView(UserViews.getProject.class)
+    @JsonView(ProjectViews.GetProjectList.class)
     @GetMapping()
     public ResponseEntity<Map<String, Object>> getAllProjects(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) List<String> statusList
     ) {
         try {
-            List<Project> projects;
-            PageRequest paging = PageRequest.of(page, size, Sort.by("datePublished").descending());
+            var paging = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "datePublished"));
+            final Set<ProjectStatus> statusFilter = new HashSet<>(statusList == null ? allowedPublicTypes :
+                    statusList.stream().map(ProjectStatus::valueOf).collect(Collectors.toSet()));
+            statusFilter.retainAll(allowedPublicTypes);
+            Page<Project> pageProject = projectRepository.findByStatusIn(statusFilter, paging);
 
-            Page<Project> pageProject = projectRepository.findAll(paging);
-
-            projects = pageProject.getContent();
-
+            List<Project> projects = pageProject.getContent();
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("projects", projects);
             responseBody.put("currentPage", pageProject.getNumber());
@@ -53,11 +57,25 @@ public class ProjectController {
         }
     }
 
-    @JsonView(UserViews.getProject.class)
     @GetMapping("/{id}")
-    public ResponseEntity<Project> getProjectById(@PathVariable("id") long id) {
+    public ResponseEntity<ProjectInfoDTO> getProjectById(@PathVariable("id") long id) {
         try {
-            return new ResponseEntity<>(projectRepository.findById(id).orElseThrow(), HttpStatus.OK);
+            var project = projectRepository.findById(id).orElseThrow();
+            if (!allowedPublicTypes.contains(project.getStatus())) {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+            var dto = new ProjectInfoDTO(
+                    project.getTitle(),
+                    project.getSummary(),
+                    project.getContent(),
+                    project.getAuthor().getLegalName(),
+                    project.getDatePublished(),
+                    project.getStatus(),
+                    project.getVotes().stream().filter(v -> v.getType() == VoteType.POSITIVE).count(),
+                    project.getVotes().stream().filter(v -> v.getType() == VoteType.NEUTRAL).count(),
+                    project.getVotes().stream().filter(v -> v.getType() == VoteType.AGAINST).count()
+            );
+            return ResponseEntity.ok(dto);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -72,9 +90,7 @@ public class ProjectController {
             }
             project.setAuthor(userService.getByUsername(auth.getName()).orElseThrow());
             project.setDatePublished(LocalDateTime.now());
-            if (project.getStatus() == null) {
-                project.setStatus(ProjectStatus.PROPOSED);
-            } else if (!(project.getStatus() == ProjectStatus.PROPOSED || project.getStatus() == ProjectStatus.EDITING)) {
+            if (!(project.getStatus() == ProjectStatus.PROPOSED || project.getStatus() == ProjectStatus.EDITING)) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(projectRepository.save(project), HttpStatus.CREATED);
@@ -94,5 +110,10 @@ public class ProjectController {
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public record ProjectInfoDTO(String title, String summary, String content, String author,
+                                 LocalDateTime datePublished, ProjectStatus status, Long votesFor, Long votesNeutral,
+                                 Long votesAgainst) {
     }
 }

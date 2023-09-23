@@ -1,13 +1,13 @@
 package com.bielevote.backend.reward_shop;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.bielevote.backend.user.rewardpoint.Transaction;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,4 +28,8 @@ public class Reward {
     @Column(columnDefinition = "TIMESTAMP(0)")
     private LocalDateTime datePlaced;
     private int cost;
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "reward")
+    private List<Transaction> transactions;
 }

@@ -5,7 +5,7 @@ import com.bielevote.backend.project.ProjectRepository;
 import com.bielevote.backend.project.ProjectViews;
 import com.bielevote.backend.reward_shop.RewardRepository;
 import com.bielevote.backend.user.UserRepository;
-import com.bielevote.backend.user.rewardpoint.RewardPointRepository;
+import com.bielevote.backend.user.rewardpoint.TransactionRepository;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -30,7 +30,7 @@ class ApplicationTests {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private RewardPointRepository rewardPointRepository;
+    private TransactionRepository transactionRepository;
     @Autowired
     private ProjectRepository projectRepository;
     @Autowired

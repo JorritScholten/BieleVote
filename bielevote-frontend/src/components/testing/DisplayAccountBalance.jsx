@@ -22,6 +22,6 @@ export default function DisplayAccountBalance() {
       <div className="p-1">balance: {balance}</div>
     </div>
   ) : (
-    <div />
+    <div hidden />
   );
 }

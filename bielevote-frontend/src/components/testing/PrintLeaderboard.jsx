@@ -58,7 +58,7 @@ export default function PrintLeaderboard() {
                 </Table.Row>
               ))
             ) : (
-              <div />
+              <div hidden />
             )}
           </Table.Body>
         </Table>
