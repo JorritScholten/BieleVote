@@ -4,8 +4,8 @@ import com.bielevote.backend.project.ProjectRepository;
 import com.bielevote.backend.project.ProjectStatus;
 import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRepository;
-import com.bielevote.backend.user.rewardpoint.RewardPoint;
-import com.bielevote.backend.user.rewardpoint.RewardPointRepository;
+import com.bielevote.backend.user.rewardpoint.Transaction;
+import com.bielevote.backend.user.rewardpoint.TransactionRepository;
 import com.bielevote.backend.user.rewardpoint.TransactionReason;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class VoteController {
     private final VoteRepository voteRepository;
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
-    private final RewardPointRepository rewardPointRepository;
+    private final TransactionRepository transactionRepository;
 
     @GetMapping("/{id}")
     ResponseEntity<Boolean> hasVoted(@AuthenticationPrincipal User currentUser, @PathVariable("id") long projectId) {
@@ -50,8 +50,8 @@ public class VoteController {
                 throw new IllegalArgumentException();
             }
             voteRepository.save(vote);
-            rewardPointRepository.save(RewardPoint.builder()
-                    .amount(RewardPoint.AMOUNT_FOR_VOTE)
+            transactionRepository.save(Transaction.builder()
+                    .amount(Transaction.AMOUNT_FOR_VOTE)
                     .reason(TransactionReason.VOTED_ON_PROJECT)
                     .date(LocalDateTime.now())
                     .user(vote.getUser())

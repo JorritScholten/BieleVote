@@ -2,7 +2,7 @@ package com.bielevote.backend.user;
 
 import com.bielevote.backend.project.Project;
 import com.bielevote.backend.project.ProjectViews;
-import com.bielevote.backend.user.rewardpoint.RewardPoint;
+import com.bielevote.backend.user.rewardpoint.Transaction;
 import com.bielevote.backend.votes.Vote;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -60,7 +60,7 @@ public class User implements UserDetails {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "user")
-    private List<RewardPoint> rewardPointTransactions;
+    private List<Transaction> rewardPointTransactions;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "user")

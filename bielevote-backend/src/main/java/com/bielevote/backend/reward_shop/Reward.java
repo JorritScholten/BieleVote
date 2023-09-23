@@ -1,6 +1,6 @@
 package com.bielevote.backend.reward_shop;
 
-import com.bielevote.backend.user.rewardpoint.RewardPoint;
+import com.bielevote.backend.user.rewardpoint.Transaction;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,5 +31,5 @@ public class Reward {
 
     @JsonBackReference
     @OneToMany(mappedBy = "reward")
-    private List<RewardPoint> transactions;
+    private List<Transaction> transactions;
 }
