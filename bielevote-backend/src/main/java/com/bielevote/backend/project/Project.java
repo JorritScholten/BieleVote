@@ -4,10 +4,15 @@ import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserViews;
 import com.fasterxml.jackson.annotation.*;
 import com.bielevote.backend.votes.Vote;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -35,13 +40,14 @@ public class Project {
     private String summary;
 
     @JsonView({ProjectViews.Serialize.class})
+    @JsonSerialize(using = ContentSerialize.class) //temporary for migrating db to json
     @Column(columnDefinition = "CLOB")
     private String content;
 
     @NonNull
     @JsonView({ProjectViews.GetProjectList.class, ProjectViews.Serialize.class})
-//    @JsonIdentityInfo(property = "username", generator = ObjectIdGenerators.PropertyGenerator.class)
-//    @JsonIdentityReference(alwaysAsId = true)
+    @JsonIdentityInfo(property = "username", generator = ObjectIdGenerators.PropertyGenerator.class) //temporary for migrating db to json
+    @JsonIdentityReference(alwaysAsId = true) //temporary for migrating db to json
     @ManyToOne
     @JoinColumn(nullable = false)
     @JsonManagedReference
@@ -60,4 +66,19 @@ public class Project {
     @JsonManagedReference
     @OneToMany(mappedBy = "project")
     private Set<Vote> votes;
+
+    //temporary for migrating db to json
+    public static class ContentSerialize extends JsonSerializer<String> {
+        @Override
+        public void serialize(String value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+            var split = value.split("\n");
+            gen.writeStartArray();
+            for (var s : split) {
+                if (!s.isBlank()) {
+                    gen.writeString("<p>" + s + "</p>");
+                }
+            }
+            gen.writeEndArray();
+        }
+    }
 }
