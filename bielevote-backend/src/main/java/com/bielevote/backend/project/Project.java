@@ -74,7 +74,9 @@ public class Project {
             var split = value.split("\n");
             gen.writeStartArray();
             for (var s : split) {
-                if (!s.isBlank()) {
+                if (s.isBlank()) {
+                    gen.writeString("<p><br></p>");
+                } else {
                     gen.writeString("<p>" + s + "</p>");
                 }
             }
