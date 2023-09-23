@@ -51,8 +51,8 @@ public class Transaction {
 
     @JsonIgnore
     @Transient
-    public static final int AMOUNT_FOR_VOTE = 5;
+    public static final int REWARD_FOR_VOTING = 5;
     @JsonIgnore
     @Transient
-    public static final int AMOUNT_FOR_PROJECT_ACCEPTED = 100;
+    public static final int REWARD_FOR_PROJECT_ACCEPTED = 100;
 }

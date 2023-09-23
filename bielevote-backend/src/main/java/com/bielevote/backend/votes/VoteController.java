@@ -51,7 +51,7 @@ public class VoteController {
             }
             voteRepository.save(vote);
             transactionRepository.save(Transaction.builder()
-                    .amount(Transaction.AMOUNT_FOR_VOTE)
+                    .amount(Transaction.REWARD_FOR_VOTING)
                     .reason(TransactionReason.VOTED_ON_PROJECT)
                     .date(LocalDateTime.now())
                     .user(vote.getUser())
