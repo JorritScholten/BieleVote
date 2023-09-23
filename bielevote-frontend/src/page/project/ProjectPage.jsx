@@ -86,7 +86,12 @@ function renderProject(project) {
       {project.content === null || project.content.length === 0 ? (
         placeHolderText(4)
       ) : (
-        <Container fluid>{project.content}</Container>
+        <Container fluid textAlign="justified" content={project.content} />
+        // <Container
+        //   fluid
+        //   dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(project.content) }}
+        //   textAlign="justified"
+        // />
       )}
     </div>
   );

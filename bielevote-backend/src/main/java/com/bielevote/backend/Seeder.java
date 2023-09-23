@@ -12,21 +12,27 @@ import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRepository;
 import com.bielevote.backend.user.UserRole;
 import com.bielevote.backend.user.rewardpoint.Transaction;
-import com.bielevote.backend.user.rewardpoint.TransactionRepository;
 import com.bielevote.backend.user.rewardpoint.TransactionReason;
+import com.bielevote.backend.user.rewardpoint.TransactionRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 
 
 @RequiredArgsConstructor
 @Component
 public class Seeder implements CommandLineRunner {
+    final String seedValuesDir = "src/test/java/com/bielevote/backend/seed_values/";
     private final PasswordEncoder passwordEncoder;
     private final NewsArticleRepository newsArticleRepository;
     private final UserRepository userRepository;
@@ -41,6 +47,35 @@ public class Seeder implements CommandLineRunner {
         seedProjects();
         seedNewsArticles();
         seedRewards();
+    }
+
+    private void seedProjectsFromJson() throws IOException {
+        final var projectFile = Path.of(seedValuesDir + "projects.json").toFile();
+        try (var fileStream = new FileInputStream(projectFile)) {
+            var projectTree = new ObjectMapper().reader().readTree(fileStream);
+            projectTree.forEach(project -> {
+                var newProject = Project.builder()
+                        .id(project.get("id").asLong())
+                        .title(project.get("title").asText())
+                        .summary(project.get("summary").asText())
+                        .status(ProjectStatus.valueOf(project.get("status").asText()));
+                newProject.author(userRepository.findByUsername(project.get("author").asText()).orElseThrow());
+                List<Integer> datePublished = new ArrayList<>();
+                project.get("datePublished").forEach(i -> datePublished.add(i.asInt()));
+                newProject.datePublished(LocalDateTime.of(
+                        datePublished.get(0),
+                        datePublished.get(1),
+                        datePublished.get(2),
+                        datePublished.get(3),
+                        datePublished.get(4),
+                        datePublished.get(5)
+                ));
+                var content = new StringBuilder();
+                project.get("content").forEach(s -> content.append(s.asText()));
+                newProject.content(content.toString());
+                projectRepository.saveAndFlush(newProject.build());
+            });
+        }
     }
 
     private void seedUsers() {
