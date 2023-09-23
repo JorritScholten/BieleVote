@@ -19,31 +19,27 @@ import java.util.Set;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonView({ProjectViews.Serialize.class})
 public class Project {
-    @JsonView(ProjectViews.GetProjectList.class)
+    @JsonView({ProjectViews.GetProjectList.class, ProjectViews.Serialize.class})
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NonNull
-    @JsonView(ProjectViews.GetProjectList.class)
+    @JsonView({ProjectViews.GetProjectList.class, ProjectViews.Serialize.class})
     private String title;
 
     @NonNull
-    @JsonView(ProjectViews.GetProjectList.class)
+    @JsonView({ProjectViews.GetProjectList.class, ProjectViews.Serialize.class})
     @Column(columnDefinition = "CLOB")
     private String summary;
 
-    @NonNull
-    @Column(columnDefinition = "CLOB")
-    private String summary;
-
+    @JsonView({ProjectViews.Serialize.class})
     @Column(columnDefinition = "CLOB")
     private String content;
 
     @NonNull
-    @JsonView(ProjectViews.GetProjectList.class)
+    @JsonView({ProjectViews.GetProjectList.class, ProjectViews.Serialize.class})
 //    @JsonIdentityInfo(property = "username", generator = ObjectIdGenerators.PropertyGenerator.class)
 //    @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne
@@ -52,12 +48,12 @@ public class Project {
     private User author;
 
     @NonNull
-    @JsonView(ProjectViews.GetProjectList.class)
+    @JsonView({ProjectViews.GetProjectList.class, ProjectViews.Serialize.class})
     @Column(columnDefinition = "TIMESTAMP(0)")
     private LocalDateTime datePublished;
 
     @NonNull
-    @JsonView(ProjectViews.GetProjectList.class)
+    @JsonView({ProjectViews.GetProjectList.class, ProjectViews.Serialize.class})
     @Enumerated(value = EnumType.STRING)
     private ProjectStatus status;
 
