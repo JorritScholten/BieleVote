@@ -37,6 +37,9 @@ public class Project {
 
     @NonNull
     @Column(columnDefinition = "CLOB")
+    private String summary;
+
+    @Column(columnDefinition = "CLOB")
     private String content;
 
     @NonNull
