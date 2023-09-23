@@ -1,8 +1,10 @@
 package com.bielevote.backend.user.rewardpoint;
 
+import com.bielevote.backend.reward_shop.Reward;
 import com.bielevote.backend.user.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
@@ -32,6 +34,7 @@ public class RewardPoint {
     private LocalDateTime date;
 
     @NonNull
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
@@ -40,6 +43,11 @@ public class RewardPoint {
     @NonNull
     @Enumerated(value = EnumType.STRING)
     private TransactionReason reason;
+
+    @JsonManagedReference
+    @ManyToOne
+    @JoinColumn(name = "reward_id")
+    private Reward reward;
 
     @JsonIgnore
     @Transient

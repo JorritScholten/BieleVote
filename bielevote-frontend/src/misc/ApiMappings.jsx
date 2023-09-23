@@ -23,6 +23,7 @@ export const backendApi = {
   getLeaderboard,
   getHasVoted,
   postVote,
+  postRewardTransaction,
 };
 
 function login(formData) {
@@ -93,11 +94,22 @@ function getLeaderboard(timeRange) {
 }
 
 function getAllRewards(page, amount) {
-  return instance.get("/api/v1/rewards" + "?page=" + page + "&size=" + amount);
+  return instance.get(
+    "/api/v1/rewards/shop" + "?page=" + page + "&size=" + amount
+  );
 }
 
 function getRewardById(rewardId) {
-  return instance.get(`/api/v1/rewards/${rewardId}`);
+  return instance.get(`/api/v1/rewards/shop/${rewardId}`);
+}
+
+function postRewardTransaction(user, rewardData) {
+  return instance.post("/api/v1/rewards/redeemed", rewardData, {
+    headers: {
+      Authorization: bearerAuth(user),
+      "Content-type": "application/json",
+    },
+  });
 }
 
 function getHasVoted(projectId, user) {
