@@ -72,6 +72,10 @@ public class SecurityConfiguration {
                 .requestMatchers(new AntPathRequestMatcher("/api/v1/rewards/shop/*", GET.name())).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/api/v1/rewards/redeemed", GET.name())).hasAnyRole(allAccounts)
                 .requestMatchers(new AntPathRequestMatcher("/api/v1/rewards/redeemed", POST.name())).hasAnyRole(allAccounts)
+                .requestMatchers(new AntPathRequestMatcher("/api/v1/votes/*", GET.name())).hasAnyRole(allAccounts)
+                .requestMatchers(new AntPathRequestMatcher("/api/v1/votes/*", POST.name())).hasAnyRole(allAccounts)
+                .requestMatchers(new AntPathRequestMatcher("/api/v1/rewards", GET.name())).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/v1/rewards/*", GET.name())).permitAll()
                 .anyRequest().authenticated()
         );
         http.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

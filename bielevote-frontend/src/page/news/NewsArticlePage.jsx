@@ -26,8 +26,8 @@ export default function NewsArticlePage() {
   }
 
   return (
-    <div className="flex flex-col gap-2 w-screen">
-      <Header pageTitle="News" />
+    <div className="flex flex-col gap-5 w-screen">
+      <Header pageTitle={newsArticle.title} />
       <div className="flex m-auto text-6xl ml-10">
         <Link to={"/news"}>
           <IoReturnDownBack />

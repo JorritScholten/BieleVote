@@ -27,10 +27,9 @@ public class RewardPointController {
                 case "LAST_WEEK" -> LocalDateTime.now().minusWeeks(1);
                 case "LAST_MONTH" -> LocalDateTime.now().minusMonths(1);
                 case "LAST_YEAR" -> LocalDateTime.now().minusYears(1);
-                default -> LocalDateTime.MIN;
+                default -> LocalDateTime.of(1900,1,1,1,1);
             };
-            var merits = rewardPointRepository.findAll().stream()
-                    .filter(t -> (t.getAmount() > 0 && t.getDate().isAfter(range))).toList();
+            var merits = rewardPointRepository.findByAmountGreaterThanAndDateAfter(0, range);
             var users = merits.stream().map(RewardPoint::getUser).distinct().toList();
             List<scoreCard> leaderboard = new ArrayList<>();
             for (var key : users) {

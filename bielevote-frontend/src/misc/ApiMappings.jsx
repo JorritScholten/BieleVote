@@ -15,11 +15,14 @@ export const backendApi = {
   authTest,
   postProject,
   getAllProjects,
+  getProjectById,
   getAllNewsArticles,
   getNewsArticleById,
   getAllRewards,
   getRewardById,
   getLeaderboard,
+  getHasVoted,
+  postVote,
   postRewardTransaction,
 };
 
@@ -54,8 +57,20 @@ function postProject(user, formData) {
   });
 }
 
-function getAllProjects(page, amount) {
-  return instance.get("/api/v1/projects" + "?page=" + page + "&size=" + amount);
+function getAllProjects(page, amount, statuses) {
+  let filter = "";
+  if (statuses.length !== 0) {
+    filter = "&statusList=";
+    statuses.forEach((s) => (filter = filter.concat(s, ",")));
+    filter = filter.substring(0, filter.length - 1);
+  }
+  return instance.get(
+    "/api/v1/projects" + "?page=" + page + "&size=" + amount + filter
+  );
+}
+
+function getProjectById(projectId) {
+  return instance.get(`/api/v1/projects/${projectId}`);
 }
 
 function getAllNewsArticles(page, amount) {
@@ -87,11 +102,29 @@ function getAllRewards(page, amount) {
 function getRewardById(rewardId) {
   return instance.get(`/api/v1/rewards/shop/${rewardId}`);
 }
+
 function postRewardTransaction(user, rewardData) {
   return instance.post("/api/v1/rewards/redeemed", rewardData, {
     headers: {
       Authorization: bearerAuth(user),
       "Content-type": "application/json",
+    },
+  });
+}
+
+function getHasVoted(projectId, user) {
+  return instance.get(`/api/v1/votes/${projectId}`, {
+    headers: {
+      Authorization: bearerAuth(user),
+    },
+  });
+}
+
+function postVote(voteType, projectId, user) {
+  return instance.post(`/api/v1/votes/${projectId}`, null, {
+    headers: {
+      Authorization: bearerAuth(user),
+      voteType: voteType,
     },
   });
 }
@@ -109,7 +142,7 @@ instance.interceptors.request.use(
       const token = config.headers.Authorization.split(" ")[1];
       const data = parseJwt(token);
       if (Date.now() > data.exp * 1000) {
-        window.location.href = "/login";
+        window.location.href = "/";
       }
     }
     return config;

@@ -4,7 +4,12 @@ export const projectStatus = {
   active: "ACTIVE",
   accepted: "ACCEPTED",
   rejected: "REJECTED",
-  archived: "OLD",
+};
+
+export const voteTypes = {
+  for: "POSITIVE",
+  neutral: "NEUTRAL",
+  against: "AGAINST",
 };
 
 export const emptyForms = {
@@ -14,8 +19,28 @@ export const emptyForms = {
   },
   newProject: {
     title: "",
+    summary: "",
     content: "<p><br></p>",
     status: projectStatus.proposed,
+  },
+  project: {
+    title: "",
+    summary: "",
+    content: "",
+    author: "",
+    datePublished: "",
+    status: "",
+  },
+  projectInfoDTO: {
+    title: "",
+    summary: "",
+    content: "",
+    author: "",
+    datePublished: "",
+    status: "",
+    votesFor: 0,
+    votesNeutral: 0,
+    votesAgainst: 0,
   },
   projectOverview: {
     projects: [],

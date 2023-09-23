@@ -23,7 +23,7 @@ app:
   jwt:
     secret: ?*<JM4T"jL'*7d#kp(S)V`^io9YEhzpSO$[m^D;w=DKY6iw&*#!+J'KGFvJxUM&j
     expiration:
-      minutes: 10
+      minutes: 30
   cors:
     allowed-origins: http://localhost:5173/
 

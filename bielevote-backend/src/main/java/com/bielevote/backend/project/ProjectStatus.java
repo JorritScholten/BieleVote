@@ -4,7 +4,6 @@ public enum ProjectStatus {
     EDITING,
     PROPOSED,
     ACTIVE,
-    OLD,
     ACCEPTED,
     REJECTED
 }

@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Form, Button } from "semantic-ui-react";
-import { emptyForms } from "../../../misc/ApiForms";
-import { useAuth } from "../../../misc/AuthContext";
-import { backendApi, handleLogError } from "../../../misc/ApiMappings";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { HttpStatusCode } from "axios";
+
+import { emptyForms } from "../../../misc/ApiForms";
+import { useAuth } from "../../../misc/AuthContext";
+import { backendApi, handleLogError } from "../../../misc/ApiMappings";
 
 function ProjectForm() {
   const [newProject, setNewProject] = useState(emptyForms.newProject);
@@ -32,6 +33,16 @@ function ProjectForm() {
         value={newProject.title}
         onChange={(e) =>
           setNewProject({ ...newProject, title: e.target.value })
+        }
+        required={true}
+      />
+      <Form.Input
+        label="Summary:"
+        name="summary"
+        placeholder="Summary of project..."
+        value={newProject.summary}
+        onChange={(e) =>
+          setNewProject({ ...newProject, summary: e.target.value })
         }
         required={true}
       />

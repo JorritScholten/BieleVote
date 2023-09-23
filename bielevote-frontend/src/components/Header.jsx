@@ -30,7 +30,7 @@ export default function Header({ pageTitle }) {
           BieleVote
         </Link>
       </div>
-      <h1 className="w-1/5 text-center text-3xl">{pageTitle}</h1>
+      <h1 className="w-1/5 grow text-center text-3xl">{pageTitle}</h1>
       <div className="w-1/4 self-center">
         {userIsAuthenticated() ? (
           <Button.Group fluid size="small">

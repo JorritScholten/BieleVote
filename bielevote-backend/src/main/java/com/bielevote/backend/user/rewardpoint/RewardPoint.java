@@ -3,6 +3,7 @@ package com.bielevote.backend.user.rewardpoint;
 import com.bielevote.backend.reward_shop.Reward;
 import com.bielevote.backend.user.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -47,4 +48,11 @@ public class RewardPoint {
     @ManyToOne
     @JoinColumn(name = "reward_id")
     private Reward reward;
+
+    @JsonIgnore
+    @Transient
+    public static final int AMOUNT_FOR_VOTE = 5;
+    @JsonIgnore
+    @Transient
+    public static final int AMOUNT_FOR_PROJECT_ACCEPTED = 100;
 }
