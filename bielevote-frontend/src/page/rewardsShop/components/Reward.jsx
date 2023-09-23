@@ -42,7 +42,7 @@ export default function Reward({ rewardId }) {
     } else {
       setUserBalance(0);
     }
-  }, [rewardId, getUser, userIsAuthenticated]);
+  }, [rewardId, getUser, userIsAuthenticated, open]);
 
   async function makePurchase() {
     const transaction = {

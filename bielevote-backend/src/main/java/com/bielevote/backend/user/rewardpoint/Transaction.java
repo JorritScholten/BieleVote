@@ -20,8 +20,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "REWARD_POINT_TRANSACTIONS")
-public class RewardPoint {
+@Table(name = "transactions")
+public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -51,8 +51,8 @@ public class RewardPoint {
 
     @JsonIgnore
     @Transient
-    public static final int AMOUNT_FOR_VOTE = 5;
+    public static final int REWARD_FOR_VOTING = 5;
     @JsonIgnore
     @Transient
-    public static final int AMOUNT_FOR_PROJECT_ACCEPTED = 100;
+    public static final int REWARD_FOR_PROJECT_ACCEPTED = 100;
 }

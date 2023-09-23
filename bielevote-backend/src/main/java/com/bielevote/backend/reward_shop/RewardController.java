@@ -3,8 +3,8 @@ package com.bielevote.backend.reward_shop;
 import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRepository;
 import com.bielevote.backend.user.UserService;
-import com.bielevote.backend.user.rewardpoint.RewardPoint;
-import com.bielevote.backend.user.rewardpoint.RewardPointRepository;
+import com.bielevote.backend.user.rewardpoint.Transaction;
+import com.bielevote.backend.user.rewardpoint.TransactionRepository;
 import com.bielevote.backend.user.rewardpoint.TransactionReason;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,7 +26,7 @@ import java.util.stream.IntStream;
 public class RewardController {
     private final RewardRepository rewardRepository;
     private final UserRepository userRepository;
-    private final RewardPointRepository rewardPointRepository;
+    private final TransactionRepository transactionRepository;
     private final UserService userService;
 
     @GetMapping("/shop")
@@ -64,10 +64,10 @@ public class RewardController {
     }
 
     @GetMapping("/redeemed")
-    public ResponseEntity<List<RewardPoint>> getRedeemedRewards(@AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<List<Transaction>> getRedeemedRewards(@AuthenticationPrincipal User currentUser) {
         try {
             var user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow();
-            var transactionList = rewardPointRepository.findByUser(user);
+            var transactionList = transactionRepository.findByUser(user);
             var redeemedRewards = transactionList.stream().filter(rewardPoint -> rewardPoint.getReason() == TransactionReason.REDEEMED_REWARD).toList();
             return ResponseEntity.ok(redeemedRewards);
         } catch (NoSuchElementException e) {
@@ -84,15 +84,15 @@ public class RewardController {
         try {
             var user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow();
             var reward = rewardRepository.findById(rewardPurchasedDto.rewardId).orElseThrow();
-            var transactionList = rewardPointRepository.findByUser(user);
+            var transactionList = transactionRepository.findByUser(user);
             var balance = transactionList.stream().flatMapToInt(t -> IntStream.of(t.getAmount())).sum();
             if (balance < rewardPurchasedDto.rewardsAmount * reward.getCost()) {
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
             var date = LocalDateTime.now();
-            List<RewardPoint> rewardsBought = new ArrayList<>();
+            List<Transaction> rewardsBought = new ArrayList<>();
             for (int i = 0; i < rewardPurchasedDto.rewardsAmount; i++) {
-                rewardsBought.add(RewardPoint.builder()
+                rewardsBought.add(Transaction.builder()
                         .reward(reward)
                         .date(date)
                         .user(user)
@@ -100,7 +100,7 @@ public class RewardController {
                         .amount(-reward.getCost())
                         .build());
             }
-            rewardPointRepository.saveAll(rewardsBought);
+            transactionRepository.saveAll(rewardsBought);
             return new ResponseEntity<>(null, HttpStatus.CREATED);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();

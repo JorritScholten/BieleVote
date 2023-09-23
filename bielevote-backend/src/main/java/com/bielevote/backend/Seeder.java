@@ -11,8 +11,8 @@ import com.bielevote.backend.reward_shop.RewardRepository;
 import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRepository;
 import com.bielevote.backend.user.UserRole;
-import com.bielevote.backend.user.rewardpoint.RewardPoint;
-import com.bielevote.backend.user.rewardpoint.RewardPointRepository;
+import com.bielevote.backend.user.rewardpoint.Transaction;
+import com.bielevote.backend.user.rewardpoint.TransactionRepository;
 import com.bielevote.backend.user.rewardpoint.TransactionReason;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -30,7 +30,7 @@ public class Seeder implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final NewsArticleRepository newsArticleRepository;
     private final UserRepository userRepository;
-    private final RewardPointRepository rewardPointRepository;
+    private final TransactionRepository transactionRepository;
     private final ProjectRepository projectRepository;
     private final RewardRepository rewardRepository;
 
@@ -67,32 +67,32 @@ public class Seeder implements CommandLineRunner {
                         .password(passwordEncoder.encode("123"))
                         .build()
         ));
-        rewardPointRepository.saveAllAndFlush(List.of(
-                RewardPoint.builder()
+        transactionRepository.saveAllAndFlush(List.of(
+                Transaction.builder()
                         .amount(3)
                         .date(LocalDateTime.now())
                         .reason(TransactionReason.PROJECT_ACCEPTED)
                         .user(userRepository.findByUsername("citizen1").orElseThrow())
                         .build(),
-                RewardPoint.builder()
+                Transaction.builder()
                         .amount(-1)
                         .date(LocalDateTime.now())
                         .reason(TransactionReason.REDEEMED_REWARD)
                         .user(userRepository.findByUsername("citizen1").orElseThrow())
                         .build(),
-                RewardPoint.builder()
+                Transaction.builder()
                         .amount(Integer.MIN_VALUE)
                         .date(LocalDateTime.ofEpochSecond(1, 0, ZoneOffset.UTC))
                         .reason(TransactionReason.ADMINISTRATOR_CHANGE)
                         .user(userRepository.findByUsername("municipal1").orElseThrow())
                         .build(),
-                RewardPoint.builder()
+                Transaction.builder()
                         .amount(256)
                         .date(LocalDateTime.now().minusMonths(2))
                         .reason(TransactionReason.VOTED_ON_PROJECT)
                         .user(userRepository.findByUsername("admin1").orElseThrow())
                         .build(),
-                RewardPoint.builder()
+                Transaction.builder()
                         .amount(2)
                         .date(LocalDateTime.now().minusWeeks(2))
                         .reason(TransactionReason.VOTED_ON_PROJECT)
