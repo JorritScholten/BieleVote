@@ -40,10 +40,10 @@ export default function ProjectOverviewPage() {
   return (
     <div className="flex flex-col gap-5 w-screen">
       <Header pageTitle="Projects" />
-      <div className="grid grid-cols-5 items-start">
+      <div className="grid grid-cols-5 items-start justify-items-center">
         <List>
           <SemanticHeader as="h3">Filter by status:</SemanticHeader>
-          <Button.Group vertical>
+          <Button.Group vertical fluid>
             <Button
               toggle
               active={viewActive}

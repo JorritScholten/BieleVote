@@ -33,7 +33,7 @@ public class RewardPoint {
 
     @NonNull
     @ManyToOne
-    @JoinColumn(name = "author_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
     private User user;
 
