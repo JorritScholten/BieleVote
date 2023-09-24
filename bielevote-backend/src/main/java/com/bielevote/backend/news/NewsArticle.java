@@ -15,18 +15,23 @@ import java.time.LocalDateTime;
 @Builder
 @Jacksonized
 public class NewsArticle {
-
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+
     private String title;
+
     @Column(columnDefinition = "CLOB")
     private String summary;
+
     @Column(columnDefinition = "CLOB")
     private String content;
+
     private String author;
+
     @Column(columnDefinition = "TIMESTAMP(0)")
     private LocalDateTime datePlaced;
+
     @Enumerated(value = EnumType.STRING)
     private Category category;
 }

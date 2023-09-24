@@ -63,13 +63,19 @@ class ApplicationTests {
             var statement = connection.createStatement();
             final String[] tableInsertOrder = new String[]{"USERS", "NEWS_ARTICLE", "PROJECT", "REWARD", "TRANSACTIONS", "VOTES"};
             for (var table : tableInsertOrder) {
+                int count = 0;
                 file.write(("-- Entries for " + table + "\n").getBytes());
                 statement.execute("SCRIPT SIMPLE COLUMNS NOSETTINGS TABLE " + table);
                 for (var dumpedDatabase = statement.getResultSet(); dumpedDatabase.next(); ) {
                     if (dumpedDatabase.getString(1).startsWith("INSERT INTO \"PUBLIC\".\"" + table)) {
                         file.write(dumpedDatabase.getBytes(1));
                         file.write('\n');
+                        count++;
                     }
+                }
+                if(count!= 0){
+                    count++;
+                    file.write(("ALTER SEQUENCE \"PUBLIC\".\"" + table + "_SEQ\" RESTART WITH " + count + ";\n").getBytes());
                 }
                 file.write('\n');
             }
