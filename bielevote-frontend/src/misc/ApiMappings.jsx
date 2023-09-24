@@ -24,6 +24,7 @@ export const backendApi = {
   getHasVoted,
   postVote,
   postRewardTransaction,
+  getRewardTransactions,
 };
 
 function login(formData) {
@@ -109,6 +110,12 @@ function postRewardTransaction(user, rewardData) {
       Authorization: bearerAuth(user),
       "Content-type": "application/json",
     },
+  });
+}
+
+function getRewardTransactions(user) {
+  return instance.get("/api/v1/rewards/redeemed", {
+    headers: { Authorization: bearerAuth(user) },
   });
 }
 
