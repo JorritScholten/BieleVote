@@ -40,14 +40,11 @@ public class Project {
     private String summary;
 
     @JsonView({ProjectViews.Serialize.class})
-//    @JsonSerialize(using = ContentSerialize.class) //temporary for migrating db to json
     @Column(columnDefinition = "CLOB")
     private String content;
 
     @NonNull
     @JsonView({ProjectViews.GetProjectList.class, ProjectViews.Serialize.class})
-//    @JsonIdentityInfo(property = "username", generator = ObjectIdGenerators.PropertyGenerator.class) //temporary for migrating db to json
-//    @JsonIdentityReference(alwaysAsId = true) //temporary for migrating db to json
     @ManyToOne
     @JoinColumn(nullable = false)
     @JsonManagedReference
@@ -66,21 +63,4 @@ public class Project {
     @JsonManagedReference
     @OneToMany(mappedBy = "project")
     private Set<Vote> votes;
-
-//    //temporary for migrating db to json
-//    public static class ContentSerialize extends JsonSerializer<String> {
-//        @Override
-//        public void serialize(String value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-//            var split = value.split("\n");
-//            gen.writeStartArray();
-//            for (var s : split) {
-//                if (s.isBlank()) {
-////                    gen.writeString("<p><br></p>");
-//                } else {
-//                    gen.writeString("<p>" + s + "</p>");
-//                }
-//            }
-//            gen.writeEndArray();
-//        }
-//    }
 }
