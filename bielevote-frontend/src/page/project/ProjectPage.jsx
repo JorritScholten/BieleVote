@@ -8,6 +8,7 @@ import {
   Progress,
   Header as SemanticHeader,
 } from "semantic-ui-react";
+import DOMPurify from "dompurify";
 
 import Header from "../../components/Header";
 import ProjectVote from "./components/ProjectVote";
@@ -86,12 +87,12 @@ function renderProject(project) {
       {project.content === null || project.content.length === 0 ? (
         placeHolderText(4)
       ) : (
-        <Container fluid textAlign="justified" content={project.content} />
-        // <Container
-        //   fluid
-        //   dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(project.content) }}
-        //   textAlign="justified"
-        // />
+        <div
+          className="flex flex-col gap-2 text-justify w-full"
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(project.content),
+          }}
+        />
       )}
     </div>
   );
