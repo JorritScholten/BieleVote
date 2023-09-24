@@ -1,6 +1,5 @@
 package com.bielevote.backend;
 
-import com.bielevote.backend.config.PopulateDatabase;
 import com.bielevote.backend.project.ProjectRepository;
 import com.bielevote.backend.project.ProjectViews;
 import com.fasterxml.jackson.databind.MapperFeature;
@@ -13,16 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.sql.DataSource;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.SQLException;
 
 @SpringBootTest
 class ApplicationTests {
     final String seedValuesDir = "src/test/java/com/bielevote/backend/seed_values/";
-    final String dataResourcesDir = "src/main/resources/data/";
     @Autowired
     private ProjectRepository projectRepository;
     @Autowired
@@ -55,31 +51,7 @@ class ApplicationTests {
 
     @Test
     @EnabledIfEnvironmentVariable(named = "DUMP2SQL", matches = "TRUE")
-    void dumpDatabase() throws SQLException, IOException {
-        var dumpFile = Path.of(dataResourcesDir + PopulateDatabase.db_dump_name).toFile();
-//        var dumpFile = PopulateDatabase.dbContents.getFile();
-        try (var file = new FileOutputStream(dumpFile);
-             var connection = dataSource.getConnection()) {
-            var statement = connection.createStatement();
-            final String[] tableInsertOrder = new String[]{"USERS", "NEWS_ARTICLE", "PROJECT", "REWARD", "TRANSACTIONS", "VOTES"};
-            for (var table : tableInsertOrder) {
-                int count = 0;
-                file.write(("-- Entries for " + table + "\n").getBytes());
-                statement.execute("SCRIPT SIMPLE COLUMNS NOSETTINGS TABLE " + table);
-                for (var dumpedDatabase = statement.getResultSet(); dumpedDatabase.next(); ) {
-                    if (dumpedDatabase.getString(1).startsWith("INSERT INTO \"PUBLIC\".\"" + table)) {
-                        file.write(dumpedDatabase.getBytes(1));
-                        file.write('\n');
-                        count++;
-                    }
-                }
-                if(count!= 0){
-                    count++;
-                    file.write(("ALTER SEQUENCE \"PUBLIC\".\"" + table + "_SEQ\" RESTART WITH " + count + ";\n").getBytes());
-                }
-                file.write('\n');
-            }
-            file.write('\n');
-        }
+    void dumpDatabase() {
+        new DevelopmentController().dumpDbToSQL();
     }
 }

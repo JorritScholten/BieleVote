@@ -52,6 +52,7 @@ public class SecurityConfiguration {
             h2RequestMatcher.setServletPath(h2ConsolePath);
             http.authorizeHttpRequests((a) -> a.requestMatchers(h2RequestMatcher).permitAll());
             http.headers((headers) -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
+            http.authorizeHttpRequests(a -> a.requestMatchers(new AntPathRequestMatcher("/dev/**")).permitAll());
         }
         http.csrf(AbstractHttpConfigurer::disable);
         http.cors(Customizer.withDefaults());
