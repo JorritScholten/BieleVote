@@ -11,7 +11,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.config.annotation.web.AbstractRequestMatcherRegistry;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -50,12 +49,16 @@ public class SecurityConfiguration {
     /**
      * match specified HTTP method
      */
-    BiFunction<String, HttpMethod, AntPathRequestMatcher> match =
-            (pattern, method) -> new AntPathRequestMatcher(pattern, method.name());
+    Function<AuthorizeHttpRequestsConfigurer<?>.AuthorizationManagerRequestMatcherRegistry,
+            BiFunction<String, HttpMethod, AuthorizeHttpRequestsConfigurer<?>.AuthorizedUrl>> match = authorization ->
+            (pattern, method) -> authorization.requestMatchers(new AntPathRequestMatcher(pattern, method.name()));
     /**
      * match all HTTP methods
      */
-    Function<String, AntPathRequestMatcher> matchAll = AntPathRequestMatcher::new;
+    Function<AuthorizeHttpRequestsConfigurer<?>.AuthorizationManagerRequestMatcherRegistry,
+            Function<String, AuthorizeHttpRequestsConfigurer<?>.AuthorizedUrl>> matchAll =
+            authorization -> pattern -> authorization.requestMatchers(new AntPathRequestMatcher(pattern));
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
@@ -68,31 +71,31 @@ public class SecurityConfiguration {
             h2RequestMatcher.setServletPath(h2ConsolePath);
             http.authorizeHttpRequests((a) -> a.requestMatchers(h2RequestMatcher).permitAll());
             http.headers((headers) -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
-            http.authorizeHttpRequests(a -> a.requestMatchers(matchAll.apply("/dev/**")).permitAll());
+            http.authorizeHttpRequests(a -> matchAll.apply(a).apply("/dev/**").permitAll());
         }
         http.csrf(AbstractHttpConfigurer::disable);
         http.cors(Customizer.withDefaults());
-        http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers(match.apply("/api/v1/users/**", GET)).hasAnyRole(allAccounts)
-                .requestMatchers(matchAll.apply("/auth/**")).permitAll()
-                .requestMatchers(match.apply("/api/v1/projects/*", GET)).permitAll()
-                .requestMatchers(match.apply("/api/v1/projects", GET)).permitAll()
-                .requestMatchers(match.apply("/api/v1/projects", POST)).hasAnyRole(allAccounts)
-                .requestMatchers(match.apply("/api/v1/projects/*", DELETE)).hasRole(ADMINISTRATOR.name())
-                .requestMatchers(match.apply("/api/v1/news/**", GET)).permitAll()
-                .requestMatchers(match.apply("/api/v1/news", POST)).hasAnyRole(municipality)
-                .requestMatchers(match.apply("/api/v1/news/**", DELETE)).hasAnyRole(ADMINISTRATOR.name())
-                .requestMatchers(match.apply("/api/v1/leaderboard", GET)).permitAll()
-                .requestMatchers(match.apply("/api/v1/rewards/shop", GET)).permitAll()
-                .requestMatchers(match.apply("/api/v1/rewards/shop/*", GET)).permitAll()
-                .requestMatchers(match.apply("/api/v1/rewards/redeemed", GET)).hasAnyRole(allAccounts)
-                .requestMatchers(match.apply("/api/v1/rewards/redeemed", POST)).hasAnyRole(allAccounts)
-                .requestMatchers(match.apply("/api/v1/votes/*", GET)).hasAnyRole(allAccounts)
-                .requestMatchers(match.apply("/api/v1/votes/*", POST)).hasAnyRole(allAccounts)
-                .requestMatchers(match.apply("/api/v1/rewards", GET)).permitAll()
-                .requestMatchers(match.apply("/api/v1/rewards/*", GET)).permitAll()
-                .anyRequest().authenticated()
-        );
+        http.authorizeHttpRequests((auth) -> {
+            matchAll.apply(auth).apply("/auth/**").permitAll();
+            match.apply(auth).apply("/api/v1/users/**", GET).hasAnyRole(allAccounts);
+            match.apply(auth).apply("/api/v1/projects/*", GET).permitAll();
+            match.apply(auth).apply("/api/v1/projects", GET).permitAll();
+            match.apply(auth).apply("/api/v1/projects", POST).hasAnyRole(allAccounts);
+            match.apply(auth).apply("/api/v1/projects/*", DELETE).hasRole(ADMINISTRATOR.name());
+            match.apply(auth).apply("/api/v1/news/**", GET).permitAll();
+            match.apply(auth).apply("/api/v1/news", POST).hasAnyRole(municipality);
+            match.apply(auth).apply("/api/v1/news/**", DELETE).hasAnyRole(ADMINISTRATOR.name());
+            match.apply(auth).apply("/api/v1/leaderboard", GET).permitAll();
+            match.apply(auth).apply("/api/v1/rewards/shop", GET).permitAll();
+            match.apply(auth).apply("/api/v1/rewards/shop/*", GET).permitAll();
+            match.apply(auth).apply("/api/v1/rewards/redeemed", GET).hasAnyRole(allAccounts);
+            match.apply(auth).apply("/api/v1/rewards/redeemed", POST).hasAnyRole(allAccounts);
+            match.apply(auth).apply("/api/v1/votes/*", GET).hasAnyRole(allAccounts);
+            match.apply(auth).apply("/api/v1/votes/*", POST).hasAnyRole(allAccounts);
+            match.apply(auth).apply("/api/v1/rewards", GET).permitAll();
+            match.apply(auth).apply("/api/v1/rewards/*", GET).permitAll();
+            auth.anyRequest().authenticated();
+        });
         http.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         http.exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
         http.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
