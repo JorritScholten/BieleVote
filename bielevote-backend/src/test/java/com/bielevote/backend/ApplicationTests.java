@@ -1,5 +1,6 @@
 package com.bielevote.backend;
 
+import com.bielevote.backend.config.PopulateDatabase;
 import com.bielevote.backend.project.ProjectRepository;
 import com.bielevote.backend.project.ProjectViews;
 import com.fasterxml.jackson.databind.MapperFeature;
@@ -55,23 +56,22 @@ class ApplicationTests {
     @Test
     @EnabledIfEnvironmentVariable(named = "DUMP2SQL", matches = "TRUE")
     void dumpDatabase() throws SQLException, IOException {
-//        runscript from 'db_dump.sql'
-//        SCRIPT SIMPLE COLUMNS NOSETTINGS TO 'db_dump.sql'
-        try (var file = new FileOutputStream("db_dump.sql");
+        var dumpFile = Path.of(dataResourcesDir + PopulateDatabase.db_dump_name).toFile();
+//        var dumpFile = PopulateDatabase.dbContents.getFile();
+        try (var file = new FileOutputStream(dumpFile);
              var connection = dataSource.getConnection()) {
             var statement = connection.createStatement();
-            statement.execute("SCRIPT SIMPLE COLUMNS NOSETTINGS");
-            for (var dumpedDatabase = statement.getResultSet(); dumpedDatabase.next(); ) {
-                if (dumpedDatabase.getString(1).startsWith("-- ")) {
-                    if (dumpedDatabase.getRow() != 1) {
+            final String[] tableInsertOrder = new String[]{"USERS", "NEWS_ARTICLE", "PROJECT", "REWARD", "TRANSACTIONS", "VOTES"};
+            for (var table : tableInsertOrder) {
+                file.write(("-- Entries for " + table + "\n").getBytes());
+                statement.execute("SCRIPT SIMPLE COLUMNS NOSETTINGS TABLE " + table);
+                for (var dumpedDatabase = statement.getResultSet(); dumpedDatabase.next(); ) {
+                    if (dumpedDatabase.getString(1).startsWith("INSERT INTO \"PUBLIC\".\"" + table)) {
+                        file.write(dumpedDatabase.getBytes(1));
                         file.write('\n');
                     }
-                    file.write(dumpedDatabase.getBytes(1));
-                    file.write('\n');
-                } else if (dumpedDatabase.getString(1).startsWith("INSERT INTO ")) {
-                    file.write(dumpedDatabase.getBytes(1));
-                    file.write('\n');
                 }
+                file.write('\n');
             }
             file.write('\n');
         }

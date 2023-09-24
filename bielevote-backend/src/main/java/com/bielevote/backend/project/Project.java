@@ -75,7 +75,7 @@ public class Project {
 //            gen.writeStartArray();
 //            for (var s : split) {
 //                if (s.isBlank()) {
-//                    gen.writeString("<p><br></p>");
+////                    gen.writeString("<p><br></p>");
 //                } else {
 //                    gen.writeString("<p>" + s + "</p>");
 //                }

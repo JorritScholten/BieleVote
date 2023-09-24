@@ -41,12 +41,13 @@ public class Seeder implements CommandLineRunner {
     private final RewardRepository rewardRepository;
 
     @Override
-    public void run(String... args) {
-        System.out.println("Seeding database...");
-        seedUsers();
-        seedProjects();
-        seedNewsArticles();
-        seedRewards();
+    public void run(String... args) throws IOException {
+//        System.out.println("Seeding database...");
+//        seedUsers();
+////        seedProjects();
+//        seedProjectsFromJson();
+//        seedNewsArticles();
+//        seedRewards();
     }
 
     private void seedProjectsFromJson() throws IOException {
