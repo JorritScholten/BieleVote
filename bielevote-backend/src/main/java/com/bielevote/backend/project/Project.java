@@ -25,17 +25,17 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Project {
-    @JsonView({ProjectViews.GetProjectList.class, ProjectViews.Serialize.class})
+    @JsonView({ProjectViews.GetProjectList.class})
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @NonNull
-    @JsonView({ProjectViews.GetProjectList.class, ProjectViews.Serialize.class})
+    @JsonView({ProjectViews.GetProjectList.class})
     private String title;
 
     @NonNull
-    @JsonView({ProjectViews.GetProjectList.class, ProjectViews.Serialize.class})
+    @JsonView({ProjectViews.GetProjectList.class})
     @Column(columnDefinition = "CLOB")
     private String summary;
 
@@ -44,19 +44,19 @@ public class Project {
     private String content;
 
     @NonNull
-    @JsonView({ProjectViews.GetProjectList.class, ProjectViews.Serialize.class})
+    @JsonView({ProjectViews.GetProjectList.class})
     @ManyToOne
     @JoinColumn(nullable = false)
     @JsonManagedReference
     private User author;
 
     @NonNull
-    @JsonView({ProjectViews.GetProjectList.class, ProjectViews.Serialize.class})
+    @JsonView({ProjectViews.GetProjectList.class})
     @Column(columnDefinition = "TIMESTAMP(0)")
     private LocalDateTime datePublished;
 
     @NonNull
-    @JsonView({ProjectViews.GetProjectList.class, ProjectViews.Serialize.class})
+    @JsonView({ProjectViews.GetProjectList.class})
     @Enumerated(value = EnumType.STRING)
     private ProjectStatus status;
 
