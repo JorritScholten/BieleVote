@@ -113,10 +113,13 @@ function postRewardTransaction(user, rewardData) {
   });
 }
 
-function getRewardTransactions(user) {
-  return instance.get("/api/v1/rewards/redeemed", {
-    headers: { Authorization: bearerAuth(user) },
-  });
+function getRewardTransactions(user, page, amount) {
+  return instance.get(
+    "/api/v1/rewards/redeemed" + "?page=" + page + "&size=" + amount,
+    {
+      headers: { Authorization: bearerAuth(user) },
+    }
+  );
 }
 
 function getHasVoted(projectId, user) {
