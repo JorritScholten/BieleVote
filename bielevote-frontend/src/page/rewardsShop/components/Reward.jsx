@@ -92,7 +92,7 @@ export default function Reward({ rewardId }) {
       <Modal.Content image>
         <Modal.Description>
           <div className="flex flex-row items-center">
-            Cost: {reward.cost}
+            Cost: {reward.cost * count}
             <div className="ml-1">
               <BiBug />
             </div>

@@ -81,4 +81,10 @@ export const emptyForms = {
     rewardId: -1,
     rewardsAmount: 1,
   },
+  rewardTransactions: {
+    transactions: [],
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0,
+  },
 };
