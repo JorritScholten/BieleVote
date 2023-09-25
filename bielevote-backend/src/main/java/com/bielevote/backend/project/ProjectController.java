@@ -81,13 +81,19 @@ public class ProjectController {
         }
     }
 
+    @JsonView(ProjectViews.GetProjectList.class)
     @PostMapping
-    public ResponseEntity<Project> postProject(@Validated @RequestBody Project project) {
+    public ResponseEntity<Project> postProject(@Validated @RequestBody ProjectDTO projectDTO) {
         try {
             var auth = SecurityContextHolder.getContext().getAuthentication();
             if (auth == null) {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
+            var project = new Project();
+            project.setStatus(projectDTO.status);
+            project.setSummary(projectDTO.summary);
+            project.setContent(projectDTO.content);
+            project.setTitle(projectDTO.title);
             project.setAuthor(userService.getByUsername(auth.getName()).orElseThrow());
             project.setDatePublished(LocalDateTime.now());
             if (!(project.getStatus() == ProjectStatus.PROPOSED || project.getStatus() == ProjectStatus.EDITING)) {
@@ -116,4 +122,5 @@ public class ProjectController {
                                  LocalDateTime datePublished, ProjectStatus status, Long votesFor, Long votesNeutral,
                                  Long votesAgainst) {
     }
+    public record ProjectDTO(String title, String summary, String content, ProjectStatus status){}
 }

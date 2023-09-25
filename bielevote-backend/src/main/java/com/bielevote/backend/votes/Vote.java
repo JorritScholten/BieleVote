@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
         @UniqueConstraint(columnNames = {"user_id", "project_id"})
 })
 public class Vote {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
     private Long id;
 

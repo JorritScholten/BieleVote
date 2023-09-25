@@ -18,7 +18,7 @@ import java.util.List;
 @Jacksonized
 public class Reward {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     private String name;
