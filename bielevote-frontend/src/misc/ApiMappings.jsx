@@ -77,8 +77,17 @@ function getAllProjects(page, amount, statuses, user) {
   }
 }
 
-function getProjectById(projectId) {
-  return instance.get(`/api/v1/projects/${projectId}`);
+function getProjectById(projectId, user) {
+  const path = `/api/v1/projects/${projectId}`;
+  if (user === null) {
+    return instance.get(path);
+  } else {
+    return instance.get(path, {
+      headers: {
+        Authorization: bearerAuth(user),
+      },
+    });
+  }
 }
 
 function getAllNewsArticles(page, amount) {

@@ -75,11 +75,18 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProjectInfoDTO> getProjectById(@PathVariable("id") long id) {
+    public ResponseEntity<ProjectInfoDTO> getProjectById(@PathVariable("id") long id,
+                                                         @AuthenticationPrincipal User currentUser) {
         try {
             var project = projectRepository.findById(id).orElseThrow();
-            if (!allowedPublicTypes.contains(project.getStatus())) {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            if (currentUser != null && currentUser.getRole() == UserRole.MUNICIPAL) {
+                if (!allowedMunicipalTypes.contains(project.getStatus())) {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
+            } else {
+                if (!allowedPublicTypes.contains(project.getStatus())) {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
             }
             var dto = new ProjectInfoDTO(
                     project.getTitle(),
@@ -100,18 +107,15 @@ public class ProjectController {
 
     @JsonView(ProjectViews.GetProjectList.class)
     @PostMapping
-    public ResponseEntity<Project> postProject(@Validated @RequestBody ProjectDTO projectDTO) {
+    public ResponseEntity<Project> postProject(@Validated @RequestBody ProjectDTO projectDTO,
+                                               @AuthenticationPrincipal User currentUser) {
         try {
-            var auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth == null) {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
             var project = new Project();
             project.setStatus(projectDTO.status);
             project.setSummary(projectDTO.summary);
             project.setContent(projectDTO.content);
             project.setTitle(projectDTO.title);
-            project.setAuthor(userService.getByUsername(auth.getName()).orElseThrow());
+            project.setAuthor(currentUser);
             project.setDatePublished(LocalDateTime.now());
             if (!(project.getStatus() == ProjectStatus.PROPOSED || project.getStatus() == ProjectStatus.EDITING)) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

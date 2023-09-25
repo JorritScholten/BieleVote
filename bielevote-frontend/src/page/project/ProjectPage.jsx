@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { IoReturnDownBack } from "react-icons/io5";
 import {
   Container,
@@ -9,17 +9,21 @@ import {
   Header as SemanticHeader,
 } from "semantic-ui-react";
 import DOMPurify from "dompurify";
+import { HttpStatusCode } from "axios";
 
 import Header from "../../components/Header";
 import ProjectVote from "./components/ProjectVote";
 import { emptyForms, projectStatus } from "../../misc/ApiForms";
 import { backendApi } from "../../misc/ApiMappings";
 import { formatDate } from "../../components/Utils";
+import { useAuth } from "../../misc/AuthContext";
 
 export default function ProjectPage() {
   const [project, setProject] = useState(emptyForms.projectInfoDTO);
   const [version, setVersion] = useState(0);
   const { projectId } = useParams();
+  const { getUser, getAccountType } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProject(projectId);
@@ -27,10 +31,14 @@ export default function ProjectPage() {
 
   async function fetchProject(projectId) {
     try {
-      const response = await backendApi.getProjectById(projectId);
+      const response = await backendApi.getProjectById(projectId, getUser());
       setProject(response.data);
     } catch (error) {
-      console.log(error);
+      if (error.response.status === HttpStatusCode.Unauthorized) {
+        navigate("/projects");
+      } else {
+        console.log(error);
+      }
     }
   }
 
