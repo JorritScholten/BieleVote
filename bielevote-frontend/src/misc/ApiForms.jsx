@@ -41,6 +41,7 @@ export const emptyForms = {
     votesFor: 0,
     votesNeutral: 0,
     votesAgainst: 0,
+    progressPercentage: 0,
   },
   projectOverview: {
     projects: [],

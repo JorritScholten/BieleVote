@@ -5,7 +5,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface ProjectRepository extends JpaRepository<Project, Long> {
     Page<Project> findByStatusIn(Collection<ProjectStatus> statuses, Pageable pageable);
+
+    List<Project> findByStatus(ProjectStatus status);
 }
