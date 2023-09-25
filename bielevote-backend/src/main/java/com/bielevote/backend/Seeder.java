@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class Seeder implements CommandLineRunner {
     public void run(String... args) throws IOException {
 //        System.out.println("Seeding database...");
 //        seedUsers();
-//        seedProjects();
+        seedProjects();
 //        seedNewsArticles();
 //        seedRewards();
     }
@@ -36,6 +37,10 @@ public class Seeder implements CommandLineRunner {
     }
 
     private void seedProjects() {
+        var project = projectRepository.findById(2L).orElseThrow();
+        project.setStartOfVoting(LocalDateTime.now().minusWeeks(3));
+        project.setEndOfVoting(LocalDateTime.now().plusWeeks(1));
+        projectRepository.saveAndFlush(project);
     }
 
     private void seedNewsArticles() {
