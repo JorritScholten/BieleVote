@@ -8,6 +8,7 @@ import {
   Progress,
   Header as SemanticHeader,
 } from "semantic-ui-react";
+import DOMPurify from "dompurify";
 
 import Header from "../../components/Header";
 import ProjectVote from "./components/ProjectVote";
@@ -64,7 +65,13 @@ export default function ProjectPage() {
 function renderProject(project) {
   return (
     <div className="col-span-3 flex flex-col gap-2">
-      <SemanticHeader as="h1">{project.title}</SemanticHeader>
+      {project.title === null || project.title.length === 0 ? (
+        <Placeholder>
+          <Placeholder.Line />
+        </Placeholder>
+      ) : (
+        <SemanticHeader as="h1">{project.title}</SemanticHeader>
+      )}
       <SemanticHeader.Subheader>
         <Icon name="calendar alternate" /> {formatDate(project.datePublished)}
       </SemanticHeader.Subheader>
@@ -80,13 +87,22 @@ function renderProject(project) {
         )} */}
         <div hidden />
       </div>
-      <Container fluid className="text-xl">
-        {project.summary}
-      </Container>
+      {project.summary === null || project.summary.length === 0 ? (
+        placeHolderText(1)
+      ) : (
+        <Container fluid className="text-xl">
+          {project.summary}
+        </Container>
+      )}
       {project.content === null || project.content.length === 0 ? (
         placeHolderText(4)
       ) : (
-        <Container fluid>{project.content}</Container>
+        <div
+          className="flex flex-col gap-2 text-justify w-full"
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(project.content),
+          }}
+        />
       )}
     </div>
   );

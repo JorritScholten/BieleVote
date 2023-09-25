@@ -7,6 +7,7 @@ import { HttpStatusCode } from "axios";
 import { emptyForms } from "../../../misc/ApiForms";
 import { useAuth } from "../../../misc/AuthContext";
 import { backendApi, handleLogError } from "../../../misc/ApiMappings";
+import DOMPurify from "dompurify";
 
 function ProjectForm() {
   const [newProject, setNewProject] = useState(emptyForms.newProject);
@@ -15,7 +16,14 @@ function ProjectForm() {
   async function onSubmit(e) {
     e.preventDefault();
     try {
-      const response = await backendApi.postProject(getUser(), newProject);
+      const sanitizedNewProject = {
+        ...newProject,
+        content: DOMPurify.sanitize(newProject.content),
+      };
+      const response = await backendApi.postProject(
+        getUser(),
+        sanitizedNewProject
+      );
       if (response.status === HttpStatusCode.Created) {
         setNewProject(emptyForms.newProject);
       }

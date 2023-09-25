@@ -4,10 +4,15 @@ import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserViews;
 import com.fasterxml.jackson.annotation.*;
 import com.bielevote.backend.votes.Vote;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -20,38 +25,38 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Project {
-    @JsonView(ProjectViews.GetProjectList.class)
+    @JsonView({ProjectViews.GetProjectList.class, ProjectViews.Serialize.class})
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @NonNull
-    @JsonView(ProjectViews.GetProjectList.class)
+    @JsonView({ProjectViews.GetProjectList.class, ProjectViews.Serialize.class})
     private String title;
 
     @NonNull
-    @JsonView(ProjectViews.GetProjectList.class)
+    @JsonView({ProjectViews.GetProjectList.class, ProjectViews.Serialize.class})
     @Column(columnDefinition = "CLOB")
     private String summary;
 
-    @NonNull
+    @JsonView({ProjectViews.Serialize.class})
     @Column(columnDefinition = "CLOB")
     private String content;
 
     @NonNull
-    @JsonView(ProjectViews.GetProjectList.class)
+    @JsonView({ProjectViews.GetProjectList.class, ProjectViews.Serialize.class})
     @ManyToOne
     @JoinColumn(nullable = false)
     @JsonManagedReference
     private User author;
 
     @NonNull
-    @JsonView(ProjectViews.GetProjectList.class)
+    @JsonView({ProjectViews.GetProjectList.class, ProjectViews.Serialize.class})
     @Column(columnDefinition = "TIMESTAMP(0)")
     private LocalDateTime datePublished;
 
     @NonNull
-    @JsonView(ProjectViews.GetProjectList.class)
+    @JsonView({ProjectViews.GetProjectList.class, ProjectViews.Serialize.class})
     @Enumerated(value = EnumType.STRING)
     private ProjectStatus status;
 

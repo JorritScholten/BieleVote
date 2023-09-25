@@ -32,7 +32,6 @@ export default function ProjectOverviewPage() {
     if (viewActive) statusFilter.push(projectStatus.active);
     if (viewAccepted) statusFilter.push(projectStatus.accepted);
     if (viewRejected) statusFilter.push(projectStatus.rejected);
-    console.log(statusFilter);
     const response = await backendApi.getAllProjects(page, 3, statusFilter);
     setProjectsList(response.data);
   };
