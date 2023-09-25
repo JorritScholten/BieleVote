@@ -10,16 +10,21 @@ import { Header } from "../../components";
 import ListProjects from "./components/ListProjects";
 import { backendApi } from "../../misc/ApiMappings";
 import { emptyForms, projectStatus } from "../../misc/ApiForms";
+import { useAuth } from "../../misc/AuthContext";
+import { accountType } from "../../misc/NavMappings";
 
 export default function ProjectOverviewPage() {
   const [projectsList, setProjectsList] = useState(emptyForms.projectOverview);
   const [viewActive, setViewActive] = useState(true);
   const [viewAccepted, setViewAccepted] = useState(true);
   const [viewRejected, setViewRejected] = useState(false);
+  const [viewProposed, setViewProposed] = useState(true);
+  const [viewDenied, setViewDenied] = useState(false);
+  const { getAccountType } = useAuth();
 
   useEffect(() => {
     handlePageChange();
-  }, [viewActive, viewAccepted, viewRejected]);
+  }, [viewActive, viewAccepted, viewRejected, viewProposed, viewDenied]);
 
   const handlePageChange = async (event, value) => {
     let page;
@@ -32,6 +37,8 @@ export default function ProjectOverviewPage() {
     if (viewActive) statusFilter.push(projectStatus.active);
     if (viewAccepted) statusFilter.push(projectStatus.accepted);
     if (viewRejected) statusFilter.push(projectStatus.rejected);
+    if (viewProposed) statusFilter.push(projectStatus.proposed);
+    if (viewDenied) statusFilter.push(projectStatus.denied);
     const response = await backendApi.getAllProjects(page, 3, statusFilter);
     setProjectsList(response.data);
   };
@@ -61,6 +68,26 @@ export default function ProjectOverviewPage() {
               onClick={() => setViewRejected((state) => (state = !state))}
               content="Rejected"
             />
+            {getAccountType() === accountType.municipal ? (
+              <Button
+                toggle
+                active={viewProposed}
+                onClick={() => setViewProposed((state) => (state = !state))}
+                content="Proposed"
+              />
+            ) : (
+              <div hidden />
+            )}
+            {getAccountType() === accountType.municipal ? (
+              <Button
+                toggle
+                active={viewDenied}
+                onClick={() => setViewDenied((state) => (state = !state))}
+                content="Denied"
+              />
+            ) : (
+              <div hidden />
+            )}
           </Button.Group>
         </List>
         <div className="col-span-3 flex flex-col items-center w-full">
