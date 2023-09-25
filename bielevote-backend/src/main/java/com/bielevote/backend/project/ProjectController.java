@@ -1,5 +1,6 @@
 package com.bielevote.backend.project;
 
+import com.bielevote.backend.user.UserRole;
 import com.bielevote.backend.user.UserService;
 import com.bielevote.backend.votes.VoteType;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -27,6 +28,13 @@ public class ProjectController {
             ProjectStatus.ACCEPTED,
             ProjectStatus.REJECTED
     );
+    private static final Set<ProjectStatus> allowedMunicipalTypes = Set.of(
+            ProjectStatus.ACTIVE,
+            ProjectStatus.ACCEPTED,
+            ProjectStatus.REJECTED,
+            ProjectStatus.PROPOSED,
+            ProjectStatus.DENIED
+    );
     private final ProjectRepository projectRepository;
     private final UserService userService;
 
@@ -41,7 +49,12 @@ public class ProjectController {
             var paging = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "datePublished"));
             final Set<ProjectStatus> statusFilter = new HashSet<>(statusList == null ? allowedPublicTypes :
                     statusList.stream().map(ProjectStatus::valueOf).collect(Collectors.toSet()));
-            statusFilter.retainAll(allowedPublicTypes);
+            var auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth == null) {
+                statusFilter.retainAll(allowedPublicTypes);
+            } else if (userService.getByUsername(auth.getName()).orElseThrow().getRole() == UserRole.MUNICIPAL) {
+                statusFilter.retainAll(allowedMunicipalTypes);
+            }
             Page<Project> pageProject = projectRepository.findByStatusIn(statusFilter, paging);
 
             List<Project> projects = pageProject.getContent();
@@ -122,5 +135,7 @@ public class ProjectController {
                                  LocalDateTime datePublished, ProjectStatus status, Long votesFor, Long votesNeutral,
                                  Long votesAgainst) {
     }
-    public record ProjectDTO(String title, String summary, String content, ProjectStatus status){}
+
+    public record ProjectDTO(String title, String summary, String content, ProjectStatus status) {
+    }
 }
