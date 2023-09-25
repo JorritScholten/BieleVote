@@ -65,7 +65,13 @@ export default function ProjectPage() {
 function renderProject(project) {
   return (
     <div className="col-span-3 flex flex-col gap-2">
-      <SemanticHeader as="h1">{project.title}</SemanticHeader>
+      {project.title === null || project.title.length === 0 ? (
+        <Placeholder>
+          <Placeholder.Line />
+        </Placeholder>
+      ) : (
+        <SemanticHeader as="h1">{project.title}</SemanticHeader>
+      )}
       <SemanticHeader.Subheader>
         <Icon name="calendar alternate" /> {formatDate(project.datePublished)}
       </SemanticHeader.Subheader>
@@ -81,9 +87,13 @@ function renderProject(project) {
         )} */}
         <div hidden />
       </div>
-      <Container fluid className="text-xl">
-        {project.summary}
-      </Container>
+      {project.summary === null || project.summary.length === 0 ? (
+        placeHolderText(1)
+      ) : (
+        <Container fluid className="text-xl">
+          {project.summary}
+        </Container>
+      )}
       {project.content === null || project.content.length === 0 ? (
         placeHolderText(4)
       ) : (
