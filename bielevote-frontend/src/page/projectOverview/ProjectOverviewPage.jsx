@@ -20,7 +20,7 @@ export default function ProjectOverviewPage() {
   const [viewRejected, setViewRejected] = useState(false);
   const [viewProposed, setViewProposed] = useState(true);
   const [viewDenied, setViewDenied] = useState(false);
-  const { getAccountType } = useAuth();
+  const { getUser, getAccountType } = useAuth();
 
   useEffect(() => {
     handlePageChange();
@@ -37,9 +37,16 @@ export default function ProjectOverviewPage() {
     if (viewActive) statusFilter.push(projectStatus.active);
     if (viewAccepted) statusFilter.push(projectStatus.accepted);
     if (viewRejected) statusFilter.push(projectStatus.rejected);
-    if (viewProposed) statusFilter.push(projectStatus.proposed);
-    if (viewDenied) statusFilter.push(projectStatus.denied);
-    const response = await backendApi.getAllProjects(page, 3, statusFilter);
+    if (getAccountType() === accountType.municipal) {
+      if (viewProposed) statusFilter.push(projectStatus.proposed);
+      if (viewDenied) statusFilter.push(projectStatus.denied);
+    }
+    const response = await backendApi.getAllProjects(
+      page,
+      3,
+      statusFilter,
+      getUser()
+    );
     setProjectsList(response.data);
   };
 

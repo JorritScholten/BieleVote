@@ -1,5 +1,6 @@
 package com.bielevote.backend.project;
 
+import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRole;
 import com.bielevote.backend.user.UserService;
 import com.bielevote.backend.votes.VoteType;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -43,17 +45,19 @@ public class ProjectController {
     public ResponseEntity<Map<String, Object>> getAllProjects(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) List<String> statusList
+            @RequestParam(required = false) List<String> statusList,
+            @AuthenticationPrincipal User currentUser
     ) {
         try {
             var paging = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "datePublished"));
             final Set<ProjectStatus> statusFilter = new HashSet<>(statusList == null ? allowedPublicTypes :
                     statusList.stream().map(ProjectStatus::valueOf).collect(Collectors.toSet()));
-            var auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth == null) {
+            if (currentUser == null) {
                 statusFilter.retainAll(allowedPublicTypes);
-            } else if (userService.getByUsername(auth.getName()).orElseThrow().getRole() == UserRole.MUNICIPAL) {
+            } else if (currentUser.getRole() == UserRole.MUNICIPAL) {
                 statusFilter.retainAll(allowedMunicipalTypes);
+            } else { // this is duplicate for now, will probably add filter for own projects
+                statusFilter.retainAll(allowedPublicTypes);
             }
             Page<Project> pageProject = projectRepository.findByStatusIn(statusFilter, paging);
 

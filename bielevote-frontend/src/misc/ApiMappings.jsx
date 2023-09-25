@@ -57,16 +57,24 @@ function postProject(user, formData) {
   });
 }
 
-function getAllProjects(page, amount, statuses) {
+function getAllProjects(page, amount, statuses, user) {
   let filter = "";
   if (statuses.length !== 0) {
     filter = "&statusList=";
     statuses.forEach((s) => (filter = filter.concat(s, ",")));
     filter = filter.substring(0, filter.length - 1);
   }
-  return instance.get(
-    "/api/v1/projects" + "?page=" + page + "&size=" + amount + filter
-  );
+  const path =
+    "/api/v1/projects" + "?page=" + page + "&size=" + amount + filter;
+  if (user === null) {
+    return instance.get(path);
+  } else {
+    return instance.get(path, {
+      headers: {
+        Authorization: bearerAuth(user),
+      },
+    });
+  }
 }
 
 function getProjectById(projectId) {
