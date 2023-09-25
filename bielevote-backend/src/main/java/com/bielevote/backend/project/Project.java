@@ -55,6 +55,12 @@ public class Project {
     @Column(columnDefinition = "TIMESTAMP(0)")
     private LocalDateTime datePublished;
 
+    @Column(columnDefinition = "TIMESTAMP(0)")
+    private LocalDateTime startOfVoting;
+
+    @Column(columnDefinition = "TIMESTAMP(0)")
+    private LocalDateTime endOfVoting;
+
     @NonNull
     @JsonView({ProjectViews.GetProjectList.class, ProjectViews.Serialize.class})
     @Enumerated(value = EnumType.STRING)
