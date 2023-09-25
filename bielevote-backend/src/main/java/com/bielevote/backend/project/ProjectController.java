@@ -12,7 +12,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,8 +68,8 @@ public class ProjectController {
             responseBody.put("totalPages", pageProject.getTotalPages());
 
             return new ResponseEntity<>(responseBody, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -81,11 +80,11 @@ public class ProjectController {
             var project = projectRepository.findById(id).orElseThrow();
             if (currentUser != null && currentUser.getRole() == UserRole.MUNICIPAL) {
                 if (!allowedMunicipalTypes.contains(project.getStatus())) {
-                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } else {
                 if (!allowedPublicTypes.contains(project.getStatus())) {
-                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             }
             var dto = new ProjectInfoDTO(
@@ -100,8 +99,8 @@ public class ProjectController {
                     project.getVotes().stream().filter(v -> v.getType() == VoteType.AGAINST).count()
             );
             return ResponseEntity.ok(dto);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -121,8 +120,8 @@ public class ProjectController {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(projectRepository.save(project), HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -134,8 +133,31 @@ public class ProjectController {
             }
             projectRepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @JsonView(ProjectViews.GetProjectList.class)
+    @PatchMapping("/status/{id}")
+    public ResponseEntity<Project> handleProposal(@PathVariable("id") long id,
+                                                  @RequestHeader(value = "newStatus") String status) {
+        try {
+            var newStatus = ProjectStatus.valueOf(status);
+            if (newStatus != ProjectStatus.ACTIVE && newStatus != ProjectStatus.DENIED)
+                throw new IllegalArgumentException();
+            var project = projectRepository.findById(id).orElseThrow();
+            if (project.getStatus() != ProjectStatus.PROPOSED) throw new IllegalArgumentException();
+            project.setStatus(newStatus);
+            return ResponseEntity.ok(projectRepository.save(project));
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
