@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { IoReturnDownBack } from "react-icons/io5";
 import {
+  Button,
   Container,
   Icon,
   Placeholder,
@@ -17,6 +18,7 @@ import { emptyForms, projectStatus } from "../../misc/ApiForms";
 import { backendApi } from "../../misc/ApiMappings";
 import { formatDate } from "../../components/Utils";
 import { useAuth } from "../../misc/AuthContext";
+import { accountType } from "../../misc/NavMappings";
 
 export default function ProjectPage() {
   const [project, setProject] = useState(emptyForms.projectInfoDTO);
@@ -42,6 +44,10 @@ export default function ProjectPage() {
     }
   }
 
+  async function updateStatus(newStatus) {
+    console.log("need to add api mapping: " + newStatus);
+  }
+
   return (
     <div className="flex flex-col gap-5 w-screen">
       <Header pageTitle={project.title} />
@@ -51,19 +57,38 @@ export default function ProjectPage() {
         </Link>
         {renderProject(project)}
         <div className="m-5 text-center">
-          <div className="text-xl ">
-            <SemanticHeader as="h3">Votes:</SemanticHeader>
-            <div>for: {project.votesFor}</div>
-            <div>neutral: {project.votesNeutral}</div>
-            <div>against: {project.votesAgainst}</div>
-          </div>
-          <div className="">
-            {project.status === projectStatus.active ? (
-              <ProjectVote projectId={projectId} updateVersion={setVersion} />
-            ) : (
-              <div hidden />
-            )}
-          </div>
+          {project.status === projectStatus.proposed &&
+          getAccountType() === accountType.municipal ? (
+            <div className="text-xl ">
+              <SemanticHeader as="h3">Permit publication:</SemanticHeader>
+              <Button.Group fluid>
+                <Button
+                  positive
+                  onClick={() => updateStatus(projectStatus.active)}
+                  content="Allow"
+                />
+                <Button
+                  negative
+                  onClick={() => updateStatus(projectStatus.denied)}
+                  content="Deny"
+                />
+              </Button.Group>
+            </div>
+          ) : (
+            <div className="text-xl flex flex-col gap-5">
+              <SemanticHeader as="h3">Votes:</SemanticHeader>
+              <div>
+                <div>for: {project.votesFor}</div>
+                <div>neutral: {project.votesNeutral}</div>
+                <div>against: {project.votesAgainst}</div>
+              </div>
+              {project.status === projectStatus.active ? (
+                <ProjectVote projectId={projectId} updateVersion={setVersion} />
+              ) : (
+                <div hidden />
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
