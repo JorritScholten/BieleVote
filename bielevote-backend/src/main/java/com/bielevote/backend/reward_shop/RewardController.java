@@ -2,10 +2,9 @@ package com.bielevote.backend.reward_shop;
 
 import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRepository;
-import com.bielevote.backend.user.UserService;
 import com.bielevote.backend.user.rewardpoint.Transaction;
-import com.bielevote.backend.user.rewardpoint.TransactionRepository;
 import com.bielevote.backend.user.rewardpoint.TransactionReason;
+import com.bielevote.backend.user.rewardpoint.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +26,6 @@ public class RewardController {
     private final RewardRepository rewardRepository;
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
-    private final UserService userService;
 
     @GetMapping("/shop")
     public ResponseEntity<Map<String, Object>> getAllRewards(
@@ -64,12 +62,24 @@ public class RewardController {
     }
 
     @GetMapping("/redeemed")
-    public ResponseEntity<List<Transaction>> getRedeemedRewards(@AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<Map<String, Object>> getRedeemedRewards(@AuthenticationPrincipal User currentUser,
+                                                                  @RequestParam(defaultValue = "0") int page,
+                                                                  @RequestParam(defaultValue = "10") int size) {
         try {
+            List<Transaction> transactions;
+            PageRequest paging = PageRequest.of(page, size, Sort.by("date").descending());
             var user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow();
-            var transactionList = transactionRepository.findByUser(user);
-            var redeemedRewards = transactionList.stream().filter(rewardPoint -> rewardPoint.getReason() == TransactionReason.REDEEMED_REWARD).toList();
-            return ResponseEntity.ok(redeemedRewards);
+            Page<Transaction> pageTransaction = transactionRepository.findByUserAndReason(user, TransactionReason.REDEEMED_REWARD, paging);
+
+            transactions = pageTransaction.getContent();
+
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("transactions", transactions);
+            responseBody.put("currentPage", pageTransaction.getNumber());
+            responseBody.put("totalItems", pageTransaction.getTotalElements());
+            responseBody.put("totalPages", pageTransaction.getTotalPages());
+
+            return ResponseEntity.ok(responseBody);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         } catch (RuntimeException e) {
