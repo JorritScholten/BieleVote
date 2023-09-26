@@ -1,7 +1,7 @@
 package com.bielevote.backend.user;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.bielevote.backend.user.rewardpoint.TransactionRepository;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -49,16 +49,16 @@ public class UserController {
     public ResponseEntity<User> patchUsername(@Validated @RequestBody String newUsername,
                                               @AuthenticationPrincipal User currentUser) {
         if (newUsername.isBlank()) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         try {
             var user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow();
             user.setUsername(newUsername);
             return new ResponseEntity<>(userRepository.save(user), HttpStatus.CREATED);
         } catch (DataIntegrityViolationException e) {
-            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
