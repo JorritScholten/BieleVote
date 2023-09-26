@@ -24,7 +24,7 @@ export default function NewsPreview() {
   return newsList.articles == [] ? (
     <div>loading...</div>
   ) : (
-    <div className="bg-slate-300">
+    <div>
       <ListNews newsList={newsList} />
       <Link to={"/news"}>
         <Button fluid primary>

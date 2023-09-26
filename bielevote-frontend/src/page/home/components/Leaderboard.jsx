@@ -27,7 +27,7 @@ export default function Leaderboard() {
   ];
 
   return (
-    <div className="bg-slate-200 flex flex-col gap-2 p-2">
+    <div className="flex flex-col gap-2">
       <div className="p-1">
         <Table.Header as="h4">
           <Header.Content>

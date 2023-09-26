@@ -8,7 +8,7 @@ export default function ListProjects({ projectsList }) {
   return projectsList.projects == [] ? (
     <div>loading...</div>
   ) : (
-    <Item.Group className="" relaxed>
+    <Item.Group relaxed>
       {projectsList.projects.map((project) => (
         <Item key={project.id}>
           <Item.Content>

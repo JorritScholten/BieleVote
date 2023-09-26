@@ -20,7 +20,7 @@ export default function HomePage() {
         </Table.Header>
         <Table.Body>
           <Table.Row>
-            <Table.Cell>
+            <Table.Cell className="bg-slate-200">
               <Leaderboard />
             </Table.Cell>
           </Table.Row>
@@ -34,7 +34,7 @@ export default function HomePage() {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          <Table.Row>
+          <Table.Row className="bg-slate-200">
             <Table.Cell>
               <ProjectsPreview />
             </Table.Cell>

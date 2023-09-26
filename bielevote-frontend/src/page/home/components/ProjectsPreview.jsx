@@ -29,8 +29,8 @@ export default function ProjectsPreview() {
   return projectsList.projects.length === 0 ? (
     <div>loading...</div>
   ) : (
-    <div className="bg-slate-300">
-      <ListProjects projectsList={projectsList} />
+    <div>
+      <ListProjects projectsList={projectsList} relaxed={false} />
       <Link to={"/projects"}>
         <Button fluid primary>
           View All Projects
