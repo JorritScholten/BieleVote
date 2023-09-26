@@ -20,20 +20,18 @@ public class StatusChecker {
         System.out.println(LocalDateTime.now() + " --- Checking projects");
         System.out.flush();
 
-        var projects = projectRepository.findByStatus(ProjectStatus.ACTIVE);
+        var projects = projectRepository.findByStatusAndEndOfVotingBefore(ProjectStatus.ACTIVE, LocalDateTime.now());
         for (Project project : projects) {
-            if (project.getEndOfVoting().isBefore(LocalDateTime.now())) {
-                int votesFor = voteRepository.findByProjectAndType(project, VoteType.POSITIVE).size();
-                int votesAgainst = voteRepository.findByProjectAndType(project, VoteType.AGAINST).size();
-                if (votesFor > votesAgainst) {
-                    project.setStatus(ProjectStatus.ACCEPTED);
-                } else if (votesAgainst > votesFor) {
-                    project.setStatus(ProjectStatus.REJECTED);
-                } else {
-                    project.setStatus(ProjectStatus.REJECTED);
-                }
-                projectRepository.saveAndFlush(project);
+            int votesFor = voteRepository.findByProjectAndType(project, VoteType.POSITIVE).size();
+            int votesAgainst = voteRepository.findByProjectAndType(project, VoteType.AGAINST).size();
+            if (votesFor > votesAgainst) {
+                project.setStatus(ProjectStatus.ACCEPTED);
+            } else if (votesAgainst > votesFor) {
+                project.setStatus(ProjectStatus.REJECTED);
+            } else {
+                project.setStatus(ProjectStatus.REJECTED);
             }
+            projectRepository.saveAndFlush(project);
         }
     }
 }
