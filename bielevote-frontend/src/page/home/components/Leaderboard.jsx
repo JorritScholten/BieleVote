@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-
 import { Button, Dropdown, Header, Icon, Table } from "semantic-ui-react";
+
 import { backendApi, timeRanges } from "../../../misc/ApiMappings";
 
 export default function Leaderboard() {
@@ -15,7 +15,6 @@ export default function Leaderboard() {
     try {
       const res = await backendApi.getLeaderboard(timeRange);
       setAuthResponse(res.data);
-      console.log(res.data);
     } catch (error) {
       setAuthResponse(null);
     }

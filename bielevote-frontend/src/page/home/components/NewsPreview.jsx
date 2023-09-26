@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import ListNews from "../../news/components/ListNews";
 import { Link } from "react-router-dom";
 import { Button } from "semantic-ui-react";
+
+import ListNews from "../../news/components/ListNews";
 import { emptyForms } from "../../../misc/ApiForms";
 import { backendApi } from "../../../misc/ApiMappings";
 
