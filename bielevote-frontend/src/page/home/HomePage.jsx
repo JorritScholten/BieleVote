@@ -35,9 +35,9 @@ export default function HomePage() {
         </Table.Header>
         <Table.Body>
           <Table.Row>
-            {/* <Table.Cell>
+            <Table.Cell>
               <ProjectsPreview />
-            </Table.Cell> */}
+            </Table.Cell>
             <Table.Cell>
               <NewsPreview />
             </Table.Cell>

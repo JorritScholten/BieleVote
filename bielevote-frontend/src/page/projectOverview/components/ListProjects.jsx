@@ -12,7 +12,7 @@ export default function ListProjects({ projectsList }) {
       {projectsList.projects.map((project) => (
         <Item key={project.id}>
           <Item.Content>
-            <Item.Header as="a">
+            <Item.Header>
               <Link to={"/projects/" + project.id}>{project.title}</Link>
             </Item.Header>
             <Item.Meta>
