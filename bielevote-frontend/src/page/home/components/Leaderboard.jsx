@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Dropdown, Header, Icon, Table } from "semantic-ui-react";
+import { Dropdown, Header, Table } from "semantic-ui-react";
 
 import { backendApi, timeRanges } from "../../../misc/ApiMappings";
 
@@ -66,7 +66,10 @@ export default function Leaderboard() {
                 </Table.Row>
               ))
             ) : (
-              <div hidden />
+              <Table.Row>
+                <Table.Cell />
+                <Table.Cell />
+              </Table.Row>
             )}
           </Table.Body>
         </Table>
