@@ -16,9 +16,9 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/v1/leaderboard")
-public class RewardPointController {
+public class TransactionController {
     private final UserRepository userRepository;
-    private final RewardPointRepository rewardPointRepository;
+    private final TransactionRepository transactionRepository;
 
     @GetMapping
     public ResponseEntity<List<scoreCard>> getHighScores(@RequestHeader(value = "timeRange", defaultValue = "ALL_TIME") String timeRange) {
@@ -27,11 +27,10 @@ public class RewardPointController {
                 case "LAST_WEEK" -> LocalDateTime.now().minusWeeks(1);
                 case "LAST_MONTH" -> LocalDateTime.now().minusMonths(1);
                 case "LAST_YEAR" -> LocalDateTime.now().minusYears(1);
-                default -> LocalDateTime.MIN;
+                default -> LocalDateTime.of(1900,1,1,1,1);
             };
-            var merits = rewardPointRepository.findAll().stream()
-                    .filter(t -> (t.getAmount() > 0 && t.getDate().isAfter(range))).toList();
-            var users = merits.stream().map(RewardPoint::getUser).distinct().toList();
+            var merits = transactionRepository.findByAmountGreaterThanAndDateAfter(0, range);
+            var users = merits.stream().map(Transaction::getUser).distinct().toList();
             List<scoreCard> leaderboard = new ArrayList<>();
             for (var key : users) {
                 leaderboard.add(

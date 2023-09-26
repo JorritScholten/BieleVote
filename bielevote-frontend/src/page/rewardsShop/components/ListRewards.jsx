@@ -1,4 +1,4 @@
-import { GiAcorn } from "react-icons/gi";
+import { BiBug } from "react-icons/bi";
 
 import PropTypes from "prop-types";
 import Reward from "./Reward";
@@ -21,7 +21,7 @@ export default function ListRewards({ rewardsList }) {
                   {rewardPreview.cost}
                 </div>
                 <div className="flex mr-4">
-                  <GiAcorn />
+                  <BiBug />
                 </div>
                 <Reward rewardId={rewardPreview.id} />
               </div>

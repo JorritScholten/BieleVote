@@ -1,7 +1,7 @@
 package com.bielevote.backend.user;
 
-import com.bielevote.backend.user.rewardpoint.RewardPointRepository;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.bielevote.backend.user.rewardpoint.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
 @RequestMapping("api/v1/users")
 public class UserController {
     private final UserRepository userRepository;
-    private final RewardPointRepository rewardPointRepository;
+    private final TransactionRepository transactionRepository;
 
     @JsonView(UserViews.viewMe.class)
     @GetMapping("/me")
@@ -34,7 +34,7 @@ public class UserController {
     public ResponseEntity<Integer> getUserPointBalance(@AuthenticationPrincipal User currentUser) {
         try {
             var user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow();
-            var transactionList = rewardPointRepository.findByUser(user);
+            var transactionList = transactionRepository.findByUser(user);
             var balance = transactionList.stream().flatMapToInt(t -> IntStream.of(t.getAmount())).sum();
             return ResponseEntity.ok(balance);
         } catch (NoSuchElementException e) {

@@ -4,7 +4,13 @@ export const projectStatus = {
   active: "ACTIVE",
   accepted: "ACCEPTED",
   rejected: "REJECTED",
-  archived: "OLD",
+  denied: "DENIED",
+};
+
+export const voteTypes = {
+  for: "POSITIVE",
+  neutral: "NEUTRAL",
+  against: "AGAINST",
 };
 
 export const emptyForms = {
@@ -14,8 +20,29 @@ export const emptyForms = {
   },
   newProject: {
     title: "",
+    summary: "",
     content: "<p><br></p>",
     status: projectStatus.proposed,
+  },
+  project: {
+    title: "",
+    summary: "",
+    content: "",
+    author: "",
+    datePublished: "",
+    status: "",
+  },
+  projectInfoDTO: {
+    title: "",
+    summary: "",
+    content: "",
+    author: "",
+    datePublished: "",
+    status: "",
+    votesFor: 0,
+    votesNeutral: 0,
+    votesAgainst: 0,
+    progressPercentage: 0,
   },
   projectOverview: {
     projects: [],
@@ -59,5 +86,15 @@ export const emptyForms = {
   },
   updateUsername: {
     newUsername: "",
+  },
+  rewardTransactionDto: {
+    rewardId: -1,
+    rewardsAmount: 1,
+  },
+  rewardTransactions: {
+    transactions: [],
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0,
   },
 };

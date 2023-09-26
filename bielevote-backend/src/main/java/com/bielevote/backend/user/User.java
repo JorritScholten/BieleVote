@@ -1,7 +1,9 @@
 package com.bielevote.backend.user;
 
 import com.bielevote.backend.project.Project;
-import com.bielevote.backend.user.rewardpoint.RewardPoint;
+import com.bielevote.backend.project.ProjectViews;
+import com.bielevote.backend.user.rewardpoint.Transaction;
+import com.bielevote.backend.votes.Vote;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -23,30 +25,34 @@ import java.util.Set;
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "legalName"),
-        @UniqueConstraint(columnNames = "phone")
+        @UniqueConstraint(columnNames = {"legalName", "phone"})
 })
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(UserViews.getProject.class)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @JsonView({UserViews.getProject.class, UserViews.viewMe.class})
+    @NonNull
+    @JsonView({UserViews.viewMe.class})
     @Column(unique = true)
     private String username;
 
+    @NonNull
     private String password;
 
-    @JsonView({UserViews.getProject.class, UserViews.viewMe.class})
+    @NonNull
+    @JsonView({UserViews.viewMe.class, ProjectViews.GetProjectList.class})
     private String legalName;
 
+    @NonNull
     @JsonView(UserViews.viewMe.class)
     private String phone;
 
+    @NonNull
     @JsonView(UserViews.viewMe.class)
     @Enumerated(EnumType.STRING)
     private UserRole role;
@@ -57,7 +63,11 @@ public class User implements UserDetails {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "user")
-    private List<RewardPoint> rewardPointTransactions;
+    private List<Transaction> rewardPointTransactions;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user")
+    private Set<Vote> votes;
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.getAuthorities();

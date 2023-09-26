@@ -3,8 +3,8 @@ package com.bielevote.backend.project;
 public enum ProjectStatus {
     EDITING,
     PROPOSED,
+    DENIED,
     ACTIVE,
-    OLD,
     ACCEPTED,
     REJECTED
 }

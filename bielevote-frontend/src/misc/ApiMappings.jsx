@@ -15,11 +15,17 @@ export const backendApi = {
   authTest,
   postProject,
   getAllProjects,
+  getProjectById,
   getAllNewsArticles,
   getNewsArticleById,
   getAllRewards,
   getRewardById,
   getLeaderboard,
+  getHasVoted,
+  postVote,
+  postRewardTransaction,
+  getRewardTransactions,
+  changeProjectStatus,
   updateUsername,
 };
 
@@ -60,8 +66,37 @@ function postProject(user, formData) {
   });
 }
 
-function getAllProjects(page, amount) {
-  return instance.get("/api/v1/projects" + "?page=" + page + "&size=" + amount);
+function getAllProjects(page, amount, statuses, user) {
+  let filter = "";
+  if (statuses.length !== 0) {
+    filter = "&statusList=";
+    statuses.forEach((s) => (filter = filter.concat(s, ",")));
+    filter = filter.substring(0, filter.length - 1);
+  }
+  const path =
+    "/api/v1/projects" + "?page=" + page + "&size=" + amount + filter;
+  if (user === null) {
+    return instance.get(path);
+  } else {
+    return instance.get(path, {
+      headers: {
+        Authorization: bearerAuth(user),
+      },
+    });
+  }
+}
+
+function getProjectById(projectId, user) {
+  const path = `/api/v1/projects/${projectId}`;
+  if (user === null) {
+    return instance.get(path);
+  } else {
+    return instance.get(path, {
+      headers: {
+        Authorization: bearerAuth(user),
+      },
+    });
+  }
 }
 
 function getAllNewsArticles(page, amount) {
@@ -85,12 +120,59 @@ function getLeaderboard(timeRange) {
 }
 
 function getAllRewards(page, amount) {
-  return instance.get("/api/v1/rewards" + "?page=" + page + "&size=" + amount);
+  return instance.get(
+    "/api/v1/rewards/shop" + "?page=" + page + "&size=" + amount
+  );
 }
 
 function getRewardById(rewardId) {
-  return instance.get(`/api/v1/rewards/${rewardId}`);
+  return instance.get(`/api/v1/rewards/shop/${rewardId}`);
 }
+
+function postRewardTransaction(user, rewardData) {
+  return instance.post("/api/v1/rewards/redeemed", rewardData, {
+    headers: {
+      Authorization: bearerAuth(user),
+      "Content-type": "application/json",
+    },
+  });
+}
+
+function getRewardTransactions(user, page, amount) {
+  return instance.get(
+    "/api/v1/rewards/redeemed" + "?page=" + page + "&size=" + amount,
+    {
+      headers: { Authorization: bearerAuth(user) },
+    }
+  );
+}
+
+function getHasVoted(projectId, user) {
+  return instance.get(`/api/v1/votes/${projectId}`, {
+    headers: {
+      Authorization: bearerAuth(user),
+    },
+  });
+}
+
+function postVote(voteType, projectId, user) {
+  return instance.post(`/api/v1/votes/${projectId}`, null, {
+    headers: {
+      Authorization: bearerAuth(user),
+      voteType: voteType,
+    },
+  });
+}
+
+function changeProjectStatus(newStatus, projectId, user) {
+  return instance.patch(`/api/v1/projects/status/${projectId}`, null, {
+    headers: {
+      Authorization: bearerAuth(user),
+      newStatus: newStatus,
+    },
+  });
+}
+
 // -- Axios calls
 
 const instance = axios.create({

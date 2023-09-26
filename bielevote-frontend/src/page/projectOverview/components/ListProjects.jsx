@@ -1,30 +1,33 @@
-import { Table } from "semantic-ui-react";
 import PropTypes from "prop-types";
-import { formatDate } from "../../../components/Utils";
 import { Link } from "react-router-dom";
+import { Icon, Item } from "semantic-ui-react";
+
+import { formatDate } from "../../../components/Utils";
 
 export default function ListProjects({ projectsList }) {
   return projectsList.projects == [] ? (
     <div>loading...</div>
   ) : (
-    <>
-      <div className="flex flex-col  w-3/5">
-        {projectsList.projects.map((project) => (
-          <div className="p-3 flex flex-col" key={project.id}>
-            <div>{project.id}</div>
-            <Link to={"project" + project.id}>
-              <div className="text-3xl text-blue-700 font-bold underline">
-                {project.title}
-              </div>
-            </Link>
-            <div>{project.content}</div>
-            <div>{project.author.legalName}</div>
-            <div>{formatDate(project.datePublished)}</div>
-            <div>{project.status}</div>
-          </div>
-        ))}
-      </div>
-    </>
+    <Item.Group className="" relaxed>
+      {projectsList.projects.map((project) => (
+        <Item key={project.id}>
+          <Item.Content>
+            <Item.Header as="a">
+              <Link to={"/projects/" + project.id}>{project.title}</Link>
+            </Item.Header>
+            <Item.Meta>
+              <Icon name="calendar alternate" />{" "}
+              {formatDate(project.datePublished)}
+            </Item.Meta>
+            <Item.Meta>
+              <Icon name="user" /> {project.author.legalName}
+            </Item.Meta>
+            <Item.Description>{project.summary}</Item.Description>
+            <Item.Extra>Status: {project.status}</Item.Extra>
+          </Item.Content>
+        </Item>
+      ))}
+    </Item.Group>
   );
 }
 

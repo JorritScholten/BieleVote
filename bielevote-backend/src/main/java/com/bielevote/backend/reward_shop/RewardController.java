@@ -1,27 +1,33 @@
 package com.bielevote.backend.reward_shop;
 
-import com.bielevote.backend.news.NewsArticle;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.bielevote.backend.user.User;
+import com.bielevote.backend.user.UserRepository;
+import com.bielevote.backend.user.rewardpoint.Transaction;
+import com.bielevote.backend.user.rewardpoint.TransactionReason;
+import com.bielevote.backend.user.rewardpoint.TransactionRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.IntStream;
 
 @RestController
-@CrossOrigin
+@RequiredArgsConstructor
 @RequestMapping("api/v1/rewards")
 public class RewardController {
+    private final RewardRepository rewardRepository;
+    private final UserRepository userRepository;
+    private final TransactionRepository transactionRepository;
 
-    @Autowired
-    RewardRepository rewardRepository;
-
-    @GetMapping()
+    @GetMapping("/shop")
     public ResponseEntity<Map<String, Object>> getAllRewards(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
@@ -46,12 +52,74 @@ public class RewardController {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/shop/{id}")
     public ResponseEntity<Reward> getRewardById(@PathVariable("id") long id) {
         try {
             return new ResponseEntity<>(rewardRepository.findById(id).orElseThrow(), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/redeemed")
+    public ResponseEntity<Map<String, Object>> getRedeemedRewards(@AuthenticationPrincipal User currentUser,
+                                                                  @RequestParam(defaultValue = "0") int page,
+                                                                  @RequestParam(defaultValue = "10") int size) {
+        try {
+            List<Transaction> transactions;
+            PageRequest paging = PageRequest.of(page, size, Sort.by("date").descending());
+            var user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow();
+            Page<Transaction> pageTransaction = transactionRepository.findByUserAndReason(user, TransactionReason.REDEEMED_REWARD, paging);
+
+            transactions = pageTransaction.getContent();
+
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("transactions", transactions);
+            responseBody.put("currentPage", pageTransaction.getNumber());
+            responseBody.put("totalItems", pageTransaction.getTotalElements());
+            responseBody.put("totalPages", pageTransaction.getTotalPages());
+
+            return ResponseEntity.ok(responseBody);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PostMapping("/redeemed")
+    public ResponseEntity<Void> postRedeemedReward(@Validated @RequestBody RewardPurchasedDto rewardPurchasedDto,
+                                                   @AuthenticationPrincipal User currentUser) {
+        try {
+            var user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow();
+            var reward = rewardRepository.findById(rewardPurchasedDto.rewardId).orElseThrow();
+            var transactionList = transactionRepository.findByUser(user);
+            var balance = transactionList.stream().flatMapToInt(t -> IntStream.of(t.getAmount())).sum();
+            if (balance < rewardPurchasedDto.rewardsAmount * reward.getCost()) {
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            var date = LocalDateTime.now();
+            List<Transaction> rewardsBought = new ArrayList<>();
+            for (int i = 0; i < rewardPurchasedDto.rewardsAmount; i++) {
+                rewardsBought.add(Transaction.builder()
+                        .reward(reward)
+                        .date(date)
+                        .user(user)
+                        .reason(TransactionReason.REDEEMED_REWARD)
+                        .amount(-reward.getCost())
+                        .build());
+            }
+            transactionRepository.saveAll(rewardsBought);
+            return new ResponseEntity<>(null, HttpStatus.CREATED);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    record RewardPurchasedDto(int rewardsAmount, Long rewardId) {
     }
 }
