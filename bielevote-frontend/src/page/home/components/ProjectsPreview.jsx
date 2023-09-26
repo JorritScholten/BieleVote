@@ -9,7 +9,6 @@ export default function ProjectsPreview() {
 
   useEffect(() => {
     fetchProjectPreview();
-    console.log(projectsList);
   }, []);
   const fetchProjectPreview = async () => {
     let statusFilter = [];
@@ -21,7 +20,7 @@ export default function ProjectsPreview() {
   return projectsList.projects == [] ? (
     <div>loading...</div>
   ) : (
-    <div className="w-1/3 h-1/3 bg-slate-300">
+    <div className=" h-1/3 bg-slate-300">
       <ListProjects projectsList={projectsList} />
       <Link to={"/projects"}>
         <Button primary>View All Projects</Button>

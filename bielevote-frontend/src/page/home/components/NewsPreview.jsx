@@ -19,7 +19,7 @@ export default function NewsPreview() {
   return newsList.articles == [] ? (
     <div>loading...</div>
   ) : (
-    <div className="w-1/3 h-1/3 bg-slate-300">
+    <div className="h-1/3 bg-slate-300">
       <ListNews newsList={newsList} />
       <Link to={"/news"}>
         <Button primary>View All News Articles</Button>
