@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { List } from "semantic-ui-react";
-import { GiAcorn } from "react-icons/gi";
+import { Icon, List } from "semantic-ui-react";
+import { BiBug } from "react-icons/bi";
 
 import { backendApi, handleLogError } from "../../misc/ApiMappings";
 import { useAuth } from "../../misc/AuthContext";
@@ -41,25 +41,30 @@ export default function AccountSettingsPage() {
         <List>
           <List.Item>
             <List.Icon name="address card" />
-            <List.Content>{user.legalName}</List.Content>
+            <List.Content>Legal name: {user.legalName}</List.Content>
           </List.Item>
           <List.Item>
-            <List.Icon name="users" />
+            <List.Icon name="user" />
             <List.Content>Username: {user.username}</List.Content>
           </List.Item>
           <List.Item>
             <List.Icon name="phone" />
-            <List.Content>Telephone number: {user.phone}</List.Content>
+            <List.Content>Telephone: {user.phone}</List.Content>
           </List.Item>
           <List.Item>
             <List.Icon>
-              <GiAcorn />
+              <Icon name="money" />
             </List.Icon>
-            <List.Content>Balance: {balance}</List.Content>
+            <List.Content>
+              Balance: {balance}{" "}
+              <Icon className="relative top-1">
+                <BiBug />
+              </Icon>
+            </List.Content>
           </List.Item>
-          <List.Item>
+          {/* <List.Item>
             <UpdateUsernameForm />
-          </List.Item>
+          </List.Item> */}
         </List>
       </div>
     </div>
