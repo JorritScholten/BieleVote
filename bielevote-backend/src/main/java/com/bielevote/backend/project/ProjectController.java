@@ -144,11 +144,16 @@ public class ProjectController {
                                                   @RequestHeader(value = "newStatus") String status) {
         try {
             var newStatus = ProjectStatus.valueOf(status);
-            if (newStatus != ProjectStatus.ACTIVE && newStatus != ProjectStatus.DENIED)
+            if (newStatus != ProjectStatus.ACTIVE && newStatus != ProjectStatus.DENIED){
                 throw new IllegalArgumentException();
+            }
             var project = projectRepository.findById(id).orElseThrow();
             if (project.getStatus() != ProjectStatus.PROPOSED) throw new IllegalArgumentException();
             project.setStatus(newStatus);
+            if(newStatus == ProjectStatus.ACTIVE){
+                project.setStartOfVoting(LocalDateTime.now());
+                project.setEndOfVoting(LocalDateTime.now().plus(Project.VOTING_PERIOD));
+            }
             return ResponseEntity.ok(projectRepository.save(project));
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());

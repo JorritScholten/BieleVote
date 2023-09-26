@@ -1,19 +1,17 @@
 package com.bielevote.backend.project;
 
 import com.bielevote.backend.user.User;
-import com.bielevote.backend.user.UserViews;
-import com.fasterxml.jackson.annotation.*;
 import com.bielevote.backend.votes.Vote;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.temporal.TemporalAmount;
 import java.util.Set;
 
 @Jacksonized
@@ -25,6 +23,9 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Project {
+    @JsonIgnore
+    public static final TemporalAmount VOTING_PERIOD = Period.of(0, 1, 0);
+
     @JsonView({ProjectViews.GetProjectList.class})
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
