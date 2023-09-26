@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Icon, List } from "semantic-ui-react";
+import { Grid, GridColumn, Icon, List, Table } from "semantic-ui-react";
 import { BiBug } from "react-icons/bi";
 
 import { backendApi, handleLogError } from "../../misc/ApiMappings";
@@ -38,34 +38,36 @@ export default function AccountSettingsPage() {
     <div className="flex flex-col gap-2 w-screen">
       <Header pageTitle="Account settings" />
       <div className="flex justify-center text-3xl w-3/4 mt-12">
-        <List>
-          <List.Item>
-            <List.Icon name="address card" />
-            <List.Content>Legal name: {user.legalName}</List.Content>
-          </List.Item>
-          <List.Item>
-            <List.Icon name="user" />
-            <List.Content>Username: {user.username}</List.Content>
-          </List.Item>
-          <List.Item>
-            <List.Icon name="phone" />
-            <List.Content>Telephone: {user.phone}</List.Content>
-          </List.Item>
-          <List.Item>
-            <List.Icon>
-              <Icon name="money" />
-            </List.Icon>
-            <List.Content>
-              Balance: {balance}{" "}
-              <Icon className="relative top-1">
-                <BiBug />
-              </Icon>
-            </List.Content>
-          </List.Item>
-          {/* <List.Item>
+        <Table celled>
+          <Table.Body>
+            <Table.Row>
+              <List.Icon name="address card" />
+              <List.Content>Legal name: {user.legalName}</List.Content>
+            </Table.Row>
+            <Table.Row>
+              <List.Icon name="user" />
+              <List.Content>Username: {user.username}</List.Content>
+            </Table.Row>
+            <Table.Row>
+              <List.Icon name="phone" />
+              <List.Content>Telephone: {user.phone}</List.Content>
+            </Table.Row>
+            <Table.Row>
+              <List.Icon>
+                <Icon name="money" />
+              </List.Icon>
+              <List.Content>
+                Balance: {balance}{" "}
+                <Icon className="relative top-1">
+                  <BiBug />
+                </Icon>
+              </List.Content>
+            </Table.Row>
+          </Table.Body>
+          {/* <Table.Row>
             <UpdateUsernameForm />
-          </List.Item> */}
-        </List>
+          </Table.Row> */}
+        </Table>
       </div>
     </div>
   );
