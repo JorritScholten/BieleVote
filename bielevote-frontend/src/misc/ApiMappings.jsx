@@ -24,6 +24,7 @@ export const backendApi = {
   getHasVoted,
   postVote,
   postRewardTransaction,
+  changeProjectStatus,
 };
 
 function login(formData) {
@@ -142,6 +143,15 @@ function postVote(voteType, projectId, user) {
     headers: {
       Authorization: bearerAuth(user),
       voteType: voteType,
+    },
+  });
+}
+
+function changeProjectStatus(newStatus, projectId, user) {
+  return instance.patch(`/api/v1/projects/status/${projectId}`, null, {
+    headers: {
+      Authorization: bearerAuth(user),
+      newStatus: newStatus,
     },
   });
 }

@@ -15,7 +15,7 @@ import { HttpStatusCode } from "axios";
 import Header from "../../components/Header";
 import ProjectVote from "./components/ProjectVote";
 import { emptyForms, projectStatus } from "../../misc/ApiForms";
-import { backendApi } from "../../misc/ApiMappings";
+import { backendApi, handleLogError } from "../../misc/ApiMappings";
 import { formatDate } from "../../components/Utils";
 import { useAuth } from "../../misc/AuthContext";
 import { accountType } from "../../misc/NavMappings";
@@ -23,18 +23,20 @@ import { accountType } from "../../misc/NavMappings";
 export default function ProjectPage() {
   const [project, setProject] = useState(emptyForms.projectInfoDTO);
   const [version, setVersion] = useState(0);
+  const [disableStatusChange, setDisableStatusChange] = useState(false);
   const { projectId } = useParams();
   const { getUser, getAccountType } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchProject(projectId);
-  }, [projectId, version]);
+  }, [projectId, version, disableStatusChange]);
 
   async function fetchProject(projectId) {
     try {
       const response = await backendApi.getProjectById(projectId, getUser());
       setProject(response.data);
+      setDisableStatusChange(response.data.status !== projectStatus.proposed);
     } catch (error) {
       if (error.response.status === HttpStatusCode.Unauthorized) {
         navigate("/projects");
@@ -44,8 +46,17 @@ export default function ProjectPage() {
     }
   }
 
-  async function updateStatus(newStatus) {
-    console.log("need to add api mapping: " + newStatus);
+  async function allowOrDeny(newStatus) {
+    try {
+      const response = await backendApi.changeProjectStatus(
+        newStatus,
+        projectId,
+        getUser()
+      );
+      setDisableStatusChange(response.status === HttpStatusCode.Ok);
+    } catch (error) {
+      handleLogError(error);
+    }
   }
 
   return (
@@ -64,12 +75,14 @@ export default function ProjectPage() {
               <Button.Group fluid>
                 <Button
                   positive
-                  onClick={() => updateStatus(projectStatus.active)}
+                  disabled={disableStatusChange}
+                  onClick={() => allowOrDeny(projectStatus.active)}
                   content="Allow"
                 />
                 <Button
                   negative
-                  onClick={() => updateStatus(projectStatus.denied)}
+                  disabled={disableStatusChange}
+                  onClick={() => allowOrDeny(projectStatus.denied)}
                   content="Deny"
                 />
               </Button.Group>
