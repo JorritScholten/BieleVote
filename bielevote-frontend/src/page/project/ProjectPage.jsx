@@ -29,22 +29,21 @@ export default function ProjectPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchProject(projectId);
-  }, [projectId, version, disableStatusChange]);
-
-  async function fetchProject(projectId) {
-    try {
-      const response = await backendApi.getProjectById(projectId, getUser());
-      setProject(response.data);
-      setDisableStatusChange(response.data.status !== projectStatus.proposed);
-    } catch (error) {
-      if (error.response.status === HttpStatusCode.Unauthorized) {
-        navigate("/projects");
-      } else {
-        console.log(error);
+    async function fetchProject(projectId) {
+      try {
+        const response = await backendApi.getProjectById(projectId, getUser());
+        setProject(response.data);
+        setDisableStatusChange(response.data.status !== projectStatus.proposed);
+      } catch (error) {
+        if (error.response.status === HttpStatusCode.Unauthorized) {
+          navigate("/projects");
+        } else {
+          console.log(error);
+        }
       }
     }
-  }
+    fetchProject(projectId);
+  }, [projectId, version, getUser, navigate]);
 
   async function allowOrDeny(newStatus) {
     try {
@@ -53,7 +52,7 @@ export default function ProjectPage() {
         projectId,
         getUser()
       );
-      setDisableStatusChange(response.status === HttpStatusCode.Ok);
+      if (response.status === HttpStatusCode.Ok) setVersion((v) => (v = v + 1));
     } catch (error) {
       handleLogError(error);
     }
