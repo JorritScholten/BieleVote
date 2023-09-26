@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ListNews from "../../news/components/ListNews";
 import { Link } from "react-router-dom";
 import { Button } from "semantic-ui-react";
@@ -19,10 +19,12 @@ export default function NewsPreview() {
   return newsList.articles == [] ? (
     <div>loading...</div>
   ) : (
-    <div className="h-1/3 bg-slate-300">
+    <div className="bg-slate-300">
       <ListNews newsList={newsList} />
       <Link to={"/news"}>
-        <Button primary>View All News Articles</Button>
+        <Button fluid primary>
+          View All News Articles
+        </Button>
       </Link>
     </div>
   );

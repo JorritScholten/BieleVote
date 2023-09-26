@@ -20,10 +20,12 @@ export default function ProjectsPreview() {
   return projectsList.projects == [] ? (
     <div>loading...</div>
   ) : (
-    <div className=" h-1/3 bg-slate-300">
+    <div className="  bg-slate-300">
       <ListProjects projectsList={projectsList} />
       <Link to={"/projects"}>
-        <Button primary>View All Projects</Button>
+        <Button fluid primary>
+          View All Projects
+        </Button>
       </Link>
     </div>
   );
