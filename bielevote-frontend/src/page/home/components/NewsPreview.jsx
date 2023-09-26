@@ -4,19 +4,23 @@ import { Button } from "semantic-ui-react";
 
 import ListNews from "../../news/components/ListNews";
 import { emptyForms } from "../../../misc/ApiForms";
-import { backendApi } from "../../../misc/ApiMappings";
+import { backendApi, handleLogError } from "../../../misc/ApiMappings";
 
 export default function NewsPreview() {
   const [newsList, setNewsList] = useState(emptyForms.newsOverview);
 
   useEffect(() => {
+    async function fetchNewsPreview() {
+      try {
+        const response = await backendApi.getAllNewsArticles(0, 2);
+        setNewsList(response.data);
+      } catch (error) {
+        handleLogError(error);
+      }
+    }
     fetchNewsPreview();
   }, []);
 
-  const fetchNewsPreview = async () => {
-    const response = await backendApi.getAllNewsArticles(0, 2);
-    setNewsList(response.data);
-  };
   return newsList.articles == [] ? (
     <div>loading...</div>
   ) : (
