@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Grid, GridColumn, Icon, List, Table } from "semantic-ui-react";
+import { Icon, Table } from "semantic-ui-react";
 import { BiBug } from "react-icons/bi";
 
 import { backendApi, handleLogError } from "../../misc/ApiMappings";
@@ -35,33 +35,35 @@ export default function AccountSettingsPage() {
   }, [getUser]);
 
   return (
-    <div className="flex flex-col gap-2 w-screen">
+    <div className="flex flex-col gap-8 w-screen">
       <Header pageTitle="Account settings" />
-      <div className="flex justify-center text-3xl w-3/4 mt-12">
-        <Table celled>
+      <div className="grid grid-cols-5 text-3xl">
+        <Table celled basic compact className="col-start-2 col-span-3">
           <Table.Body>
             <Table.Row>
-              <List.Icon name="address card" />
-              <List.Content>Legal name: {user.legalName}</List.Content>
+              <Table.Cell collapsing content={<Icon name="address card" />} />
+              <Table.Cell collapsing textAlign="right" content="Legal name" />
+              <Table.Cell>{user.legalName}</Table.Cell>
             </Table.Row>
             <Table.Row>
-              <List.Icon name="user" />
-              <List.Content>Username: {user.username}</List.Content>
+              <Table.Cell content={<Icon name="user" />} />
+              <Table.Cell textAlign="right" content="Username" />
+              <Table.Cell>{user.username}</Table.Cell>
             </Table.Row>
             <Table.Row>
-              <List.Icon name="phone" />
-              <List.Content>Telephone: {user.phone}</List.Content>
+              <Table.Cell content={<Icon name="phone" />} />
+              <Table.Cell textAlign="right" content="Telephone" />
+              <Table.Cell>{user.phone}</Table.Cell>
             </Table.Row>
             <Table.Row>
-              <List.Icon>
-                <Icon name="money" />
-              </List.Icon>
-              <List.Content>
-                Balance: {balance}{" "}
+              <Table.Cell content={<Icon name="money" />} />
+              <Table.Cell textAlign="right" content="Balance" />
+              <Table.Cell>
+                {balance}{" "}
                 <Icon className="relative top-1">
                   <BiBug />
                 </Icon>
-              </List.Content>
+              </Table.Cell>
             </Table.Row>
           </Table.Body>
           {/* <Table.Row>
