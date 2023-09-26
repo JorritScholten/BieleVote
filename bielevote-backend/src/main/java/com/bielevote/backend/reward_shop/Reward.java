@@ -23,11 +23,12 @@ public class Reward {
 
     private String name;
     private String description;
-    private boolean isLimited;
-    private int inventory;
+    private Boolean isLimited;
+    private Integer inventory;
     @Column(columnDefinition = "TIMESTAMP(0)")
     private LocalDateTime datePlaced;
-    private int cost;
+    private Integer cost;
+    private Boolean isAvailable;
 
     @JsonBackReference
     @OneToMany(mappedBy = "reward")
