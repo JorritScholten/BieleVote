@@ -1,17 +1,14 @@
 package com.bielevote.backend.project;
 
 import com.bielevote.backend.votes.VoteRepository;
-import com.bielevote.backend.votes.VoteType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
-@Configuration
-@EnableScheduling
+@Component
 @RequiredArgsConstructor
 public class StatusChecker {
     private final ProjectRepository projectRepository;
@@ -19,6 +16,7 @@ public class StatusChecker {
 
     @Scheduled(fixedRate = 10, timeUnit = TimeUnit.SECONDS)
     public void checkCompletedDeadlines() {
-        System.out.println("checking projects");
+        System.out.println(LocalDateTime.now() + " --- Checking projects");
+        System.out.flush();
     }
 }
