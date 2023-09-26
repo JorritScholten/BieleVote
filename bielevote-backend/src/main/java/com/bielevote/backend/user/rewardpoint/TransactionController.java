@@ -1,6 +1,7 @@
 package com.bielevote.backend.user.rewardpoint;
 
 import com.bielevote.backend.user.UserRepository;
+import com.bielevote.backend.user.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,10 +28,10 @@ public class TransactionController {
                 case "LAST_WEEK" -> LocalDateTime.now().minusWeeks(1);
                 case "LAST_MONTH" -> LocalDateTime.now().minusMonths(1);
                 case "LAST_YEAR" -> LocalDateTime.now().minusYears(1);
-                default -> LocalDateTime.of(1900,1,1,1,1);
+                default -> LocalDateTime.of(1900, 1, 1, 1, 1);
             };
             var merits = transactionRepository.findByAmountGreaterThanAndDateAfter(0, range);
-            var users = merits.stream().map(Transaction::getUser).distinct().toList();
+            var users = merits.stream().map(Transaction::getUser).distinct().filter(user -> user.getRole().equals(UserRole.CITIZEN)).toList();
             List<scoreCard> leaderboard = new ArrayList<>();
             for (var key : users) {
                 leaderboard.add(
