@@ -42,6 +42,7 @@ export const emptyForms = {
     votesFor: 0,
     votesNeutral: 0,
     votesAgainst: 0,
+    progressPercentage: 0,
   },
   projectOverview: {
     projects: [],
@@ -80,5 +81,11 @@ export const emptyForms = {
   rewardTransactionDto: {
     rewardId: -1,
     rewardsAmount: 1,
+  },
+  rewardTransactions: {
+    transactions: [],
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0,
   },
 };

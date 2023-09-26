@@ -15,6 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -87,6 +88,12 @@ public class ProjectController {
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             }
+            long percentage = 0;
+            if (project.getStatus() == ProjectStatus.ACTIVE) {
+                final long timePassed = Duration.between(project.getStartOfVoting(), LocalDateTime.now()).toSeconds();
+                final long totalTime = Duration.between(project.getStartOfVoting(), project.getEndOfVoting()).toSeconds();
+                percentage = (long) (((double) timePassed / (double) totalTime) * 100.0);
+            }
             var dto = new ProjectInfoDTO(
                     project.getTitle(),
                     project.getSummary(),
@@ -96,10 +103,11 @@ public class ProjectController {
                     project.getStatus(),
                     project.getVotes().stream().filter(v -> v.getType() == VoteType.POSITIVE).count(),
                     project.getVotes().stream().filter(v -> v.getType() == VoteType.NEUTRAL).count(),
-                    project.getVotes().stream().filter(v -> v.getType() == VoteType.AGAINST).count()
-            );
+                    project.getVotes().stream().filter(v -> v.getType() == VoteType.AGAINST).count(),
+                    percentage);
             return ResponseEntity.ok(dto);
         } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -168,7 +176,7 @@ public class ProjectController {
 
     public record ProjectInfoDTO(String title, String summary, String content, String author,
                                  LocalDateTime datePublished, ProjectStatus status, Long votesFor, Long votesNeutral,
-                                 Long votesAgainst) {
+                                 Long votesAgainst, Long progressPercentage) {
     }
 
     public record ProjectDTO(String title, String summary, String content, ProjectStatus status) {

@@ -125,12 +125,17 @@ function renderProject(project) {
       </SemanticHeader.Subheader>
       <div className=" flex flex-row gap-5">
         <div className="text-xl font-semibold">Status: {project.status}</div>
-        {/* {project.status === projectStatus.active ? (
-          <Progress className="grow" />
+        {project.status === projectStatus.active ? (
+          <Progress
+            percent={project.progressPercentage}
+            className="grow"
+            progress
+            active
+          />
         ) : (
           <div hidden />
-        )} */}
-        <div hidden />
+        )}
+        {/* <div hidden /> */}
       </div>
       {project.summary === null || project.summary.length === 0 ? (
         placeHolderText(1)

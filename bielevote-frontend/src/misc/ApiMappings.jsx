@@ -24,6 +24,7 @@ export const backendApi = {
   getHasVoted,
   postVote,
   postRewardTransaction,
+  getRewardTransactions,
   changeProjectStatus,
 };
 
@@ -128,6 +129,15 @@ function postRewardTransaction(user, rewardData) {
       "Content-type": "application/json",
     },
   });
+}
+
+function getRewardTransactions(user, page, amount) {
+  return instance.get(
+    "/api/v1/rewards/redeemed" + "?page=" + page + "&size=" + amount,
+    {
+      headers: { Authorization: bearerAuth(user) },
+    }
+  );
 }
 
 function getHasVoted(projectId, user) {
