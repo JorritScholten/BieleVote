@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { IoReturnDownBack } from "react-icons/io5";
 import {
+  Button,
   Container,
   Icon,
   Placeholder,
@@ -9,28 +10,51 @@ import {
   Header as SemanticHeader,
 } from "semantic-ui-react";
 import DOMPurify from "dompurify";
+import { HttpStatusCode } from "axios";
 
 import Header from "../../components/Header";
 import ProjectVote from "./components/ProjectVote";
 import { emptyForms, projectStatus } from "../../misc/ApiForms";
-import { backendApi } from "../../misc/ApiMappings";
+import { backendApi, handleLogError } from "../../misc/ApiMappings";
 import { formatDate } from "../../components/Utils";
+import { useAuth } from "../../misc/AuthContext";
+import { accountType } from "../../misc/NavMappings";
 
 export default function ProjectPage() {
   const [project, setProject] = useState(emptyForms.projectInfoDTO);
   const [version, setVersion] = useState(0);
+  const [disableStatusChange, setDisableStatusChange] = useState(false);
   const { projectId } = useParams();
+  const { getUser, getAccountType } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
+    async function fetchProject(projectId) {
+      try {
+        const response = await backendApi.getProjectById(projectId, getUser());
+        setProject(response.data);
+        setDisableStatusChange(response.data.status !== projectStatus.proposed);
+      } catch (error) {
+        if (error.response.status === HttpStatusCode.Unauthorized) {
+          navigate("/projects");
+        } else {
+          console.log(error);
+        }
+      }
+    }
     fetchProject(projectId);
-  }, [projectId, version]);
+  }, [projectId, version, getUser, navigate]);
 
-  async function fetchProject(projectId) {
+  async function allowOrDeny(newStatus) {
     try {
-      const response = await backendApi.getProjectById(projectId);
-      setProject(response.data);
+      const response = await backendApi.changeProjectStatus(
+        newStatus,
+        projectId,
+        getUser()
+      );
+      if (response.status === HttpStatusCode.Ok) setVersion((v) => (v = v + 1));
     } catch (error) {
-      console.log(error);
+      handleLogError(error);
     }
   }
 
@@ -43,19 +67,40 @@ export default function ProjectPage() {
         </Link>
         {renderProject(project)}
         <div className="m-5 text-center">
-          <div className="text-xl ">
-            <SemanticHeader as="h3">Votes:</SemanticHeader>
-            <div>for: {project.votesFor}</div>
-            <div>neutral: {project.votesNeutral}</div>
-            <div>against: {project.votesAgainst}</div>
-          </div>
-          <div className="">
-            {project.status === projectStatus.active ? (
-              <ProjectVote projectId={projectId} updateVersion={setVersion} />
-            ) : (
-              <div hidden />
-            )}
-          </div>
+          {project.status === projectStatus.proposed &&
+          getAccountType() === accountType.municipal ? (
+            <div className="text-xl ">
+              <SemanticHeader as="h3">Permit publication:</SemanticHeader>
+              <Button.Group fluid>
+                <Button
+                  positive
+                  disabled={disableStatusChange}
+                  onClick={() => allowOrDeny(projectStatus.active)}
+                  content="Allow"
+                />
+                <Button
+                  negative
+                  disabled={disableStatusChange}
+                  onClick={() => allowOrDeny(projectStatus.denied)}
+                  content="Deny"
+                />
+              </Button.Group>
+            </div>
+          ) : (
+            <div className="text-xl flex flex-col gap-5">
+              <SemanticHeader as="h3">Votes:</SemanticHeader>
+              <div>
+                <div>for: {project.votesFor}</div>
+                <div>neutral: {project.votesNeutral}</div>
+                <div>against: {project.votesAgainst}</div>
+              </div>
+              {project.status === projectStatus.active ? (
+                <ProjectVote projectId={projectId} updateVersion={setVersion} />
+              ) : (
+                <div hidden />
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

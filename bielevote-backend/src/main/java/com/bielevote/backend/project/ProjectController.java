@@ -1,5 +1,7 @@
 package com.bielevote.backend.project;
 
+import com.bielevote.backend.user.User;
+import com.bielevote.backend.user.UserRole;
 import com.bielevote.backend.user.UserService;
 import com.bielevote.backend.votes.VoteType;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -9,7 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +30,13 @@ public class ProjectController {
             ProjectStatus.ACCEPTED,
             ProjectStatus.REJECTED
     );
+    private static final Set<ProjectStatus> allowedMunicipalTypes = Set.of(
+            ProjectStatus.ACTIVE,
+            ProjectStatus.ACCEPTED,
+            ProjectStatus.REJECTED,
+            ProjectStatus.PROPOSED,
+            ProjectStatus.DENIED
+    );
     private final ProjectRepository projectRepository;
     private final UserService userService;
 
@@ -36,13 +45,20 @@ public class ProjectController {
     public ResponseEntity<Map<String, Object>> getAllProjects(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) List<String> statusList
+            @RequestParam(required = false) List<String> statusList,
+            @AuthenticationPrincipal User currentUser
     ) {
         try {
             var paging = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "datePublished"));
             final Set<ProjectStatus> statusFilter = new HashSet<>(statusList == null ? allowedPublicTypes :
                     statusList.stream().map(ProjectStatus::valueOf).collect(Collectors.toSet()));
-            statusFilter.retainAll(allowedPublicTypes);
+            if (currentUser == null) {
+                statusFilter.retainAll(allowedPublicTypes);
+            } else if (currentUser.getRole() == UserRole.MUNICIPAL) {
+                statusFilter.retainAll(allowedMunicipalTypes);
+            } else { // this is duplicate for now, will probably add filter for own projects
+                statusFilter.retainAll(allowedPublicTypes);
+            }
             Page<Project> pageProject = projectRepository.findByStatusIn(statusFilter, paging);
 
             List<Project> projects = pageProject.getContent();
@@ -53,17 +69,24 @@ public class ProjectController {
             responseBody.put("totalPages", pageProject.getTotalPages());
 
             return new ResponseEntity<>(responseBody, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProjectInfoDTO> getProjectById(@PathVariable("id") long id) {
+    public ResponseEntity<ProjectInfoDTO> getProjectById(@PathVariable("id") long id,
+                                                         @AuthenticationPrincipal User currentUser) {
         try {
             var project = projectRepository.findById(id).orElseThrow();
-            if (!allowedPublicTypes.contains(project.getStatus())) {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            if (currentUser != null && currentUser.getRole() == UserRole.MUNICIPAL) {
+                if (!allowedMunicipalTypes.contains(project.getStatus())) {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } else {
+                if (!allowedPublicTypes.contains(project.getStatus())) {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
             }
             long percentage = 0;
             if (project.getStatus() == ProjectStatus.ACTIVE) {
@@ -85,31 +108,28 @@ public class ProjectController {
             return ResponseEntity.ok(dto);
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @JsonView(ProjectViews.GetProjectList.class)
     @PostMapping
-    public ResponseEntity<Project> postProject(@Validated @RequestBody ProjectDTO projectDTO) {
+    public ResponseEntity<Project> postProject(@Validated @RequestBody ProjectDTO projectDTO,
+                                               @AuthenticationPrincipal User currentUser) {
         try {
-            var auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth == null) {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
             var project = new Project();
             project.setStatus(projectDTO.status);
             project.setSummary(projectDTO.summary);
             project.setContent(projectDTO.content);
             project.setTitle(projectDTO.title);
-            project.setAuthor(userService.getByUsername(auth.getName()).orElseThrow());
+            project.setAuthor(currentUser);
             project.setDatePublished(LocalDateTime.now());
             if (!(project.getStatus() == ProjectStatus.PROPOSED || project.getStatus() == ProjectStatus.EDITING)) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(projectRepository.save(project), HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -121,8 +141,36 @@ public class ProjectController {
             }
             projectRepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @JsonView(ProjectViews.GetProjectList.class)
+    @PatchMapping("/status/{id}")
+    public ResponseEntity<Project> handleProposal(@PathVariable("id") long id,
+                                                  @RequestHeader(value = "newStatus") String status) {
+        try {
+            var newStatus = ProjectStatus.valueOf(status);
+            if (newStatus != ProjectStatus.ACTIVE && newStatus != ProjectStatus.DENIED){
+                throw new IllegalArgumentException();
+            }
+            var project = projectRepository.findById(id).orElseThrow();
+            if (project.getStatus() != ProjectStatus.PROPOSED) throw new IllegalArgumentException();
+            project.setStatus(newStatus);
+            if(newStatus == ProjectStatus.ACTIVE){
+                project.setStartOfVoting(LocalDateTime.now());
+                project.setEndOfVoting(LocalDateTime.now().plus(Project.VOTING_PERIOD));
+            }
+            return ResponseEntity.ok(projectRepository.save(project));
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

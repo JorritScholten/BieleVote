@@ -82,6 +82,7 @@ public class SecurityConfiguration {
             match.apply(auth).apply("/api/v1/projects", GET).permitAll();
             match.apply(auth).apply("/api/v1/projects", POST).hasAnyRole(allAccounts);
             match.apply(auth).apply("/api/v1/projects/*", DELETE).hasRole(ADMINISTRATOR.name());
+            match.apply(auth).apply("/api/v1/projects/status/*", PATCH).hasAnyRole(municipality);
             match.apply(auth).apply("/api/v1/news/**", GET).permitAll();
             match.apply(auth).apply("/api/v1/news", POST).hasAnyRole(municipality);
             match.apply(auth).apply("/api/v1/news/**", DELETE).hasAnyRole(ADMINISTRATOR.name());
@@ -121,7 +122,7 @@ public class SecurityConfiguration {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.setAllowedOrigins(allowedOrigins);
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "UPDATE"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PATCH"));
         configuration.addAllowedHeader("*");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
