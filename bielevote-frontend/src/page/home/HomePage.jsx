@@ -9,7 +9,7 @@ export default function HomePage() {
   return (
     <div className="flex flex-col w-screen">
       <Header pageTitle="Home page" />
-      <Table>
+      {/* <Table>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>
@@ -25,7 +25,7 @@ export default function HomePage() {
             </Table.Cell>
           </Table.Row>
         </Table.Body>
-      </Table>
+      </Table> */}
       <Table celled columns={2}>
         <Table.Header>
           <Table.Row>
@@ -35,9 +35,9 @@ export default function HomePage() {
         </Table.Header>
         <Table.Body>
           <Table.Row>
-            <Table.Cell>
+            {/* <Table.Cell>
               <ProjectsPreview />
-            </Table.Cell>
+            </Table.Cell> */}
             <Table.Cell>
               <NewsPreview />
             </Table.Cell>
