@@ -65,6 +65,7 @@ export default function AccountSettingsPage() {
               <Table.Cell>{user.phone}</Table.Cell>
             </Table.Row>
             <Popup
+              disabled={getAccountType() !== accountType.citizen}
               trigger={
                 <Table.Row disabled={getAccountType() !== accountType.citizen}>
                   <Table.Cell content={<Icon name="user secret" />} />
