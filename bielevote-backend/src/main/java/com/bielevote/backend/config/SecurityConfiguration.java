@@ -78,6 +78,7 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests((auth) -> {
             matchAll.apply(auth).apply("/auth/**").permitAll();
             match.apply(auth).apply("/api/v1/users/**", GET).hasAnyRole(allAccounts);
+            match.apply(auth).apply("/api/v1/users/update/**", PATCH).hasAnyRole(allAccounts);
             match.apply(auth).apply("/api/v1/projects/*", GET).permitAll();
             match.apply(auth).apply("/api/v1/projects", GET).permitAll();
             match.apply(auth).apply("/api/v1/projects", POST).hasAnyRole(allAccounts);

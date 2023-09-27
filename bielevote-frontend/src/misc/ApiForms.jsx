@@ -78,6 +78,15 @@ export const emptyForms = {
     datePlaced: "",
     cost: 0,
   },
+  user: {
+    username: "",
+    legalName: "",
+    phone: "",
+    role: "",
+  },
+  updateUsername: {
+    newUsername: "",
+  },
   rewardTransactionDto: {
     rewardId: -1,
     rewardsAmount: 1,

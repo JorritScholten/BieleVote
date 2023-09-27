@@ -26,6 +26,7 @@ export const backendApi = {
   postRewardTransaction,
   getRewardTransactions,
   changeProjectStatus,
+  updateUsername,
 };
 
 function login(formData) {
@@ -36,6 +37,12 @@ function login(formData) {
 
 function userInfo(user) {
   return instance.get("/api/v1/users/me", {
+    headers: { Authorization: bearerAuth(user) },
+  });
+}
+
+function updateUsername(formData, user) {
+  return instance.get("/api/v1/users/", formData, {
     headers: { Authorization: bearerAuth(user) },
   });
 }

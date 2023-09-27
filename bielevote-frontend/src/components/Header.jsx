@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, Icon, Popup } from "semantic-ui-react";
 import { BiBug } from "react-icons/bi";
 
@@ -11,6 +11,7 @@ import { useAuth } from "../misc/AuthContext";
 
 export default function Header({ pageTitle }) {
   const { userIsAuthenticated, getUsername, userLogout, getUser } = useAuth();
+  const navigate = useNavigate();
   const [balance, setBalance] = useState(NaN);
   // sets page title in browser
   useEffect(() => {
@@ -47,7 +48,11 @@ export default function Header({ pageTitle }) {
       <div className="w-1/4 self-center">
         {userIsAuthenticated() ? (
           <Button.Group fluid size="small">
-            <Button className="w-3/5" content={getUsername()} />
+            <Button
+              className="w-3/5"
+              content={getUsername()}
+              onClick={() => navigate("/settings")}
+            />
             <Button active compact>
               {balance}{" "}
               <Icon>

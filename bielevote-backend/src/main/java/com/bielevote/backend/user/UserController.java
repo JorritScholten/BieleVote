@@ -1,12 +1,14 @@
 package com.bielevote.backend.user;
 
 import com.bielevote.backend.user.rewardpoint.TransactionRepository;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
 import java.util.stream.IntStream;
@@ -18,6 +20,7 @@ public class UserController {
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
 
+    @JsonView(UserViews.viewMe.class)
     @GetMapping("/me")
     public ResponseEntity<User> getCurrentUser(@AuthenticationPrincipal User currentUser) {
         try {
@@ -33,12 +36,30 @@ public class UserController {
             var user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow();
             var transactionList = transactionRepository.findByUser(user);
             var balance = transactionList.stream().flatMapToInt(t -> IntStream.of(t.getAmount())).sum();
-            return ResponseEntity.ok( balance );
+            return ResponseEntity.ok(balance);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
             return ResponseEntity.internalServerError().build();
         }
+    }
+
+    @PatchMapping("/update/username")
+    public ResponseEntity<User> patchUsername(@Validated @RequestBody String newUsername,
+                                              @AuthenticationPrincipal User currentUser) {
+        if (newUsername.isBlank()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        try {
+            var user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow();
+            user.setUsername(newUsername);
+            return new ResponseEntity<>(userRepository.save(user), HttpStatus.CREATED);
+        } catch (DataIntegrityViolationException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 }
