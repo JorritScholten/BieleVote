@@ -27,6 +27,7 @@ export const backendApi = {
   getRewardTransactions,
   changeProjectStatus,
   updateUsername,
+  toggleAnonymousOnLeaderboard,
 };
 
 function login(formData) {
@@ -169,6 +170,14 @@ function changeProjectStatus(newStatus, projectId, user) {
     headers: {
       Authorization: bearerAuth(user),
       newStatus: newStatus,
+    },
+  });
+}
+
+function toggleAnonymousOnLeaderboard(user) {
+  return instance.patch("/api/v1/users/update/anonymous", null, {
+    headers: {
+      Authorization: bearerAuth(user),
     },
   });
 }
