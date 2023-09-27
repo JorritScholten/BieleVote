@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Icon, Table } from "semantic-ui-react";
-import { BiBug } from "react-icons/bi";
+import { Icon, Popup, Table } from "semantic-ui-react";
+import { BiBug, BiCheck, BiX } from "react-icons/bi";
 
 import { backendApi, handleLogError } from "../../misc/ApiMappings";
 import { useAuth } from "../../misc/AuthContext";
@@ -55,6 +55,18 @@ export default function AccountSettingsPage() {
               <Table.Cell textAlign="right" content="Telephone" />
               <Table.Cell>{user.phone}</Table.Cell>
             </Table.Row>
+            <Popup
+              trigger={
+                <Table.Row>
+                  <Table.Cell content={<Icon name="user secret" />} />
+                  <Table.Cell textAlign="right" content="Anonymous" />
+                  <Table.Cell>
+                    {user.anonymousOnLeaderboard ? <BiCheck /> : <BiX />}
+                  </Table.Cell>
+                </Table.Row>
+              }
+              content="Appear as anonymous on the leaderboard."
+            />
             <Table.Row>
               <Table.Cell content={<Icon name="money" />} />
               <Table.Cell textAlign="right" content="Balance" />
