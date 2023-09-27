@@ -32,14 +32,21 @@ public class TransactionController {
             };
             var merits = transactionRepository.findByAmountGreaterThanAndDateAfter(0, range);
             var users = merits.stream().map(Transaction::getUser).distinct().filter(user -> user.getRole().equals(UserRole.CITIZEN)).toList();
-            List<scoreCard> leaderboard = new ArrayList<>();
+            List<scoreCardUnordered> unsortedLeaderboard = new ArrayList<>();
             for (var key : users) {
-                leaderboard.add(
-                        new scoreCard(key.getUsername(), merits.stream().filter(t -> t.getUser().equals(key))
-                                .flatMapToInt(t -> IntStream.of(t.getAmount())).sum())
+                unsortedLeaderboard.add(
+                        new scoreCardUnordered(key.getAnonymousOnLeaderboard() ? "anonymous" : key.getUsername(),
+                                merits.stream().filter(t -> t.getUser().equals(key))
+                                        .flatMapToInt(t -> IntStream.of(t.getAmount())).sum())
                 );
             }
-            leaderboard.sort(null);
+            unsortedLeaderboard.sort(null);
+            List<scoreCard> leaderboard = new ArrayList<>();
+            int rank = 1;
+            for (var card : unsortedLeaderboard) {
+                leaderboard.add(new scoreCard(card.username, card.score, rank));
+                rank++;
+            }
             return ResponseEntity.ok(leaderboard);
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
@@ -47,9 +54,12 @@ public class TransactionController {
         }
     }
 
-    record scoreCard(String username, Integer score) implements Comparable<scoreCard> {
+    record scoreCard(String username, Integer score, Integer rank) {
+    }
+
+    record scoreCardUnordered(String username, Integer score) implements Comparable<scoreCardUnordered> {
         @Override
-        public int compareTo(scoreCard o) {
+        public int compareTo(scoreCardUnordered o) {
             return o.score - score;
         }
     }
