@@ -10,20 +10,21 @@ import LoginForm from "./LoginForm";
 import { useAuth } from "../misc/AuthContext";
 
 export default function Header({ pageTitle }) {
-  const { userIsAuthenticated, getUsername, userLogout } = useAuth();
+  const { userIsAuthenticated, getUsername, userLogout, getUser } = useAuth();
   const [balance, setBalance] = useState(NaN);
-  async function getBalance() {
-    try {
-      const res = await backendApi.getAccountBalance(getUsername());
-      setBalance(res.data);
-    } catch (error) {
-      setBalance(NaN);
+  // sets page title in browser
+  useEffect(() => {
+    async function getBalance() {
+      try {
+        const res = await backendApi.getAccountBalance(getUser());
+        setBalance(res.data);
+      } catch (error) {
+        setBalance(NaN);
+      }
     }
-  }
-    // sets page title in browser
-    useEffect(() => {
-      document.title = pageTitle;
-    }, [pageTitle]);
+    getBalance();
+    document.title = pageTitle;
+  }, [pageTitle, getUser]);
 
   return (
     <div className="p-2 gap-2 flex justify-between items-center bg-slate-300">
@@ -46,9 +47,19 @@ export default function Header({ pageTitle }) {
       <div className="w-1/4 self-center">
         {userIsAuthenticated() ? (
           <Button.Group fluid size="small">
-            <Button active className="w-3/4" content={getUsername()} />
-            <Button>{balance}<BiBug></BiBug></Button>
-            <Button negative onClick={() => userLogout()} content="Logout" />
+            <Button className="w-3/5" content={getUsername()} />
+            <Button active compact>
+              {balance}{" "}
+              <Icon>
+                <BiBug />
+              </Icon>
+            </Button>
+            <Button
+              negative
+              compact
+              onClick={() => userLogout()}
+              content="Logout"
+            />
           </Button.Group>
         ) : (
           <LoginForm />
