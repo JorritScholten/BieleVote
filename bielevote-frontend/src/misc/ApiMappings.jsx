@@ -20,6 +20,9 @@ export const backendApi = {
   getNewsArticleById,
   getAllRewards,
   getRewardById,
+  postReward,
+  updateRewardInventory,
+  updateRewardAvailability,
   getLeaderboard,
   getHasVoted,
   postVote,
@@ -127,6 +130,40 @@ function getAllRewards(page, amount) {
 
 function getRewardById(rewardId) {
   return instance.get(`/api/v1/rewards/shop/${rewardId}`);
+}
+
+function postReward(user, formData) {
+  return instance.post("/api/v1/rewards/shop", formData, {
+    headers: {
+      Authorization: bearerAuth(user),
+      "Content-type": "application/json",
+    },
+  });
+}
+
+function updateRewardInventory(user, rewardId, updateInventory) {
+  return instance.patch(
+    `/api/v1/rewards/shop/inventory/${rewardId}`,
+    updateInventory,
+    {
+      headers: {
+        Authorization: bearerAuth(user),
+        "Content-type": "application/json",
+      },
+    }
+  );
+}
+function updateRewardAvailability(user, rewardId, updateAvailability) {
+  return instance.patch(
+    `/api/v1/rewards/shop/availability/${rewardId}`,
+    updateAvailability,
+    {
+      headers: {
+        Authorization: bearerAuth(user),
+        "Content-type": "application/json",
+      },
+    }
+  );
 }
 
 function postRewardTransaction(user, rewardData) {
