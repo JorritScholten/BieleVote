@@ -97,4 +97,9 @@ export const emptyForms = {
     totalItems: 0,
     totalPages: 0,
   },
+  newAccount: {
+    username: "",
+    legalName: "",
+    phone: "",
+  },
 };
