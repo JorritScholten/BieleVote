@@ -22,7 +22,8 @@ public class TransactionController {
     private final TransactionRepository transactionRepository;
 
     @GetMapping
-    public ResponseEntity<List<scoreCard>> getHighScores(@RequestHeader(value = "timeRange", defaultValue = "ALL_TIME") String timeRange) {
+    public ResponseEntity<List<scoreCard>> getHighScores(@RequestHeader(value = "timeRange",
+            defaultValue = "ALL_TIME") String timeRange) {
         try {
             var range = switch (timeRange) {
                 case "LAST_WEEK" -> LocalDateTime.now().minusWeeks(1);
@@ -31,7 +32,8 @@ public class TransactionController {
                 default -> LocalDateTime.of(1900, 1, 1, 1, 1);
             };
             var merits = transactionRepository.findByAmountGreaterThanAndDateAfter(0, range);
-            var users = merits.stream().map(Transaction::getUser).distinct().filter(user -> user.getRole().equals(UserRole.CITIZEN)).toList();
+            var users = merits.stream().map(Transaction::getUser).distinct()
+                    .filter(user -> user.getRole().equals(UserRole.CITIZEN)).toList();
             List<scoreCardUnordered> unsortedLeaderboard = new ArrayList<>();
             for (var key : users) {
                 unsortedLeaderboard.add(

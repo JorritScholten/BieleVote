@@ -7,11 +7,12 @@ import { useAuth } from "../../misc/AuthContext";
 import { emptyForms } from "../../misc/ApiForms";
 import { Header } from "../../components";
 import UpdateUsernameForm from "./components/UpdateUsernameForm";
+import { accountType } from "../../misc/NavMappings";
 
 export default function AccountSettingsPage() {
   const [user, setUser] = useState(emptyForms.user);
   const [balance, setBalance] = useState(NaN);
-  const { getUser } = useAuth();
+  const { getUser, getAccountType } = useAuth();
 
   useEffect(() => {
     async function getBalance() {
@@ -57,7 +58,7 @@ export default function AccountSettingsPage() {
             </Table.Row>
             <Popup
               trigger={
-                <Table.Row>
+                <Table.Row disabled={getAccountType() !== accountType.citizen}>
                   <Table.Cell content={<Icon name="user secret" />} />
                   <Table.Cell textAlign="right" content="Anonymous" />
                   <Table.Cell>
