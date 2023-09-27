@@ -50,7 +50,7 @@ export default function Leaderboard() {
         </Table.Header>
       </div>
       <div className="p-1">
-        <Table basic="very" celled>
+        <Table basic="very" celled compact>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>Score</Table.HeaderCell>
