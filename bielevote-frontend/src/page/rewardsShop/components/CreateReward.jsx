@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Form, Header, Modal } from "semantic-ui-react";
+import { Button, Checkbox, Form, Header, Modal } from "semantic-ui-react";
 import { emptyForms } from "../../../misc/ApiForms";
 import { backendApi, handleLogError } from "../../../misc/ApiMappings";
 import { useAuth } from "../../../misc/AuthContext";
@@ -17,19 +17,23 @@ export default function CreateReward() {
       if (response.status === HttpStatusCode.Created) {
         setNewReward(emptyForms.createRewardDto);
         setOpen(false);
+        alert("Reward is posted!");
       }
     } catch (error) {
       handleLogError(error);
+      alert("Something went wrong, please try again");
     }
   }
 
   return (
     <div>
       <Modal
+        className="p-5"
         onClose={() => setOpen(false)}
         onOpen={() => setOpen(true)}
+        size="fullscreen"
         open={open}
-        trigger={<Button positive>Purchase</Button>}
+        trigger={<Button positive>Add new Reward</Button>}
       >
         <Form onSubmit={onSubmit}>
           <Modal.Header>
@@ -41,52 +45,90 @@ export default function CreateReward() {
               onChange={(e) =>
                 setNewReward({ ...newReward, name: e.target.value })
               }
-              required={true}
             />
           </Modal.Header>
-          <Modal.Content image>
-            <Modal.Description>
-              <Form.Input
-                label="Cost:"
-                name="cost"
-                placeholder="Cost"
-                value={newReward.cost}
-                onChange={(e) =>
-                  setNewReward({ ...newReward, cost: e.target.value })
-                }
-                required={true}
-              />
-              <Header>Description</Header>
-              <div>
-                <Form.Input
-                  label="Description:"
-                  name="description"
-                  placeholder="Description"
-                  value={newReward.description}
-                  onChange={(e) =>
-                    setNewReward({ ...newReward, description: e.target.value })
-                  }
-                  required={true}
-                />
-              </div>
-            </Modal.Description>
-          </Modal.Content>
-          <Modal.Actions>
-            <Button color="black" onClick={() => setOpen(false)}>
-              Nope
-            </Button>
-            <Button
-              type="submit"
-              content="Submit"
-              labelPosition="right"
-              positive
-              active={
-                !(
-                  newReward.name === emptyForms.createRewardDto.name ||
-                  newReward.cost === emptyForms.createRewardDto.cost
-                )
+          <Modal.Content>
+            <Form.Input
+              label="Description:"
+              name="description"
+              placeholder="Description"
+              value={newReward.description}
+              onChange={(e) =>
+                setNewReward({ ...newReward, description: e.target.value })
               }
             />
+            <Form.Input
+              label="Cost:"
+              name="cost"
+              placeholder="Cost"
+              value={newReward.cost}
+              onChange={(e) =>
+                setNewReward({ ...newReward, cost: e.target.value })
+              }
+            />
+            <Form.Field>
+              <Button
+                type="button"
+                toggle
+                fluid
+                active={newReward.isLimited}
+                onClick={() =>
+                  setNewReward({
+                    ...newReward,
+                    isLimited: !newReward.isLimited,
+                  })
+                }
+                content="Reward has limited inventory"
+              />
+            </Form.Field>
+            <Form.Field>
+              <Button
+                type="button"
+                toggle
+                fluid
+                active={newReward.isAvailable}
+                onClick={() =>
+                  setNewReward({
+                    ...newReward,
+                    isAvailable: !newReward.isAvailable,
+                  })
+                }
+                content="Reward is directly available in the shop"
+              />
+            </Form.Field>
+            <Form.Input
+              label="Inventory:"
+              name="inventory"
+              placeholder="Inventory"
+              value={newReward.inventory}
+              onChange={(e) =>
+                setNewReward({ ...newReward, inventory: e.target.value })
+              }
+            />
+          </Modal.Content>
+          <Modal.Actions>
+            <Button.Group>
+              <Button
+                type="button"
+                color="black"
+                onClick={() => setOpen(false)}
+              >
+                Nope
+              </Button>
+              <Button
+                type="submit"
+                content="Submit"
+                labelPosition="right"
+                active={
+                  !(
+                    newReward.name === emptyForms.createRewardDto.name ||
+                    newReward.description ===
+                      emptyForms.createRewardDto.description ||
+                    newReward.cost === emptyForms.createRewardDto.cost
+                  )
+                }
+              />
+            </Button.Group>
           </Modal.Actions>
         </Form>
       </Modal>
