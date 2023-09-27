@@ -35,7 +35,7 @@ public class TransactionController {
             List<scoreCardUnordered> unsortedLeaderboard = new ArrayList<>();
             for (var key : users) {
                 unsortedLeaderboard.add(
-                        new scoreCardUnordered(key.getAnonymousOnLeaderboard() ? "anonymous" : key.getUsername(),
+                        new scoreCardUnordered(key.getAnonymousOnLeaderboard() ? "anonymous" : key.getLegalName(),
                                 merits.stream().filter(t -> t.getUser().equals(key))
                                         .flatMapToInt(t -> IntStream.of(t.getAmount())).sum())
                 );
@@ -44,7 +44,7 @@ public class TransactionController {
             List<scoreCard> leaderboard = new ArrayList<>();
             int rank = 1;
             for (var card : unsortedLeaderboard) {
-                leaderboard.add(new scoreCard(card.username, card.score, rank));
+                leaderboard.add(new scoreCard(card.name, card.score, rank));
                 rank++;
             }
             return ResponseEntity.ok(leaderboard);
@@ -54,10 +54,10 @@ public class TransactionController {
         }
     }
 
-    record scoreCard(String username, Integer score, Integer rank) {
+    public record scoreCard(String name, Integer score, Integer rank) {
     }
 
-    record scoreCardUnordered(String username, Integer score) implements Comparable<scoreCardUnordered> {
+    record scoreCardUnordered(String name, Integer score) implements Comparable<scoreCardUnordered> {
         @Override
         public int compareTo(scoreCardUnordered o) {
             return o.score - score;

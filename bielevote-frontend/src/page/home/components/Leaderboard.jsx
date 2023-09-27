@@ -64,7 +64,7 @@ export default function Leaderboard() {
                 <Table.Row key={score.rank}>
                   <Table.Cell verticalAlign="right">{score.rank}</Table.Cell>
                   <Table.Cell verticalAlign="center">{score.score}</Table.Cell>
-                  <Table.Cell>{score.username}</Table.Cell>
+                  <Table.Cell>{score.name}</Table.Cell>
                 </Table.Row>
               ))
             ) : (
