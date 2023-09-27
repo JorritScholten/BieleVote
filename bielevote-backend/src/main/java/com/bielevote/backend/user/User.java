@@ -37,6 +37,7 @@ public class User implements UserDetails {
     private Long id;
 
     @NonNull
+    @JsonView({UserViews.viewMe.class})
     @Column(unique = true)
     private String username;
 
@@ -44,13 +45,15 @@ public class User implements UserDetails {
     private String password;
 
     @NonNull
-    @JsonView(ProjectViews.GetProjectList.class)
+    @JsonView({UserViews.viewMe.class, ProjectViews.GetProjectList.class})
     private String legalName;
 
     @NonNull
+    @JsonView(UserViews.viewMe.class)
     private String phone;
 
     @NonNull
+    @JsonView(UserViews.viewMe.class)
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
