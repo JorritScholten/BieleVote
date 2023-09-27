@@ -20,9 +20,12 @@ import { formatDate } from "../../components/Utils";
 import { useAuth } from "../../misc/AuthContext";
 import { accountType } from "../../misc/NavMappings";
 
+import { useContext } from "react";
+import BalanceContext from "../../misc/BalanceContext";
+
 export default function ProjectPage() {
   const [project, setProject] = useState(emptyForms.projectInfoDTO);
-  const [version, setVersion] = useState(0);
+  const [version, setVersion] = useState(useContext(BalanceContext));
   const [disableStatusChange, setDisableStatusChange] = useState(false);
   const { projectId } = useParams();
   const { getUser, getAccountType } = useAuth();

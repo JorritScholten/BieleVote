@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Icon, Popup } from "semantic-ui-react";
 import { BiBug } from "react-icons/bi";
@@ -8,24 +8,18 @@ import { backendApi } from "../misc/ApiMappings";
 import NavBar from "./NavBar";
 import LoginForm from "./LoginForm";
 import { useAuth } from "../misc/AuthContext";
+import BalanceContext from "../misc/BalanceContext";
 
 export default function Header({ pageTitle }) {
-  const { userIsAuthenticated, getUsername, userLogout, getUser } = useAuth();
+  const { userIsAuthenticated, getUsername, userLogout } = useAuth();
   const navigate = useNavigate();
-  const [balance, setBalance] = useState(NaN);
+
+  const balance = useContext(BalanceContext);
+
   // sets page title in browser
   useEffect(() => {
-    async function getBalance() {
-      try {
-        const res = await backendApi.getAccountBalance(getUser());
-        setBalance(res.data);
-      } catch (error) {
-        setBalance(NaN);
-      }
-    }
-    getBalance();
     document.title = pageTitle;
-  }, [pageTitle, getUser]);
+  }, [pageTitle]);
 
   return (
     <div className="p-2 gap-2 flex justify-between items-center bg-slate-300">

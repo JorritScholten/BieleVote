@@ -6,10 +6,13 @@ import { useAuth } from "../../../misc/AuthContext";
 import { backendApi, handleLogError } from "../../../misc/ApiMappings";
 import { useEffect, useState } from "react";
 import { voteTypes } from "../../../misc/ApiForms";
+import { useContext } from "react";
+import BalanceContext from "../../../misc/BalanceContext";
 
 export default function ProjectVote({ projectId, updateVersion }) {
   const { userIsAuthenticated, getUser } = useAuth();
   const [hasAlreadyVoted, setHasAlreadyVoted] = useState(true);
+
   useEffect(() => {
     async function getVotingStatus() {
       try {
