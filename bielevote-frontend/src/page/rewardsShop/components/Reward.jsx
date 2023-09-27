@@ -71,7 +71,7 @@ export default function Reward({ rewardId }) {
   }
 
   const changeCount = (increase) => {
-    if (count + increase > 0) {
+    if (count + increase > 0 && count < reward.inventory) {
       setCount(count + increase);
     }
   };
@@ -100,10 +100,12 @@ export default function Reward({ rewardId }) {
           <Header>Description</Header>
           <div>{reward.description}</div>
         </Modal.Description>
+
+        <div>In stock: {reward.inventory}</div>
       </Modal.Content>
       <Modal.Actions>
         <Button color="black" onClick={() => setOpen(false)}>
-          Nope
+          Cancel
         </Button>
         <Button.Group>
           <Button onClick={() => changeCount(-1)}>-</Button>

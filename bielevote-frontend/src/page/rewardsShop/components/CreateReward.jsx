@@ -26,14 +26,18 @@ export default function CreateReward() {
   }
 
   return (
-    <div>
+    <div className="w-1/4 h-1/4 ml-20">
       <Modal
         className="p-5"
         onClose={() => setOpen(false)}
         onOpen={() => setOpen(true)}
         size="fullscreen"
         open={open}
-        trigger={<Button positive>Add new Reward</Button>}
+        trigger={
+          <Button className="h-32" fluid positive>
+            Add new Reward
+          </Button>
+        }
       >
         <Form onSubmit={onSubmit}>
           <Modal.Header>
@@ -107,18 +111,19 @@ export default function CreateReward() {
             />
           </Modal.Content>
           <Modal.Actions>
-            <Button.Group>
+            <Button.Group className="pt-4">
               <Button
                 type="button"
                 color="black"
                 onClick={() => setOpen(false)}
               >
-                Nope
+                Cancel
               </Button>
               <Button
+                color="green"
+                fluid
                 type="submit"
                 content="Submit"
-                labelPosition="right"
                 active={
                   !(
                     newReward.name === emptyForms.createRewardDto.name ||
