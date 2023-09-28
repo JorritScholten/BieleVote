@@ -122,14 +122,30 @@ function getLeaderboard(timeRange) {
   }
 }
 
-function getAllRewards(page, amount) {
-  return instance.get(
-    "/api/v1/rewards/shop" + "?page=" + page + "&size=" + amount
-  );
+function getAllRewards(page, amount, user) {
+  const path = "/api/v1/rewards/shop" + "?page=" + page + "&size=" + amount;
+  if (user === null) {
+    return instance.get(path);
+  } else {
+    return instance.get(path, {
+      headers: {
+        Authorization: bearerAuth(user),
+      },
+    });
+  }
 }
 
-function getRewardById(rewardId) {
-  return instance.get(`/api/v1/rewards/shop/${rewardId}`);
+function getRewardById(rewardId, user) {
+  const path = `/api/v1/rewards/shop/${rewardId}`;
+  if (user === null) {
+    return instance.get(path);
+  } else {
+    return instance.get(path, {
+      headers: {
+        Authorization: bearerAuth(user),
+      },
+    });
+  }
 }
 
 function postReward(user, formData) {

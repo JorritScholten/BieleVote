@@ -11,12 +11,12 @@ import CreateReward from "./components/CreateReward";
 
 export default function RewardOverviewPage() {
   const [rewardsList, setRewardsList] = useState(emptyForms.rewardOverview);
-  const { getAccountType } = useAuth();
+  const { getUser, getAccountType, userIsAuthenticated } = useAuth();
   const [version, setVersion] = useState(0);
 
   useEffect(() => {
     handlePageChange();
-  }, [version]);
+  }, [version, userIsAuthenticated]);
 
   const handlePageChange = async (event, value) => {
     let page;
@@ -26,7 +26,7 @@ export default function RewardOverviewPage() {
       page = 0;
     }
     try {
-      const response = await backendApi.getAllRewards(page, 9);
+      const response = await backendApi.getAllRewards(page, 9, getUser());
       setRewardsList(response.data);
     } catch (error) {
       handleLogError(error);

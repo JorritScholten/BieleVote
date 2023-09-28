@@ -4,6 +4,7 @@ import com.bielevote.backend.project.Project;
 import com.bielevote.backend.project.ProjectStatus;
 import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRepository;
+import com.bielevote.backend.user.UserRole;
 import com.bielevote.backend.user.rewardpoint.Transaction;
 import com.bielevote.backend.user.rewardpoint.TransactionReason;
 import com.bielevote.backend.user.rewardpoint.TransactionRepository;
@@ -31,15 +32,19 @@ public class RewardController {
     private final TransactionRepository transactionRepository;
 
     @GetMapping("/shop")
-    public ResponseEntity<Map<String, Object>> getAllRewards(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+    public ResponseEntity<Map<String, Object>> getAllRewards(@AuthenticationPrincipal User currentUser,
+                                                             @RequestParam(defaultValue = "0") int page,
+                                                             @RequestParam(defaultValue = "10") int size
     ) {
         try {
             List<Reward> rewards;
+            Page<Reward> pageRewards;
             PageRequest paging = PageRequest.of(page, size, Sort.by("datePlaced").descending());
-
-            Page<Reward> pageRewards = rewardRepository.findByIsAvailable(true, paging);
+            if (currentUser != null && currentUser.getRole() == UserRole.ADMINISTRATOR) {
+                pageRewards = rewardRepository.findAll(paging);
+            } else {
+                pageRewards = rewardRepository.findByIsAvailable(true, paging);
+            }
 
             rewards = pageRewards.getContent();
 
@@ -56,9 +61,14 @@ public class RewardController {
     }
 
     @GetMapping("/shop/{id}")
-    public ResponseEntity<Reward> getRewardById(@PathVariable("id") long id) {
+    public ResponseEntity<Reward> getRewardById(@AuthenticationPrincipal User currentUser,
+                                                @PathVariable("id") long id) {
         try {
-            return new ResponseEntity<>(rewardRepository.findByIdAndIsAvailable(id, true).orElseThrow(), HttpStatus.OK);
+            if (currentUser != null && currentUser.getRole() == UserRole.ADMINISTRATOR)
+                return new ResponseEntity<>(rewardRepository.findById(id).orElseThrow(), HttpStatus.OK);
+            else {
+                return new ResponseEntity<>(rewardRepository.findByIdAndIsAvailable(id, true).orElseThrow(), HttpStatus.OK);
+            }
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

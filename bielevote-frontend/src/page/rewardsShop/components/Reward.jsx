@@ -22,7 +22,7 @@ export default function Reward({ rewardId }) {
   useEffect(() => {
     async function fetchReward(rewardId) {
       try {
-        const response = await backendApi.getRewardById(rewardId);
+        const response = await backendApi.getRewardById(rewardId, getUser());
         setRewardItem(response.data);
       } catch (error) {
         handleLogError(error);
@@ -75,18 +75,21 @@ export default function Reward({ rewardId }) {
       setCount(count + increase);
     }
   };
-
+  const canPurchase =
+    reward.inventory <= 0 ? (
+      <p>Out Of Stock</p>
+    ) : (
+      <Button.Group>
+        <Button>More info</Button>
+        <Button positive>Purchase</Button>
+      </Button.Group>
+    );
   return (
     <Modal
       onClose={() => setOpen(false)}
       onOpen={() => setOpen(true)}
       open={open}
-      trigger={
-        <Button.Group>
-          <Button>More info</Button>
-          <Button positive>Purchase</Button>
-        </Button.Group>
-      }
+      trigger={canPurchase}
     >
       <Modal.Header>{reward.name}</Modal.Header>
       <Modal.Content image>
