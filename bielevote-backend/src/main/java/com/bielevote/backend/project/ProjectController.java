@@ -104,7 +104,8 @@ public class ProjectController {
                     project.getVotes().stream().filter(v -> v.getType() == VoteType.POSITIVE).count(),
                     project.getVotes().stream().filter(v -> v.getType() == VoteType.NEUTRAL).count(),
                     project.getVotes().stream().filter(v -> v.getType() == VoteType.AGAINST).count(),
-                    percentage);
+                    percentage,
+                    project.getEndOfVoting());
             return ResponseEntity.ok(dto);
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
@@ -179,7 +180,7 @@ public class ProjectController {
 
     public record ProjectInfoDTO(String title, String summary, String content, String author,
                                  LocalDateTime datePublished, ProjectStatus status, Long votesFor, Long votesNeutral,
-                                 Long votesAgainst, Long progressPercentage) {
+                                 Long votesAgainst, Long progressPercentage, LocalDateTime endOfVoting) {
     }
 
     public record ProjectDTO(String title, String summary, String content, ProjectStatus status) {

@@ -19,6 +19,7 @@ import { backendApi, handleLogError } from "../../misc/ApiMappings";
 import { formatDate } from "../../components/Utils";
 import { useAuth } from "../../misc/AuthContext";
 import { accountType } from "../../misc/NavMappings";
+import TimeRemaing from "./components/TimeRemaing";
 
 export default function ProjectPage() {
   const [project, setProject] = useState(emptyForms.projectInfoDTO);
@@ -137,6 +138,9 @@ function renderProject(project) {
         )}
         {/* <div hidden /> */}
       </div>
+
+      <div>Time remaining:<TimeRemaing project={project} /></div>
+
       {project.summary === null || project.summary.length === 0 ? (
         placeHolderText(1)
       ) : (
