@@ -8,7 +8,7 @@ import {
 
 import { Header } from "../../components";
 import ListProjects from "./components/ListProjects";
-import { backendApi } from "../../misc/ApiMappings";
+import { backendApi, handleLogError } from "../../misc/ApiMappings";
 import { emptyForms, projectStatus } from "../../misc/ApiForms";
 import { useAuth } from "../../misc/AuthContext";
 import { accountType } from "../../misc/NavMappings";
@@ -21,18 +21,14 @@ export default function ProjectOverviewPage() {
   const [viewProposed, setViewProposed] = useState(true);
   const [viewDenied, setViewDenied] = useState(false);
   const { getUser, getAccountType } = useAuth();
+  const amountOfProjects = 3;
 
   useEffect(() => {
     handlePageChange();
   }, [viewActive, viewAccepted, viewRejected, viewProposed, viewDenied]);
 
   const handlePageChange = async (event, value) => {
-    let page;
-    if (value) {
-      page = value.activePage - 1;
-    } else {
-      page = 0;
-    }
+    const page = value != null ? value.activePage - 1 : 0;
     let statusFilter = [];
     if (viewActive) statusFilter.push(projectStatus.active);
     if (viewAccepted) statusFilter.push(projectStatus.accepted);
@@ -41,13 +37,17 @@ export default function ProjectOverviewPage() {
       if (viewProposed) statusFilter.push(projectStatus.proposed);
       if (viewDenied) statusFilter.push(projectStatus.denied);
     }
-    const response = await backendApi.getAllProjects(
-      page,
-      3,
-      statusFilter,
-      getUser()
-    );
-    setProjectsList(response.data);
+    try {
+      const response = await backendApi.getAllProjects(
+        page,
+        amountOfProjects,
+        statusFilter,
+        getUser()
+      );
+      setProjectsList(response.data);
+    } catch (error) {
+      handleLogError(error);
+    }
   };
 
   return (
