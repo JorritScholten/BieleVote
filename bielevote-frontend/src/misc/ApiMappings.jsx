@@ -16,6 +16,7 @@ export const backendApi = {
   postProject,
   getAllProjects,
   getProjectById,
+  allowedToPostProject,
   getAllNewsArticles,
   getNewsArticleById,
   getAllRewards,
@@ -150,6 +151,14 @@ function getRewardTransactions(user, page, amount) {
 
 function getHasVoted(projectId, user) {
   return instance.get(`/api/v1/votes/${projectId}`, {
+    headers: {
+      Authorization: bearerAuth(user),
+    },
+  });
+}
+
+function allowedToPostProject(projectId, user) {
+  return instance.get(`/api/v1/projects/allowed_to_post`, {
     headers: {
       Authorization: bearerAuth(user),
     },
