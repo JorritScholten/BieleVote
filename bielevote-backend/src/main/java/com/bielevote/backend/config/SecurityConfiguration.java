@@ -44,6 +44,7 @@ import static org.springframework.http.HttpMethod.*;
 @EnableMethodSecurity
 public class SecurityConfiguration {
     static final String[] allAccounts = new String[]{CITIZEN.name(), MUNICIPAL.name(), ADMINISTRATOR.name()};
+    static final String[] notAdmin = new String[]{CITIZEN.name(), MUNICIPAL.name()};
     static final String[] municipality = new String[]{MUNICIPAL.name(), ADMINISTRATOR.name()};
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
     /**
@@ -81,7 +82,7 @@ public class SecurityConfiguration {
             match.apply(auth).apply("/api/v1/users/update/**", PATCH).hasAnyRole(allAccounts);
             match.apply(auth).apply("/api/v1/projects/*", GET).permitAll();
             match.apply(auth).apply("/api/v1/projects", GET).permitAll();
-            match.apply(auth).apply("/api/v1/projects", POST).hasAnyRole(allAccounts);
+            match.apply(auth).apply("/api/v1/projects", POST).hasAnyRole(notAdmin);
             match.apply(auth).apply("/api/v1/projects/*", DELETE).hasRole(ADMINISTRATOR.name());
             match.apply(auth).apply("/api/v1/projects/status/*", PATCH).hasAnyRole(municipality);
             match.apply(auth).apply("/api/v1/news/**", GET).permitAll();

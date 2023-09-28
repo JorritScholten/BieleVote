@@ -124,7 +124,10 @@ public class ProjectController {
             project.setTitle(projectDTO.title);
             project.setAuthor(currentUser);
             project.setDatePublished(LocalDateTime.now());
-            if (!(project.getStatus() == ProjectStatus.PROPOSED || project.getStatus() == ProjectStatus.EDITING)) {
+            if (currentUser.getRole().equals(UserRole.MUNICIPAL)) {
+                project.setStatus(ProjectStatus.ACTIVE);
+            } else if (!(project.getAuthor().getRole().equals(UserRole.CITIZEN)
+                    && (project.getStatus() == ProjectStatus.PROPOSED || project.getStatus() == ProjectStatus.EDITING))) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(projectRepository.save(project), HttpStatus.CREATED);
@@ -152,13 +155,13 @@ public class ProjectController {
                                                   @RequestHeader(value = "newStatus") String status) {
         try {
             var newStatus = ProjectStatus.valueOf(status);
-            if (newStatus != ProjectStatus.ACTIVE && newStatus != ProjectStatus.DENIED){
+            if (newStatus != ProjectStatus.ACTIVE && newStatus != ProjectStatus.DENIED) {
                 throw new IllegalArgumentException();
             }
             var project = projectRepository.findById(id).orElseThrow();
             if (project.getStatus() != ProjectStatus.PROPOSED) throw new IllegalArgumentException();
             project.setStatus(newStatus);
-            if(newStatus == ProjectStatus.ACTIVE){
+            if (newStatus == ProjectStatus.ACTIVE) {
                 project.setStartOfVoting(LocalDateTime.now());
                 project.setEndOfVoting(LocalDateTime.now().plus(Project.VOTING_PERIOD));
             }

@@ -52,7 +52,7 @@ export const navList = [
   {
     path: "/newproject",
     name: "New Project",
-    allowedAccountTypes: allLoggedInTypes,
+    allowedAccountTypes: [accountType.citizen, accountType.municipal],
     hideFromMenu: false,
     element: () => <ProjectWritingPage />,
   },
