@@ -8,10 +8,11 @@ import { emptyForms } from "../../../misc/ApiForms";
 import { useAuth } from "../../../misc/AuthContext";
 import { backendApi, handleLogError } from "../../../misc/ApiMappings";
 import DOMPurify from "dompurify";
+import { accountType } from "../../../misc/NavMappings";
 
 function ProjectForm() {
   const [newProject, setNewProject] = useState(emptyForms.newProject);
-  const { getUser } = useAuth();
+  const { getUser, getAccountType } = useAuth();
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -66,7 +67,11 @@ function ProjectForm() {
       </Form.Field>
       <Button
         type="submit"
-        content="Submit"
+        content={
+          getAccountType() === accountType.citizen
+            ? "Submit for proposal"
+            : "Publish to active"
+        }
         active={
           !(
             newProject.content === emptyForms.newProject.content ||
