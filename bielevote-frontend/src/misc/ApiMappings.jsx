@@ -158,45 +158,21 @@ function postReward(user, formData) {
 }
 
 function updateRewardInventory(updateInventory, rewardId, user) {
-  if (user === null) {
-    return instance.patch(`/api/v1/rewards/shop/inventory/${rewardId}`, null, {
-      headers: {
-        newInventory: updateInventory,
-      },
-    });
-  } else {
-    return instance.patch(`/api/v1/rewards/shop/inventory/${rewardId}`, null, {
-      headers: {
-        Authorization: bearerAuth(user),
-        newInventory: updateInventory,
-      },
-    });
-  }
+  return instance.patch(`/api/v1/rewards/shop/inventory/${rewardId}`, null, {
+    headers: {
+      Authorization: bearerAuth(user),
+      newInventory: updateInventory,
+    },
+  });
 }
 
 function updateRewardAvailability(updateAvailability, rewardId, user) {
-  if (user === null) {
-    return instance.patch(
-      `/api/v1/rewards/shop/availability/${rewardId}`,
-      null,
-      {
-        headers: {
-          isAvailable: updateAvailability,
-        },
-      }
-    );
-  } else {
-    return instance.patch(
-      `/api/v1/rewards/shop/availability/${rewardId}`,
-      null,
-      {
-        headers: {
-          Authorization: bearerAuth(user),
-          isAvailable: updateAvailability,
-        },
-      }
-    );
-  }
+  return instance.patch(`/api/v1/rewards/shop/availability/${rewardId}`, null, {
+    headers: {
+      Authorization: bearerAuth(user),
+      newAvailability: updateAvailability,
+    },
+  });
 }
 
 function postRewardTransaction(user, rewardData) {

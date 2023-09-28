@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Header, Modal } from "semantic-ui-react";
+import { Button, Form, Header, Icon, Modal } from "semantic-ui-react";
 import PropTypes from "prop-types";
-import { BiBug } from "react-icons/bi";
+import { BiBug, BiCheck, BiX } from "react-icons/bi";
 
 import { emptyForms } from "../../../misc/ApiForms";
 import { backendApi, handleLogError } from "../../../misc/ApiMappings";
@@ -85,10 +85,10 @@ export default function Reward({ rewardId }) {
     }
   }
 
-  async function updateRewardAvailability(updateAvailability) {
+  async function updateRewardAvailability() {
     try {
-      const response = await backendApi.updateRewardInventory(
-        updateAvailability,
+      const response = await backendApi.updateRewardAvailability(
+        !reward.isAvailable,
         rewardId,
         getUser()
       );
@@ -130,41 +130,41 @@ export default function Reward({ rewardId }) {
           <Header>Description</Header>
           <div>{reward.description}</div>
         </Modal.Description>
-        {getAccountType() === accountType.admin ? (
-          <div>
-            <Form.Input
-              label="Inventory:"
-              name="inventory"
-              placeholder="Inventory"
-              value={reward.inventory}
-              onChange={(e) =>
-                setRewardItem({ ...reward, inventory: e.target.value })
-              }
-            />
-            <Button
-              content="Update"
-              icon="checkmark"
-              onClick={updateRewardInventory}
-              color="orange"
-            />
-          </div>
-        ) : (
-          <div>In stock: {reward.inventory}</div>
-        )}
         <Modal.Description>
           {getAccountType() === accountType.admin ? (
+            <div>
+              <Form.Input
+                label="Inventory:"
+                name="inventory"
+                placeholder="Inventory"
+                value={reward.inventory}
+                onChange={(e) =>
+                  setRewardItem({ ...reward, inventory: e.target.value })
+                }
+              />
+              <Button
+                content="Update"
+                icon="checkmark"
+                onClick={updateRewardInventory}
+                color="orange"
+              />
+            </div>
+          ) : (
+            <div>In stock: {reward.inventory}</div>
+          )}
+        </Modal.Description>
+        <Modal.Description>
+          <div>
+            Available:{" "}
+            <Icon className="relative top-1">
+              {reward.isAvailable ? <BiCheck /> : <BiX />}
+            </Icon>
+          </div>
+          {getAccountType() === accountType.admin ? (
             <Button
-              className="w-20 h-20"
               fluid
-              toggle
-              active={reward.isAvailable}
-              onClick={() =>
-                setRewardItem({
-                  ...reward,
-                  isAvailable: !reward.isAvailable,
-                })
-              }
-              content="Reward is available"
+              onClick={() => updateRewardAvailability()}
+              content="Toggle availability"
             />
           ) : (
             <div hidden />

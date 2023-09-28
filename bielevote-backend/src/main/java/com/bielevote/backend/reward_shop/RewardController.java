@@ -178,15 +178,10 @@ public class RewardController {
 
     @PatchMapping("/shop/availability/{id}")
     public ResponseEntity<Reward> changeRewardAvailability(@PathVariable("id") long id,
-                                                           @RequestHeader(value = "isAvailable") String isAvailable) {
+                                                           @RequestHeader(value = "newAvailability", defaultValue = "false") String isAvailable) {
         try {
-
-            var newAvailability = String.valueOf(isAvailable);
-            if (!newAvailability.equals(Boolean.toString(true)) || !newAvailability.equals(Boolean.toString(false))) {
-                throw new IllegalArgumentException();
-            }
             var reward = rewardRepository.findById(id).orElseThrow();
-            reward.setIsAvailable(Boolean.valueOf(newAvailability));
+            reward.setIsAvailable(Boolean.valueOf(isAvailable));
             return ResponseEntity.ok(rewardRepository.save(reward));
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
