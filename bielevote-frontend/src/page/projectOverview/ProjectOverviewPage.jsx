@@ -28,7 +28,7 @@ export default function ProjectOverviewPage() {
   }, [viewActive, viewAccepted, viewRejected, viewProposed, viewDenied]);
 
   const handlePageChange = async (event, value) => {
-    const page = value !== null ? value.activePage - 1 : 0;
+    const page = value != null ? value.activePage - 1 : 0;
     let statusFilter = [];
     if (viewActive) statusFilter.push(projectStatus.active);
     if (viewAccepted) statusFilter.push(projectStatus.accepted);

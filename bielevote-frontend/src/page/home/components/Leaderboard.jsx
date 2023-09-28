@@ -21,7 +21,7 @@ export default function Leaderboard() {
 
   const handlePageChange = async (event, value) => {
     try {
-      const page = value !== null ? value.activePage - 1 : 0;
+      const page = value != null ? value.activePage - 1 : 0;
       const res = await backendApi.getLeaderboard(range, page, amountOfScores);
       setLeaderboardList(res.data);
     } catch (error) {
@@ -70,8 +70,8 @@ export default function Leaderboard() {
             {leaderboardList.scores != [] ? (
               leaderboardList.scores.map((score) => (
                 <Table.Row key={score.rank}>
-                  <Table.Cell verticalAlign="right">{score.rank}</Table.Cell>
-                  <Table.Cell verticalAlign="center">{score.score}</Table.Cell>
+                  <Table.Cell textAlign="right">{score.rank}</Table.Cell>
+                  <Table.Cell textAlign="center">{score.score}</Table.Cell>
                   <Table.Cell>{score.name}</Table.Cell>
                 </Table.Row>
               ))

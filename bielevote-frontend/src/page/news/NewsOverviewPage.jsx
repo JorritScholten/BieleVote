@@ -15,7 +15,7 @@ export default function NewsOverviewPage() {
   }, []);
 
   const handlePageChange = async (event, value) => {
-    const page = value !== null ? value.activePage - 1 : 0;
+    const page = value != null ? value.activePage - 1 : 0;
     try {
       const response = await backendApi.getAllNewsArticles(
         page,
