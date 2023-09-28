@@ -3,9 +3,10 @@ package com.bielevote.backend.project;
 import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRole;
 import com.bielevote.backend.user.UserService;
+import com.bielevote.backend.votes.VoteRepository;
 import com.bielevote.backend.votes.VoteType;
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +23,6 @@ import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @RestController
 @CrossOrigin
 @RequestMapping("/api/v1/projects")
@@ -39,8 +39,16 @@ public class ProjectController {
             ProjectStatus.PROPOSED,
             ProjectStatus.DENIED
     );
-    private final ProjectRepository projectRepository;
-    private final UserService userService;
+    @Value("${app.proposal-rules.max-per-month}")
+    int maxProjectsPerMonth;
+    @Value("${app.proposal-rules.minimum-votes}")
+    int minimumRequiredVotes;
+    @Autowired
+    private ProjectRepository projectRepository;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private VoteRepository voteRepository;
 
     @JsonView(ProjectViews.GetProjectList.class)
     @GetMapping()
@@ -136,6 +144,22 @@ public class ProjectController {
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/allowed_to_post")
+    public ResponseEntity<Boolean> allowedToPropose(@AuthenticationPrincipal User user) {
+        if (user.getRole().equals(UserRole.MUNICIPAL)) {
+            return ResponseEntity.ok(true);
+        } else if (user.getRole().equals(UserRole.CITIZEN)) {
+            return ResponseEntity.ok(checkIfAllowedToPropose(user));
+        } else {
+            return ResponseEntity.ok(false);
+        }
+    }
+
+    boolean checkIfAllowedToPropose(User user) {
+        return voteRepository.countByUser(user) >= minimumRequiredVotes &&
+                projectRepository.countByAuthorAndDatePublishedAfter(user, LocalDateTime.now().minusMonths(1)) < maxProjectsPerMonth;
     }
 
     @DeleteMapping("/{id}")

@@ -12,4 +12,6 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
     Optional<Vote> findByUserAndProject(@NonNull User user, @NonNull Project project);
 
     List<Vote> findByProjectAndType(@NonNull Project project, @NonNull VoteType type);
+
+    Long countByUser(@NonNull User user);
 }
