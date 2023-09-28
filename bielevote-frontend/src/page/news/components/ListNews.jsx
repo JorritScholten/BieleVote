@@ -1,6 +1,7 @@
-import { BsFillCalendarWeekFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import { Icon, Item } from "semantic-ui-react";
+import { BiCategory } from "react-icons/bi";
 
 import { formatDate } from "../../../components/Utils";
 
@@ -8,28 +9,33 @@ export default function ListNews({ newsList }) {
   return newsList.articles == [] ? (
     <div>loading...</div>
   ) : (
-    <div className="flex flex-col  w-3/5">
+    <Item.Group relaxed>
       {newsList.articles.map((articlePreview) => (
-        <div className="p-3 flex flex-col" key={articlePreview.id}>
-          <Link to={"/news/" + articlePreview.id}>
-            <div className="text-3xl text-blue-700 font-bold underline">
-              {articlePreview.title}
-            </div>
-          </Link>
-          <div className="flex flex-row">
-            <div className="mr-3 text-gray-600">
+        <Item key={articlePreview.id}>
+          <Item.Content>
+            <Item.Header>
+              <Link to={"/news/" + articlePreview.id}>
+                {articlePreview.title}
+              </Link>
+            </Item.Header>
+            <Item.Meta>
+              <Icon name="calendar alternate" />{" "}
               {formatDate(articlePreview.datePlaced)}
-            </div>
-            <div className="flex items-center">
-              <BsFillCalendarWeekFill />
-            </div>
-          </div>
-          <div className="text-lg text-gray-800 font-semibold">
-            {articlePreview.summaryPreview}
-          </div>
-        </div>
+            </Item.Meta>
+            <Item.Meta>
+              <Icon name="user" /> {articlePreview.author}
+            </Item.Meta>
+            <Item.Description>{articlePreview.summaryPreview}</Item.Description>
+            <Item.Extra>
+              <Icon className="relative [top:0.375rem;]">
+                <BiCategory />
+              </Icon>{" "}
+              {articlePreview.category}
+            </Item.Extra>
+          </Item.Content>
+        </Item>
       ))}
-    </div>
+    </Item.Group>
   );
 }
 
