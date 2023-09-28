@@ -1,11 +1,12 @@
+import PropTypes from "prop-types";
 import { useState } from "react";
-import { Button, Checkbox, Form, Header, Modal } from "semantic-ui-react";
+import { Button, Form, Modal } from "semantic-ui-react";
 import { emptyForms } from "../../../misc/ApiForms";
 import { backendApi, handleLogError } from "../../../misc/ApiMappings";
 import { useAuth } from "../../../misc/AuthContext";
 import { HttpStatusCode } from "axios";
 
-export default function CreateReward() {
+export default function CreateReward({ setVersion }) {
   const [open, setOpen] = useState(false);
   const [newReward, setNewReward] = useState(emptyForms.createRewardDto);
   const { getUser } = useAuth();
@@ -15,6 +16,7 @@ export default function CreateReward() {
     try {
       const response = await backendApi.postReward(getUser(), newReward);
       if (response.status === HttpStatusCode.Created) {
+        setVersion((v) => (v = v + 1));
         setNewReward(emptyForms.createRewardDto);
         setOpen(false);
         alert("Reward is posted!");
@@ -64,11 +66,13 @@ export default function CreateReward() {
             <Form.Input
               label="Cost:"
               name="cost"
+              inputMode="numeric"
               placeholder="Cost"
               value={newReward.cost}
               onChange={(e) =>
                 setNewReward({ ...newReward, cost: e.target.value })
               }
+              pattern="\d{1,8}"
             />
             <Form.Field>
               <Button
@@ -124,13 +128,11 @@ export default function CreateReward() {
                 fluid
                 type="submit"
                 content="Submit"
-                active={
-                  !(
-                    newReward.name === emptyForms.createRewardDto.name ||
-                    newReward.description ===
-                      emptyForms.createRewardDto.description ||
-                    newReward.cost === emptyForms.createRewardDto.cost
-                  )
+                disabled={
+                  newReward.name === emptyForms.createRewardDto.name ||
+                  newReward.description ===
+                    emptyForms.createRewardDto.description ||
+                  newReward.cost === emptyForms.createRewardDto.cost
                 }
               />
             </Button.Group>
@@ -140,3 +142,7 @@ export default function CreateReward() {
     </div>
   );
 }
+
+CreateReward.propTypes = {
+  setVersion: PropTypes.func.isRequired,
+};

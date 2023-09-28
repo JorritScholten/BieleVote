@@ -71,7 +71,7 @@ export default function Reward({ rewardId }) {
   }
 
   const changeCount = (increase) => {
-    if (count + increase > 0 && count < reward.inventory) {
+    if (count + increase > 0 && count + increase - 1 < reward.inventory) {
       setCount(count + increase);
     }
   };

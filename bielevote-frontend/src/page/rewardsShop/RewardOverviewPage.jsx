@@ -12,10 +12,11 @@ import CreateReward from "./components/CreateReward";
 export default function RewardOverviewPage() {
   const [rewardsList, setRewardsList] = useState(emptyForms.rewardOverview);
   const { getAccountType } = useAuth();
+  const [version, setVersion] = useState(0);
 
   useEffect(() => {
     handlePageChange();
-  }, []);
+  }, [version]);
 
   const handlePageChange = async (event, value) => {
     let page;
@@ -46,7 +47,7 @@ export default function RewardOverviewPage() {
         />
       </div>
       {getAccountType() === accountType.admin ? (
-        <CreateReward />
+        <CreateReward setVersion={setVersion} />
       ) : (
         <div hidden />
       )}
