@@ -57,6 +57,10 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    @NonNull
+    @JsonView(UserViews.viewMe.class)
+    private Boolean anonymousOnLeaderboard;
+
     @JsonBackReference
     @OneToMany(mappedBy = "author")
     private Set<Project> projects;

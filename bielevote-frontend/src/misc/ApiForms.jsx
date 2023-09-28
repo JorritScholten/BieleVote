@@ -83,6 +83,7 @@ export const emptyForms = {
     legalName: "",
     phone: "",
     role: "",
+    anonymousOnLeaderboard: false,
   },
   updateUsername: {
     newUsername: "",

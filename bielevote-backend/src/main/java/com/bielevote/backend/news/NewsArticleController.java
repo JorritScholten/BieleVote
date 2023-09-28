@@ -78,11 +78,20 @@ public class NewsArticleController {
         }
     }
 
-    record NewsArticlePreviewDto(long id, String title, LocalDateTime datePlaced, String summaryPreview) {
+    record NewsArticlePreviewDto(long id, String title, LocalDateTime datePlaced, String summaryPreview, String author,
+                                 Category category) {
         public static NewsArticlePreviewDto from(NewsArticle newsArticle) {
             String[] previewWords = newsArticle.getSummary().split(" ");
-            var preview = String.join(" ", Arrays.copyOf(previewWords, Math.min(20, previewWords.length))) + "...";
-            return new NewsArticlePreviewDto(newsArticle.getId(), newsArticle.getTitle(), newsArticle.getDatePlaced(), preview);
+            var preview = String.join(" ",
+                    Arrays.copyOf(previewWords, Math.min(20, previewWords.length))
+            ) + "...";
+            return new NewsArticlePreviewDto(newsArticle.getId(),
+                    newsArticle.getTitle(),
+                    newsArticle.getDatePlaced(),
+                    preview,
+                    newsArticle.getAuthor(),
+                    newsArticle.getCategory()
+            );
         }
     }
 }

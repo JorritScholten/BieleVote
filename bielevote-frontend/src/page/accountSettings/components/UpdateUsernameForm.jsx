@@ -14,7 +14,7 @@ export default function UpdateUsernameForm() {
     e.preventDefault();
     try {
       const response = await backendApi.updateUsername(formData, getUser());
-      if (response.status === HttpStatusCode.Created) {
+      if (response.status === HttpStatusCode.Ok) {
         setFormData(emptyForms.updateUsername);
       }
     } catch (error) {
