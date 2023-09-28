@@ -6,6 +6,7 @@ import com.bielevote.backend.user.rewardpoint.TransactionRepository;
 import com.bielevote.backend.votes.VoteRepository;
 import com.bielevote.backend.votes.VoteType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -20,10 +21,10 @@ public class StatusChecker {
     private final TransactionRepository transactionRepository;
 
     @Scheduled(fixedRate = 10, timeUnit = TimeUnit.SECONDS)
-    public void checkCompletedDeadlines() {
+    public void checkCompletedDeadlines(@Value("${app.reward-rules.amount-for-accepted}") final int rewardForAccepted) {
         var projects = projectRepository.findByStatusAndEndOfVotingBefore(ProjectStatus.ACTIVE, LocalDateTime.now());
-        if(!projects.isEmpty()){
-            System.out.println(LocalDateTime.now() + " --- "+projects.size()+" project(s) have met their deadline.");
+        if (!projects.isEmpty()) {
+            System.out.println(LocalDateTime.now() + " --- " + projects.size() + " project(s) have met their deadline.");
             System.out.flush();
         }
         for (Project project : projects) {
@@ -32,7 +33,7 @@ public class StatusChecker {
             if (votesFor > votesAgainst) {
                 project.setStatus(ProjectStatus.ACCEPTED);
                 transactionRepository.saveAndFlush(Transaction.builder()
-                        .amount(Transaction.REWARD_FOR_PROJECT_ACCEPTED)
+                        .amount(rewardForAccepted)
                         .date(LocalDateTime.now())
                         .user(project.getAuthor())
                         .reason(TransactionReason.PROJECT_ACCEPTED)

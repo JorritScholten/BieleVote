@@ -6,6 +6,7 @@ import com.bielevote.backend.user.UserService;
 import com.bielevote.backend.votes.VoteType;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -152,7 +154,8 @@ public class ProjectController {
     @JsonView(ProjectViews.GetProjectList.class)
     @PatchMapping("/status/{id}")
     public ResponseEntity<Project> handleProposal(@PathVariable("id") long id,
-                                                  @RequestHeader(value = "newStatus") String status) {
+                                                  @RequestHeader(value = "newStatus") String status,
+                                                  @Value("${app.project-rules.days-voting-active}") final int daysVotingActive) {
         try {
             var newStatus = ProjectStatus.valueOf(status);
             if (newStatus != ProjectStatus.ACTIVE && newStatus != ProjectStatus.DENIED) {
@@ -163,7 +166,7 @@ public class ProjectController {
             project.setStatus(newStatus);
             if (newStatus == ProjectStatus.ACTIVE) {
                 project.setStartOfVoting(LocalDateTime.now());
-                project.setEndOfVoting(LocalDateTime.now().plus(Project.VOTING_PERIOD));
+                project.setEndOfVoting(LocalDateTime.now().plus(Period.ofDays(daysVotingActive)));
             }
             return ResponseEntity.ok(projectRepository.save(project));
         } catch (IllegalArgumentException e) {
