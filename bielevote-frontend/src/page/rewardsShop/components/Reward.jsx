@@ -143,8 +143,7 @@ export default function Reward({ rewardId }) {
                 }
               />
               <Button
-                content="Update"
-                icon="checkmark"
+                content="Update Inventory"
                 onClick={updateRewardInventory}
                 color="orange"
               />
@@ -153,23 +152,21 @@ export default function Reward({ rewardId }) {
             <div>In stock: {reward.inventory}</div>
           )}
         </Modal.Description>
-        <Modal.Description>
-          <div>
+        {getAccountType() === accountType.admin ? (
+          <Modal.Description>
             Available:{" "}
             <Icon className="relative top-1">
               {reward.isAvailable ? <BiCheck /> : <BiX />}
             </Icon>
-          </div>
-          {getAccountType() === accountType.admin ? (
             <Button
               fluid
               onClick={() => updateRewardAvailability()}
               content="Toggle availability"
             />
-          ) : (
-            <div hidden />
-          )}
-        </Modal.Description>
+          </Modal.Description>
+        ) : (
+          <div hidden />
+        )}
       </Modal.Content>
       <Modal.Actions>
         <Button color="black" onClick={() => setOpen(false)}>
