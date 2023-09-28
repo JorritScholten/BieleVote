@@ -88,6 +88,7 @@ export default function Leaderboard() {
               <Table.HeaderCell colSpan="3">
                 <Pagination
                   defaultActivePage={1}
+                  activePage={leaderboardList.currentPage + 1}
                   totalPages={leaderboardList.totalPages}
                   onPageChange={handlePageChange}
                 />

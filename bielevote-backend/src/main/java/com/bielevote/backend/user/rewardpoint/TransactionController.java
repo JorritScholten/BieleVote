@@ -58,7 +58,8 @@ public class TransactionController {
             responseBody.put("scores", leaderboard.subList(indexFrom, indexTo));
             responseBody.put("currentPage", indexFrom / size);
             responseBody.put("totalItems", leaderboard.size());
-            responseBody.put("totalPages", (leaderboard.size() / size) + 1);
+            responseBody.put("totalPages", leaderboard.size() % size == 0 ?
+                    (leaderboard.size() / size) : (leaderboard.size() / size) + 1);
             return ResponseEntity.ok(responseBody);
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
