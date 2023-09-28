@@ -157,29 +157,46 @@ function postReward(user, formData) {
   });
 }
 
-function updateRewardInventory(user, rewardId, updateInventory) {
-  return instance.patch(
-    `/api/v1/rewards/shop/inventory/${rewardId}`,
-    updateInventory,
-    {
+function updateRewardInventory(updateInventory, rewardId, user) {
+  if (user === null) {
+    return instance.patch(`/api/v1/rewards/shop/inventory/${rewardId}`, null, {
+      headers: {
+        newInventory: updateInventory,
+      },
+    });
+  } else {
+    return instance.patch(`/api/v1/rewards/shop/inventory/${rewardId}`, null, {
       headers: {
         Authorization: bearerAuth(user),
-        "Content-type": "application/json",
+        newInventory: updateInventory,
       },
-    }
-  );
+    });
+  }
 }
-function updateRewardAvailability(user, rewardId, updateAvailability) {
-  return instance.patch(
-    `/api/v1/rewards/shop/availability/${rewardId}`,
-    updateAvailability,
-    {
-      headers: {
-        Authorization: bearerAuth(user),
-        "Content-type": "application/json",
-      },
-    }
-  );
+
+function updateRewardAvailability(updateAvailability, rewardId, user) {
+  if (user === null) {
+    return instance.patch(
+      `/api/v1/rewards/shop/availability/${rewardId}`,
+      null,
+      {
+        headers: {
+          isAvailable: updateAvailability,
+        },
+      }
+    );
+  } else {
+    return instance.patch(
+      `/api/v1/rewards/shop/availability/${rewardId}`,
+      null,
+      {
+        headers: {
+          Authorization: bearerAuth(user),
+          isAvailable: updateAvailability,
+        },
+      }
+    );
+  }
 }
 
 function postRewardTransaction(user, rewardData) {
