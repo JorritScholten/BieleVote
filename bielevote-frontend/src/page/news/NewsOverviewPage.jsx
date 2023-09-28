@@ -2,26 +2,29 @@ import { useState, useEffect } from "react";
 import { Pagination } from "semantic-ui-react";
 
 import { Header } from "../../components";
-import { backendApi } from "../../misc/ApiMappings";
+import { backendApi, handleLogError } from "../../misc/ApiMappings";
 import ListNews from "./components/ListNews";
 import { emptyForms } from "../../misc/ApiForms";
 
 export default function NewsOverviewPage() {
   const [newsList, setNewsList] = useState(emptyForms.newsOverview);
+  const amountOfArticles = 3;
 
   useEffect(() => {
     handlePageChange();
   }, []);
 
   const handlePageChange = async (event, value) => {
-    let page;
-    if (value) {
-      page = value.activePage - 1;
-    } else {
-      page = 0;
+    const page = value !== null ? value.activePage - 1 : 0;
+    try {
+      const response = await backendApi.getAllNewsArticles(
+        page,
+        amountOfArticles
+      );
+      setNewsList(response.data);
+    } catch (error) {
+      handleLogError(error);
     }
-    const response = await backendApi.getAllNewsArticles(page, 3);
-    setNewsList(response.data);
   };
 
   return (
