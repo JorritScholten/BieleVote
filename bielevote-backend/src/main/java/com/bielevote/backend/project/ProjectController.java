@@ -38,7 +38,8 @@ public class ProjectController {
             ProjectStatus.ACCEPTED,
             ProjectStatus.REJECTED,
             ProjectStatus.PROPOSED,
-            ProjectStatus.DENIED
+            ProjectStatus.DENIED,
+            ProjectStatus.REVIEW
     );
     @Value("${app.proposal-rules.max-per-month}")
     int maxProjectsPerMonth;
