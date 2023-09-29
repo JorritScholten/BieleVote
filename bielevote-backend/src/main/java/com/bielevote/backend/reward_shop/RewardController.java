@@ -62,13 +62,12 @@ public class RewardController {
     }
 
     @GetMapping("/redeemed")
-    public ResponseEntity<Map<String, Object>> getRedeemedRewards(@AuthenticationPrincipal User currentUser,
+    public ResponseEntity<Map<String, Object>> getRedeemedRewards(@AuthenticationPrincipal User user,
                                                                   @RequestParam(defaultValue = "0") int page,
                                                                   @RequestParam(defaultValue = "10") int size) {
         try {
             List<Transaction> transactions;
             PageRequest paging = PageRequest.of(page, size, Sort.by("date").descending());
-            var user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow();
             Page<Transaction> pageTransaction = transactionRepository.findByUserAndReason(user, TransactionReason.REDEEMED_REWARD, paging);
 
             transactions = pageTransaction.getContent();
@@ -90,9 +89,8 @@ public class RewardController {
 
     @PostMapping("/redeemed")
     public ResponseEntity<Void> postRedeemedReward(@Validated @RequestBody RewardPurchasedDto rewardPurchasedDto,
-                                                   @AuthenticationPrincipal User currentUser) {
+                                                   @AuthenticationPrincipal User user) {
         try {
-            var user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow();
             var reward = rewardRepository.findById(rewardPurchasedDto.rewardId).orElseThrow();
             var transactionList = transactionRepository.findByUser(user);
             var balance = transactionList.stream().flatMapToInt(t -> IntStream.of(t.getAmount())).sum();
@@ -120,6 +118,6 @@ public class RewardController {
         }
     }
 
-    record RewardPurchasedDto(int rewardsAmount, Long rewardId) {
+    public record RewardPurchasedDto(int rewardsAmount, Long rewardId) {
     }
 }

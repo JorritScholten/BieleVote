@@ -3,11 +3,10 @@ package com.bielevote.backend.votes;
 import com.bielevote.backend.project.ProjectRepository;
 import com.bielevote.backend.project.ProjectStatus;
 import com.bielevote.backend.user.User;
-import com.bielevote.backend.user.UserRepository;
 import com.bielevote.backend.user.UserRole;
 import com.bielevote.backend.user.rewardpoint.Transaction;
-import com.bielevote.backend.user.rewardpoint.TransactionRepository;
 import com.bielevote.backend.user.rewardpoint.TransactionReason;
+import com.bielevote.backend.user.rewardpoint.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -23,14 +22,12 @@ import java.util.NoSuchElementException;
 @RequestMapping("api/v1/votes")
 public class VoteController {
     private final VoteRepository voteRepository;
-    private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
     private final TransactionRepository transactionRepository;
 
     @GetMapping("/{id}")
-    ResponseEntity<Boolean> hasVoted(@AuthenticationPrincipal User currentUser, @PathVariable("id") long projectId) {
+    ResponseEntity<Boolean> hasVoted(@AuthenticationPrincipal User user, @PathVariable("id") long projectId) {
         try {
-            var user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow();
             var project = projectRepository.findById(projectId).orElseThrow();
             return ResponseEntity.ok(voteRepository.findByUserAndProject(user, project).isPresent());
         } catch (RuntimeException e) {
@@ -46,7 +43,7 @@ public class VoteController {
             var vote = Vote.builder()
                     .type(VoteType.valueOf(voteType))
                     .date(LocalDateTime.now())
-                    .user(userRepository.findByUsername(currentUser.getUsername()).orElseThrow())
+                    .user(user)
                     .project(projectRepository.findById(projectId).orElseThrow())
                     .build();
             if (vote.getProject().getStatus() != ProjectStatus.ACTIVE) {
