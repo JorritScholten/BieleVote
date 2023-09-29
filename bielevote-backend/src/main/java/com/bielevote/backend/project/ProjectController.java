@@ -3,6 +3,9 @@ package com.bielevote.backend.project;
 import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRole;
 import com.bielevote.backend.user.UserService;
+import com.bielevote.backend.user.rewardpoint.Transaction;
+import com.bielevote.backend.user.rewardpoint.TransactionReason;
+import com.bielevote.backend.user.rewardpoint.TransactionRepository;
 import com.bielevote.backend.votes.VoteRepository;
 import com.bielevote.backend.votes.VoteType;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -45,6 +48,8 @@ public class ProjectController {
     int maxProjectsPerMonth;
     @Value("${app.proposal-rules.minimum-votes}")
     int minimumRequiredVotes;
+    @Value("${app.reward-rules.amount-for-accepted}")
+    int rewardForAccepted;
     @Autowired
     private ProjectRepository projectRepository;
     Function<User, Boolean> hasNotExceededMaxPerMonth = user ->
@@ -54,6 +59,8 @@ public class ProjectController {
     @Autowired
     private VoteRepository voteRepository;
     Function<User, Boolean> hasVotedEnough = user -> voteRepository.countByUser(user) >= minimumRequiredVotes;
+    @Autowired
+    private TransactionRepository transactionRepository;
 
     @JsonView(ProjectViews.GetProjectList.class)
     @GetMapping()
@@ -213,15 +220,31 @@ public class ProjectController {
                                                   @Value("${app.project-rules.days-voting-active}") final int daysVotingActive) {
         try {
             var newStatus = ProjectStatus.valueOf(status);
-            if (newStatus != ProjectStatus.ACTIVE && newStatus != ProjectStatus.DENIED) {
+            var project = projectRepository.findById(id).orElseThrow();
+            if (project.getStatus().equals(ProjectStatus.PROPOSED)) {
+                if (newStatus != ProjectStatus.ACTIVE && newStatus != ProjectStatus.DENIED) {
+                    throw new IllegalArgumentException();
+                }
+            } else if (project.getStatus().equals(ProjectStatus.REVIEW)) {
+                if (newStatus != ProjectStatus.ACCEPTED && newStatus != ProjectStatus.REJECTED) {
+                    throw new IllegalArgumentException();
+                }
+            } else {
                 throw new IllegalArgumentException();
             }
-            var project = projectRepository.findById(id).orElseThrow();
-            if (project.getStatus() != ProjectStatus.PROPOSED) throw new IllegalArgumentException();
+
             project.setStatus(newStatus);
             if (newStatus == ProjectStatus.ACTIVE) {
                 project.setStartOfVoting(LocalDateTime.now());
                 project.setEndOfVoting(LocalDateTime.now().plus(Period.ofDays(daysVotingActive)));
+            } else if (newStatus == ProjectStatus.ACCEPTED && project.getAuthor().getRole().equals(UserRole.CITIZEN)) {
+                transactionRepository.saveAndFlush(Transaction.builder()
+                        .amount(rewardForAccepted)
+                        .date(LocalDateTime.now())
+                        .user(project.getAuthor())
+                        .reason(TransactionReason.PROJECT_ACCEPTED)
+                        .build()
+                );
             }
             return ResponseEntity.ok(projectRepository.save(project));
         } catch (IllegalArgumentException e) {
