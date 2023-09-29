@@ -4,6 +4,7 @@ import com.bielevote.backend.project.ProjectRepository;
 import com.bielevote.backend.project.ProjectStatus;
 import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRepository;
+import com.bielevote.backend.user.UserRole;
 import com.bielevote.backend.user.rewardpoint.Transaction;
 import com.bielevote.backend.user.rewardpoint.TransactionRepository;
 import com.bielevote.backend.user.rewardpoint.TransactionReason;
@@ -38,7 +39,7 @@ public class VoteController {
     }
 
     @PostMapping("/{id}")
-    ResponseEntity<Void> performVote(@AuthenticationPrincipal User currentUser, @PathVariable("id") long projectId,
+    ResponseEntity<Void> performVote(@AuthenticationPrincipal User user, @PathVariable("id") long projectId,
                                      @RequestHeader(name = "voteType") String voteType,
                                      @Value("${app.reward-rules.amount-for-voting}") final int rewardForVoting) {
         try {
@@ -52,13 +53,15 @@ public class VoteController {
                 throw new IllegalArgumentException();
             }
             voteRepository.save(vote);
-            transactionRepository.save(Transaction.builder()
-                    .amount(rewardForVoting)
-                    .reason(TransactionReason.VOTED_ON_PROJECT)
-                    .date(LocalDateTime.now())
-                    .user(vote.getUser())
-                    .build()
-            );
+            if (user.getRole().equals(UserRole.CITIZEN)) {
+                transactionRepository.save(Transaction.builder()
+                        .amount(rewardForVoting)
+                        .reason(TransactionReason.VOTED_ON_PROJECT)
+                        .date(LocalDateTime.now())
+                        .user(vote.getUser())
+                        .build()
+                );
+            }
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
