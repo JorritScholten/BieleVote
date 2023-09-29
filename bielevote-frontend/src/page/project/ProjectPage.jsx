@@ -45,7 +45,7 @@ export default function ProjectPage() {
     fetchProject(projectId);
   }, [projectId, version, getUser, navigate]);
 
-  async function allowOrDeny(newStatus) {
+  async function moderateStatus(newStatus) {
     try {
       const response = await backendApi.changeProjectStatus(
         newStatus,
@@ -75,27 +75,47 @@ export default function ProjectPage() {
                 <Button
                   positive
                   disabled={disableStatusChange}
-                  onClick={() => allowOrDeny(projectStatus.active)}
+                  onClick={() => moderateStatus(projectStatus.active)}
                   content="Allow"
                 />
                 <Button
                   negative
                   disabled={disableStatusChange}
-                  onClick={() => allowOrDeny(projectStatus.denied)}
+                  onClick={() => moderateStatus(projectStatus.denied)}
                   content="Deny"
                 />
               </Button.Group>
             </div>
           ) : (
-            <div className="text-xl flex flex-col gap-5">
-              <SemanticHeader as="h3">Votes:</SemanticHeader>
+            <div className="text-xl flex flex-col gap-10">
               <div>
+                <SemanticHeader as="h3">Votes:</SemanticHeader>
                 <div>for: {project.votesFor}</div>
                 <div>neutral: {project.votesNeutral}</div>
                 <div>against: {project.votesAgainst}</div>
               </div>
               {project.status === projectStatus.active ? (
                 <ProjectVote projectId={projectId} updateVersion={setVersion} />
+              ) : (
+                <div hidden />
+              )}
+              {project.status === projectStatus.review &&
+              getAccountType() === accountType.municipal ? (
+                <div>
+                  <SemanticHeader as="h3">Review project:</SemanticHeader>
+                  <Button.Group fluid>
+                    <Button
+                      positive
+                      onClick={() => moderateStatus(projectStatus.accepted)}
+                      content="Accept"
+                    />
+                    <Button
+                      negative
+                      onClick={() => moderateStatus(projectStatus.rejected)}
+                      content="Reject"
+                    />
+                  </Button.Group>
+                </div>
               ) : (
                 <div hidden />
               )}
