@@ -18,4 +18,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     List<Project> findByStatusAndEndOfVotingBefore(ProjectStatus status, LocalDateTime now);
 
     Long countByAuthorAndDatePublishedAfter(@NonNull User author, @NonNull LocalDateTime oneMonthAgo);
+
+    List<Project> findByAuthorAndDatePublishedAfter(@NonNull User author, @NonNull LocalDateTime oneMonthAgo);
 }

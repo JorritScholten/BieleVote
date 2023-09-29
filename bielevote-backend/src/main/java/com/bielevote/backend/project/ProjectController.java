@@ -21,6 +21,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RestController
@@ -45,10 +46,13 @@ public class ProjectController {
     int minimumRequiredVotes;
     @Autowired
     private ProjectRepository projectRepository;
+    Function<User, Boolean> hasNotExceededMaxPerMonth = user ->
+            projectRepository.countByAuthorAndDatePublishedAfter(user, LocalDateTime.now().minusMonths(1)) < maxProjectsPerMonth;
     @Autowired
     private UserService userService;
     @Autowired
     private VoteRepository voteRepository;
+    Function<User, Boolean> hasVotedEnough = user -> voteRepository.countByUser(user) >= minimumRequiredVotes;
 
     @JsonView(ProjectViews.GetProjectList.class)
     @GetMapping()
@@ -126,7 +130,7 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<Project> postProject(@Validated @RequestBody ProjectDTO projectDTO,
                                                @AuthenticationPrincipal User currentUser) {
-        if(!checkIfAllowedToPropose(currentUser)){
+        if (!checkIfAllowedToPropose(currentUser)) {
             return new ResponseEntity<>(HttpStatus.TOO_MANY_REQUESTS);
         }
         try {
@@ -151,18 +155,41 @@ public class ProjectController {
 
     @GetMapping("/allowed_to_post")
     public ResponseEntity<Boolean> allowedToPropose(@AuthenticationPrincipal User user) {
-        if (user.getRole().equals(UserRole.MUNICIPAL)) {
-            return ResponseEntity.ok(true);
+        return switch (user.getRole()) {
+            case MUNICIPAL -> ResponseEntity.ok(true);
+            case CITIZEN -> ResponseEntity.ok(checkIfAllowedToPropose(user));
+            default -> ResponseEntity.ok(false);
+        };
+    }
+
+    @GetMapping("/allowed_to_post/reasons")
+    public ResponseEntity<List<String>> reasonsDeniedProposal(@AuthenticationPrincipal User user) {
+        if (user.getRole().equals(UserRole.ADMINISTRATOR)) {
+            return ResponseEntity.ok(List.of("Account type not allowed to propose new projects."));
         } else if (user.getRole().equals(UserRole.CITIZEN)) {
-            return ResponseEntity.ok(checkIfAllowedToPropose(user));
+            List<String> reasons = new ArrayList<>();
+            if (!hasVotedEnough.apply(user)) {
+                reasons.add("User hasn't voted enough times (currently: %d), minimum needed: %d."
+                        .formatted(voteRepository.countByUser(user), minimumRequiredVotes));
+            }
+            if (!hasNotExceededMaxPerMonth.apply(user)) {
+                var projectsFromThisMonth = projectRepository.findByAuthorAndDatePublishedAfter(user,
+                        LocalDateTime.now().minusMonths(1));
+                projectsFromThisMonth.sort(Comparator.comparing(Project::getDatePublished));
+                var earliestProjectThisMonth = projectsFromThisMonth.get(0);
+                reasons.add(("User has met their monthly posting limit, a maximum of %d new projects per month are" +
+                        " allowed. Allowed to post again after %s.")
+                        .formatted(maxProjectsPerMonth, earliestProjectThisMonth.getDatePublished().plusMonths(1)));
+            }
+            return ResponseEntity.ok(reasons);
         } else {
-            return ResponseEntity.ok(false);
+            return ResponseEntity.ok(List.of());
         }
     }
 
     boolean checkIfAllowedToPropose(User user) {
-        return voteRepository.countByUser(user) >= minimumRequiredVotes &&
-                projectRepository.countByAuthorAndDatePublishedAfter(user, LocalDateTime.now().minusMonths(1)) < maxProjectsPerMonth;
+        return user.getRole().equals(UserRole.MUNICIPAL) || (user.getRole().equals(UserRole.CITIZEN)
+                && hasVotedEnough.apply(user) && hasNotExceededMaxPerMonth.apply(user));
     }
 
     @DeleteMapping("/{id}")

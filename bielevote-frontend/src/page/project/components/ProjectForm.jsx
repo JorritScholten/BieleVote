@@ -13,6 +13,7 @@ import { accountType } from "../../../misc/NavMappings";
 function ProjectForm() {
   const [newProject, setNewProject] = useState(emptyForms.newProject);
   const [allowedToPost, setAllowedToPost] = useState(false);
+  const [reasonsPostingDenied, setReasonsPostingDenied] = useState([]);
   const { getUser, getAccountType, userIsAuthenticated } = useAuth();
 
   async function onSubmit(e) {
@@ -28,18 +29,30 @@ function ProjectForm() {
       );
       if (response.status === HttpStatusCode.Created) {
         setNewProject(emptyForms.newProject);
-        getAllowedToVote();
+        getAllowedToPost();
       }
     } catch (error) {
       handleLogError(error);
     }
   }
 
-  async function getAllowedToVote() {
+  async function getAllowedToPost() {
     try {
       const response = await backendApi.allowedToPostProject(getUser());
       if (response.status === HttpStatusCode.Ok) {
         setAllowedToPost(response.data);
+        if (!response.data) getReasonsPostingDenied();
+      }
+    } catch (error) {
+      handleLogError(error);
+    }
+  }
+
+  async function getReasonsPostingDenied() {
+    try {
+      const response = await backendApi.deniedToPostProjectReasons(getUser());
+      if (response.status === HttpStatusCode.Ok) {
+        setReasonsPostingDenied(response.data);
       }
     } catch (error) {
       handleLogError(error);
@@ -47,17 +60,19 @@ function ProjectForm() {
   }
 
   useEffect(() => {
-    if (userIsAuthenticated()) getAllowedToVote();
-  });
+    if (userIsAuthenticated()) getAllowedToPost();
+  }, [userIsAuthenticated]);
 
   return (
     <Form onSubmit={onSubmit}>
-      <Message
-        negative
-        hidden={allowedToPost}
-        header="Currently not allowed to propose a project."
-        content="Users can only propose a certain number of new projects a month and must have voted a minimum amount of times on other projects, this is to prevent spamming."
-      />
+      <Message negative hidden={allowedToPost}>
+        <Message.Header content="Currently not allowed to propose a project due to:" />
+        <Message.List>
+          {reasonsPostingDenied.map((reason) => (
+            <Message.Item key={reason} content={reason} />
+          ))}
+        </Message.List>
+      </Message>
       <Form.Input
         disabled={!allowedToPost}
         label="Title:"
