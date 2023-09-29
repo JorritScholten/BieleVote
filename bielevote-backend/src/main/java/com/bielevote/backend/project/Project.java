@@ -23,9 +23,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Project {
-    @JsonIgnore
-    public static final TemporalAmount VOTING_PERIOD = Period.of(0, 1, 0);
-
     @JsonView({ProjectViews.GetProjectList.class})
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

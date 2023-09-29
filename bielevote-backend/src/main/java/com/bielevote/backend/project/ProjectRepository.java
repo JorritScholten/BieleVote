@@ -1,5 +1,7 @@
 package com.bielevote.backend.project;
 
+import com.bielevote.backend.user.User;
+import lombok.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,4 +16,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     List<Project> findByStatus(ProjectStatus status);
 
     List<Project> findByStatusAndEndOfVotingBefore(ProjectStatus status, LocalDateTime now);
+
+    Long countByAuthorAndDatePublishedAfter(@NonNull User author, @NonNull LocalDateTime oneMonthAgo);
+
+    List<Project> findByAuthorAndDatePublishedAfter(@NonNull User author, @NonNull LocalDateTime oneMonthAgo);
 }

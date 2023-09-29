@@ -48,11 +48,4 @@ public class Transaction {
     @ManyToOne
     @JoinColumn(name = "reward_id")
     private Reward reward;
-
-    @JsonIgnore
-    @Transient
-    public static final int REWARD_FOR_VOTING = 5;
-    @JsonIgnore
-    @Transient
-    public static final int REWARD_FOR_PROJECT_ACCEPTED = 100;
 }

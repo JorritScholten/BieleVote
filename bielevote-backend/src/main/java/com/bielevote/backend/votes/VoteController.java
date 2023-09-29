@@ -8,6 +8,7 @@ import com.bielevote.backend.user.rewardpoint.Transaction;
 import com.bielevote.backend.user.rewardpoint.TransactionRepository;
 import com.bielevote.backend.user.rewardpoint.TransactionReason;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -38,7 +39,8 @@ public class VoteController {
 
     @PostMapping("/{id}")
     ResponseEntity<Void> performVote(@AuthenticationPrincipal User currentUser, @PathVariable("id") long projectId,
-                                     @RequestHeader(name = "voteType") String voteType) {
+                                     @RequestHeader(name = "voteType") String voteType,
+                                     @Value("${app.reward-rules.amount-for-voting}") final int rewardForVoting) {
         try {
             var vote = Vote.builder()
                     .type(VoteType.valueOf(voteType))
@@ -51,7 +53,7 @@ public class VoteController {
             }
             voteRepository.save(vote);
             transactionRepository.save(Transaction.builder()
-                    .amount(Transaction.REWARD_FOR_VOTING)
+                    .amount(rewardForVoting)
                     .reason(TransactionReason.VOTED_ON_PROJECT)
                     .date(LocalDateTime.now())
                     .user(vote.getUser())

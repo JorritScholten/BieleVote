@@ -28,6 +28,14 @@ app:
       minutes: 30
   cors:
     allowed-origins: http://localhost:5173/
+  proposal-rules:
+    max-per-month: 2
+    minimum-votes: 3
+  project-rules:
+    days-voting-active: 30
+  reward-rules:
+    amount-for-voting: 5
+    amount-for-accepted: 100
 
 logging:
   level:
