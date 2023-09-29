@@ -126,6 +126,9 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<Project> postProject(@Validated @RequestBody ProjectDTO projectDTO,
                                                @AuthenticationPrincipal User currentUser) {
+        if(!checkIfAllowedToPropose(currentUser)){
+            return new ResponseEntity<>(HttpStatus.TOO_MANY_REQUESTS);
+        }
         try {
             var project = new Project();
             project.setStatus(projectDTO.status);
