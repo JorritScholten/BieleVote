@@ -1,18 +1,19 @@
-import { useState } from "react";
-import { Form, Button } from "semantic-ui-react";
+import { useEffect, useState } from "react";
+import { Form, Button, Message } from "semantic-ui-react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { HttpStatusCode } from "axios";
+import DOMPurify from "dompurify";
 
 import { emptyForms } from "../../../misc/ApiForms";
 import { useAuth } from "../../../misc/AuthContext";
 import { backendApi, handleLogError } from "../../../misc/ApiMappings";
-import DOMPurify from "dompurify";
 import { accountType } from "../../../misc/NavMappings";
 
 function ProjectForm() {
   const [newProject, setNewProject] = useState(emptyForms.newProject);
-  const { getUser, getAccountType } = useAuth();
+  const [allowedToPost, setAllowedToPost] = useState(false);
+  const { getUser, getAccountType, userIsAuthenticated } = useAuth();
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -27,15 +28,38 @@ function ProjectForm() {
       );
       if (response.status === HttpStatusCode.Created) {
         setNewProject(emptyForms.newProject);
+        getAllowedToVote();
       }
     } catch (error) {
       handleLogError(error);
     }
   }
 
+  async function getAllowedToVote() {
+    try {
+      const response = await backendApi.allowedToPostProject(getUser());
+      if (response.status === HttpStatusCode.Ok) {
+        setAllowedToPost(response.data);
+      }
+    } catch (error) {
+      handleLogError(error);
+    }
+  }
+
+  useEffect(() => {
+    if (userIsAuthenticated()) getAllowedToVote();
+  });
+
   return (
     <Form onSubmit={onSubmit}>
+      <Message
+        negative
+        hidden={allowedToPost}
+        header="Currently not allowed to propose a project."
+        content="Users can only propose a certain number of new projects a month and must have voted a minimum amount of times on other projects, this is to prevent spamming."
+      />
       <Form.Input
+        disabled={!allowedToPost}
         label="Title:"
         name="title"
         placeholder="Title"
@@ -46,6 +70,7 @@ function ProjectForm() {
         required={true}
       />
       <Form.Input
+        disabled={!allowedToPost}
         label="Summary:"
         name="summary"
         placeholder="Summary of project..."
@@ -55,7 +80,7 @@ function ProjectForm() {
         }
         required={true}
       />
-      <Form.Field required={true}>
+      <Form.Field required={true} disabled={!allowedToPost}>
         <ReactQuill
           theme="snow"
           name="content"
@@ -72,11 +97,11 @@ function ProjectForm() {
             ? "Submit for proposal"
             : "Publish to active"
         }
-        active={
-          !(
-            newProject.content === emptyForms.newProject.content ||
-            newProject.title === emptyForms.newProject.title
-          )
+        disabled={
+          newProject.summary === emptyForms.newProject.summary ||
+          newProject.content === emptyForms.newProject.content ||
+          newProject.title === emptyForms.newProject.title ||
+          !allowedToPost
         }
       />
     </Form>

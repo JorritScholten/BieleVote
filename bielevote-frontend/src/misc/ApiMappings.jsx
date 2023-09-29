@@ -157,7 +157,7 @@ function getHasVoted(projectId, user) {
   });
 }
 
-function allowedToPostProject(projectId, user) {
+function allowedToPostProject(user) {
   return instance.get(`/api/v1/projects/allowed_to_post`, {
     headers: {
       Authorization: bearerAuth(user),
