@@ -52,7 +52,7 @@ export default function ProjectPage() {
         projectId,
         getUser()
       );
-      setProject(response.data);
+      if (response.status === HttpStatusCode.Ok) setVersion((v) => (v = v + 1));
     } catch (error) {
       handleLogError(error);
     }
