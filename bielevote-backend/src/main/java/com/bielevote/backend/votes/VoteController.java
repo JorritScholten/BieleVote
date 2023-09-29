@@ -3,7 +3,6 @@ package com.bielevote.backend.votes;
 import com.bielevote.backend.project.ProjectRepository;
 import com.bielevote.backend.project.ProjectStatus;
 import com.bielevote.backend.user.User;
-import com.bielevote.backend.user.UserRole;
 import com.bielevote.backend.user.rewardpoint.Transaction;
 import com.bielevote.backend.user.rewardpoint.TransactionReason;
 import com.bielevote.backend.user.rewardpoint.TransactionRepository;
@@ -50,15 +49,13 @@ public class VoteController {
                 throw new IllegalArgumentException();
             }
             voteRepository.save(vote);
-            if (user.getRole().equals(UserRole.CITIZEN)) {
-                transactionRepository.save(Transaction.builder()
-                        .amount(rewardForVoting)
-                        .reason(TransactionReason.VOTED_ON_PROJECT)
-                        .date(LocalDateTime.now())
-                        .user(vote.getUser())
-                        .build()
-                );
-            }
+            transactionRepository.save(Transaction.builder()
+                    .amount(rewardForVoting)
+                    .reason(TransactionReason.VOTED_ON_PROJECT)
+                    .date(LocalDateTime.now())
+                    .user(vote.getUser())
+                    .build()
+            );
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
