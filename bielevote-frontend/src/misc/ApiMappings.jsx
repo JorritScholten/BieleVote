@@ -110,11 +110,11 @@ function getNewsArticleById(articleId) {
   return instance.get(`/api/v1/news/${articleId}`);
 }
 
-function getLeaderboard(timeRange) {
+function getLeaderboard(timeRange, page, amount) {
   if (timeRange === null) {
-    return instance.get("/api/v1/leaderboard");
+    return instance.get(`/api/v1/leaderboard?page=${page}&amount=${amount}`);
   } else {
-    return instance.get("/api/v1/leaderboard", {
+    return instance.get(`/api/v1/leaderboard?page=${page}&amount=${amount}`, {
       headers: {
         timeRange: timeRange,
       },
