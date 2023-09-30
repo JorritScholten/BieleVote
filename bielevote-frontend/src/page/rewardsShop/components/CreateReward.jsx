@@ -55,6 +55,7 @@ export default function CreateReward({ setVersion }) {
           </Modal.Header>
           <Modal.Content>
             <Form.Input
+              className="pt-4"
               label="Description:"
               name="description"
               placeholder="Description"

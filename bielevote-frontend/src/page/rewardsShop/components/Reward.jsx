@@ -121,7 +121,7 @@ export default function Reward({ rewardId }) {
       <Modal.Header>{reward.name}</Modal.Header>
       <Modal.Content image>
         <Modal.Description>
-          <div className="flex flex-row items-center">
+          <div className="flex flex-row items-center text-xl">
             Cost: {reward.cost * count}
             <div className="ml-1">
               <BiBug />
@@ -129,10 +129,8 @@ export default function Reward({ rewardId }) {
           </div>
           <Header>Description</Header>
           <div>{reward.description}</div>
-        </Modal.Description>
-        <Modal.Description>
           {getAccountType() === accountType.admin ? (
-            <div>
+            <div className="pt-4">
               <Form.Input
                 label="Inventory:"
                 name="inventory"
@@ -142,18 +140,21 @@ export default function Reward({ rewardId }) {
                   setRewardItem({ ...reward, inventory: e.target.value })
                 }
               />
-              <Button
-                content="Update Inventory"
-                onClick={updateRewardInventory}
-                color="orange"
-              />
+              <div className="pt-4">
+                <Button
+                  content="Update Inventory"
+                  onClick={updateRewardInventory}
+                  color="orange"
+                />
+              </div>
             </div>
           ) : (
-            <div>In stock: {reward.inventory}</div>
+            <div className="pt-4">In stock: {reward.inventory}</div>
           )}
         </Modal.Description>
+
         {getAccountType() === accountType.admin ? (
-          <Modal.Description>
+          <Modal.Description className="text-xl">
             Available:{" "}
             <Icon className="relative top-1">
               {reward.isAvailable ? <BiCheck /> : <BiX />}

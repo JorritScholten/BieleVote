@@ -26,7 +26,7 @@ export default function RewardOverviewPage() {
       page = 0;
     }
     try {
-      const response = await backendApi.getAllRewards(page, 9, getUser());
+      const response = await backendApi.getAllRewards(page, 12, getUser());
       setRewardsList(response.data);
     } catch (error) {
       handleLogError(error);
