@@ -1,17 +1,20 @@
-import { useState } from "react";
-import { Form, Button } from "semantic-ui-react";
+import { useEffect, useState } from "react";
+import { Form, Button, Message } from "semantic-ui-react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { HttpStatusCode } from "axios";
+import DOMPurify from "dompurify";
 
 import { emptyForms } from "../../../misc/ApiForms";
 import { useAuth } from "../../../misc/AuthContext";
 import { backendApi, handleLogError } from "../../../misc/ApiMappings";
-import DOMPurify from "dompurify";
+import { accountType } from "../../../misc/NavMappings";
 
 function ProjectForm() {
   const [newProject, setNewProject] = useState(emptyForms.newProject);
-  const { getUser } = useAuth();
+  const [allowedToPost, setAllowedToPost] = useState(false);
+  const [reasonsPostingDenied, setReasonsPostingDenied] = useState([]);
+  const { getUser, getAccountType, userIsAuthenticated } = useAuth();
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -26,15 +29,52 @@ function ProjectForm() {
       );
       if (response.status === HttpStatusCode.Created) {
         setNewProject(emptyForms.newProject);
+        getAllowedToPost();
       }
     } catch (error) {
       handleLogError(error);
     }
   }
 
+  async function getAllowedToPost() {
+    try {
+      const response = await backendApi.allowedToPostProject(getUser());
+      if (response.status === HttpStatusCode.Ok) {
+        setAllowedToPost(response.data);
+        if (!response.data) getReasonsPostingDenied();
+      }
+    } catch (error) {
+      handleLogError(error);
+    }
+  }
+
+  async function getReasonsPostingDenied() {
+    try {
+      const response = await backendApi.deniedToPostProjectReasons(getUser());
+      if (response.status === HttpStatusCode.Ok) {
+        setReasonsPostingDenied(response.data);
+      }
+    } catch (error) {
+      handleLogError(error);
+    }
+  }
+
+  useEffect(() => {
+    if (userIsAuthenticated()) getAllowedToPost();
+  }, [userIsAuthenticated]);
+
   return (
     <Form onSubmit={onSubmit}>
+      <Message negative hidden={allowedToPost}>
+        <Message.Header content="Currently not allowed to propose a project due to:" />
+        <Message.List>
+          {reasonsPostingDenied.map((reason) => (
+            <Message.Item key={reason} content={reason} />
+          ))}
+        </Message.List>
+      </Message>
       <Form.Input
+        disabled={!allowedToPost}
         label="Title:"
         name="title"
         placeholder="Title"
@@ -45,6 +85,7 @@ function ProjectForm() {
         required={true}
       />
       <Form.Input
+        disabled={!allowedToPost}
         label="Summary:"
         name="summary"
         placeholder="Summary of project..."
@@ -54,7 +95,7 @@ function ProjectForm() {
         }
         required={true}
       />
-      <Form.Field required={true}>
+      <Form.Field required={true} disabled={!allowedToPost}>
         <ReactQuill
           theme="snow"
           name="content"
@@ -66,12 +107,16 @@ function ProjectForm() {
       </Form.Field>
       <Button
         type="submit"
-        content="Submit"
-        active={
-          !(
-            newProject.content === emptyForms.newProject.content ||
-            newProject.title === emptyForms.newProject.title
-          )
+        content={
+          getAccountType() === accountType.citizen
+            ? "Submit for proposal"
+            : "Publish to active"
+        }
+        disabled={
+          newProject.summary === emptyForms.newProject.summary ||
+          newProject.content === emptyForms.newProject.content ||
+          newProject.title === emptyForms.newProject.title ||
+          !allowedToPost
         }
       />
     </Form>

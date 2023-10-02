@@ -1,24 +1,33 @@
 import { useEffect, useState } from "react";
-import { Dropdown, Header, Table } from "semantic-ui-react";
+import { Dropdown, Header, Pagination, Table } from "semantic-ui-react";
 
-import { backendApi, timeRanges } from "../../../misc/ApiMappings";
+import {
+  backendApi,
+  handleLogError,
+  timeRanges,
+} from "../../../misc/ApiMappings";
+import { emptyForms } from "../../../misc/ApiForms";
 
 export default function Leaderboard() {
-  const [authResponse, setAuthResponse] = useState(null);
   const [range, setRange] = useState(timeRanges.allTime);
+  const [leaderboardList, setLeaderboardList] = useState(
+    emptyForms.leaderboardPage
+  );
+  const amountOfScores = 5;
 
   useEffect(() => {
-    getLeaderboard();
-  }, []);
+    handlePageChange();
+  }, [range]);
 
-  async function getLeaderboard(timeRange) {
+  const handlePageChange = async (event, value) => {
     try {
-      const res = await backendApi.getLeaderboard(timeRange);
-      setAuthResponse(res.data);
+      const page = value != null ? value.activePage - 1 : 0;
+      const res = await backendApi.getLeaderboard(range, page, amountOfScores);
+      setLeaderboardList(res.data);
     } catch (error) {
-      setAuthResponse(null);
+      handleLogError(error);
     }
-  }
+  };
   const rangeOptions = [
     { key: 1, text: "all time", value: timeRanges.allTime },
     { key: 2, text: "last year", value: timeRanges.lastYear },
@@ -41,7 +50,6 @@ export default function Leaderboard() {
                   (option) => option.text === e.target.innerText
                 ).value;
                 setRange(newRange);
-                getLeaderboard(newRange);
               }}
               simple
               item
@@ -53,25 +61,40 @@ export default function Leaderboard() {
         <Table basic="very" celled compact>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell>Score</Table.HeaderCell>
-              <Table.HeaderCell>Username</Table.HeaderCell>
+              <Table.HeaderCell collapsing>Rank</Table.HeaderCell>
+              <Table.HeaderCell collapsing>Score</Table.HeaderCell>
+              <Table.HeaderCell>Name</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {authResponse !== null ? (
-              authResponse.map((score) => (
-                <Table.Row key={score.username}>
-                  <Table.Cell>{score.score}</Table.Cell>
-                  <Table.Cell>{score.username}</Table.Cell>
+            {leaderboardList.scores != [] ? (
+              leaderboardList.scores.map((score) => (
+                <Table.Row key={score.rank}>
+                  <Table.Cell textAlign="right">{score.rank}</Table.Cell>
+                  <Table.Cell textAlign="center">{score.score}</Table.Cell>
+                  <Table.Cell>{score.name}</Table.Cell>
                 </Table.Row>
               ))
             ) : (
               <Table.Row>
                 <Table.Cell />
                 <Table.Cell />
+                <Table.Cell />
               </Table.Row>
             )}
           </Table.Body>
+          <Table.Footer fullWidth>
+            <Table.Row>
+              <Table.HeaderCell colSpan="3">
+                <Pagination
+                  defaultActivePage={1}
+                  activePage={leaderboardList.currentPage + 1}
+                  totalPages={leaderboardList.totalPages}
+                  onPageChange={handlePageChange}
+                />
+              </Table.HeaderCell>
+            </Table.Row>
+          </Table.Footer>
         </Table>
       </div>
     </div>

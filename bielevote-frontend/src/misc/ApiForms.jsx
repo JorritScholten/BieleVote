@@ -70,6 +70,12 @@ export const emptyForms = {
     totalItems: 0,
     totalPages: 0,
   },
+  leaderboardPage: {
+    scores: [],
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0,
+  },
   rewardItem: {
     name: "",
     description: "",
@@ -91,6 +97,7 @@ export const emptyForms = {
     legalName: "",
     phone: "",
     role: "",
+    anonymousOnLeaderboard: false,
   },
   updateUsername: {
     newUsername: "",
@@ -104,5 +111,10 @@ export const emptyForms = {
     currentPage: 0,
     totalItems: 0,
     totalPages: 0,
+  },
+  newAccount: {
+    username: "",
+    legalName: "",
+    phone: "",
   },
 };

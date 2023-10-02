@@ -3,9 +3,11 @@ package com.bielevote.backend.project;
 import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRole;
 import com.bielevote.backend.user.UserService;
+import com.bielevote.backend.votes.VoteRepository;
 import com.bielevote.backend.votes.VoteType;
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -17,10 +19,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @RestController
 @CrossOrigin
 @RequestMapping("/api/v1/projects")
@@ -37,8 +40,19 @@ public class ProjectController {
             ProjectStatus.PROPOSED,
             ProjectStatus.DENIED
     );
-    private final ProjectRepository projectRepository;
-    private final UserService userService;
+    @Value("${app.proposal-rules.max-per-month}")
+    int maxProjectsPerMonth;
+    @Value("${app.proposal-rules.minimum-votes}")
+    int minimumRequiredVotes;
+    @Autowired
+    private ProjectRepository projectRepository;
+    Function<User, Boolean> hasNotExceededMaxPerMonth = user ->
+            projectRepository.countByAuthorAndDatePublishedAfter(user, LocalDateTime.now().minusMonths(1)) < maxProjectsPerMonth;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private VoteRepository voteRepository;
+    Function<User, Boolean> hasVotedEnough = user -> voteRepository.countByUser(user) >= minimumRequiredVotes;
 
     @JsonView(ProjectViews.GetProjectList.class)
     @GetMapping()
@@ -116,6 +130,9 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<Project> postProject(@Validated @RequestBody ProjectDTO projectDTO,
                                                @AuthenticationPrincipal User currentUser) {
+        if (!checkIfAllowedToPropose(currentUser)) {
+            return new ResponseEntity<>(HttpStatus.TOO_MANY_REQUESTS);
+        }
         try {
             var project = new Project();
             project.setStatus(projectDTO.status);
@@ -124,13 +141,55 @@ public class ProjectController {
             project.setTitle(projectDTO.title);
             project.setAuthor(currentUser);
             project.setDatePublished(LocalDateTime.now());
-            if (!(project.getStatus() == ProjectStatus.PROPOSED || project.getStatus() == ProjectStatus.EDITING)) {
+            if (currentUser.getRole().equals(UserRole.MUNICIPAL)) {
+                project.setStatus(ProjectStatus.ACTIVE);
+            } else if (!(project.getAuthor().getRole().equals(UserRole.CITIZEN)
+                    && (project.getStatus() == ProjectStatus.PROPOSED || project.getStatus() == ProjectStatus.EDITING))) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(projectRepository.save(project), HttpStatus.CREATED);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/allowed_to_post")
+    public ResponseEntity<Boolean> allowedToPropose(@AuthenticationPrincipal User user) {
+        return switch (user.getRole()) {
+            case MUNICIPAL -> ResponseEntity.ok(true);
+            case CITIZEN -> ResponseEntity.ok(checkIfAllowedToPropose(user));
+            default -> ResponseEntity.ok(false);
+        };
+    }
+
+    @GetMapping("/allowed_to_post/reasons")
+    public ResponseEntity<List<String>> reasonsDeniedProposal(@AuthenticationPrincipal User user) {
+        if (user.getRole().equals(UserRole.ADMINISTRATOR)) {
+            return ResponseEntity.ok(List.of("Account type not allowed to propose new projects."));
+        } else if (user.getRole().equals(UserRole.CITIZEN)) {
+            List<String> reasons = new ArrayList<>();
+            if (!hasVotedEnough.apply(user)) {
+                reasons.add("User hasn't voted enough times (currently: %d), minimum needed: %d."
+                        .formatted(voteRepository.countByUser(user), minimumRequiredVotes));
+            }
+            if (!hasNotExceededMaxPerMonth.apply(user)) {
+                var projectsFromThisMonth = projectRepository.findByAuthorAndDatePublishedAfter(user,
+                        LocalDateTime.now().minusMonths(1));
+                projectsFromThisMonth.sort(Comparator.comparing(Project::getDatePublished));
+                var earliestProjectThisMonth = projectsFromThisMonth.get(0);
+                reasons.add(("User has met their monthly posting limit, a maximum of %d new projects per month are" +
+                        " allowed. Allowed to post again after %s.")
+                        .formatted(maxProjectsPerMonth, earliestProjectThisMonth.getDatePublished().plusMonths(1)));
+            }
+            return ResponseEntity.ok(reasons);
+        } else {
+            return ResponseEntity.ok(List.of());
+        }
+    }
+
+    boolean checkIfAllowedToPropose(User user) {
+        return user.getRole().equals(UserRole.MUNICIPAL) || (user.getRole().equals(UserRole.CITIZEN)
+                && hasVotedEnough.apply(user) && hasNotExceededMaxPerMonth.apply(user));
     }
 
     @DeleteMapping("/{id}")
@@ -149,18 +208,19 @@ public class ProjectController {
     @JsonView(ProjectViews.GetProjectList.class)
     @PatchMapping("/status/{id}")
     public ResponseEntity<Project> handleProposal(@PathVariable("id") long id,
-                                                  @RequestHeader(value = "newStatus") String status) {
+                                                  @RequestHeader(value = "newStatus") String status,
+                                                  @Value("${app.project-rules.days-voting-active}") final int daysVotingActive) {
         try {
             var newStatus = ProjectStatus.valueOf(status);
-            if (newStatus != ProjectStatus.ACTIVE && newStatus != ProjectStatus.DENIED){
+            if (newStatus != ProjectStatus.ACTIVE && newStatus != ProjectStatus.DENIED) {
                 throw new IllegalArgumentException();
             }
             var project = projectRepository.findById(id).orElseThrow();
             if (project.getStatus() != ProjectStatus.PROPOSED) throw new IllegalArgumentException();
             project.setStatus(newStatus);
-            if(newStatus == ProjectStatus.ACTIVE){
+            if (newStatus == ProjectStatus.ACTIVE) {
                 project.setStartOfVoting(LocalDateTime.now());
-                project.setEndOfVoting(LocalDateTime.now().plus(Project.VOTING_PERIOD));
+                project.setEndOfVoting(LocalDateTime.now().plus(Period.ofDays(daysVotingActive)));
             }
             return ResponseEntity.ok(projectRepository.save(project));
         } catch (IllegalArgumentException e) {

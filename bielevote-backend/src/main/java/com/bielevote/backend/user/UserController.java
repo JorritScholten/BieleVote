@@ -24,7 +24,7 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<User> getCurrentUser(@AuthenticationPrincipal User currentUser) {
         try {
-            return ResponseEntity.ok(userRepository.findByUsername(currentUser.getUsername()).orElseThrow());
+            return ResponseEntity.ok(currentUser);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
@@ -33,12 +33,23 @@ public class UserController {
     @GetMapping("/balance")
     public ResponseEntity<Integer> getUserPointBalance(@AuthenticationPrincipal User currentUser) {
         try {
-            var user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow();
-            var transactionList = transactionRepository.findByUser(user);
+            var transactionList = transactionRepository.findByUser(currentUser);
             var balance = transactionList.stream().flatMapToInt(t -> IntStream.of(t.getAmount())).sum();
             return ResponseEntity.ok(balance);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @JsonView(UserViews.viewMe.class)
+    @PatchMapping("/update/anonymous")
+    public ResponseEntity<User> toggleAnonymous(@AuthenticationPrincipal User currentUser){
+        try {
+            currentUser.setAnonymousOnLeaderboard(!currentUser.getAnonymousOnLeaderboard());
+            return new ResponseEntity<>(userRepository.save(currentUser), HttpStatus.OK);
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
             return ResponseEntity.internalServerError().build();
@@ -52,9 +63,8 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         try {
-            var user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow();
-            user.setUsername(newUsername);
-            return new ResponseEntity<>(userRepository.save(user), HttpStatus.CREATED);
+            currentUser.setUsername(newUsername);
+            return new ResponseEntity<>(userRepository.save(currentUser), HttpStatus.OK);
         } catch (DataIntegrityViolationException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         } catch (RuntimeException e) {

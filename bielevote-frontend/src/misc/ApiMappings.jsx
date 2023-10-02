@@ -16,6 +16,8 @@ export const backendApi = {
   postProject,
   getAllProjects,
   getProjectById,
+  allowedToPostProject,
+  deniedToPostProjectReasons,
   getAllNewsArticles,
   getNewsArticleById,
   getAllRewards,
@@ -30,6 +32,7 @@ export const backendApi = {
   getRewardTransactions,
   changeProjectStatus,
   updateUsername,
+  toggleAnonymousOnLeaderboard,
 };
 
 function login(formData) {
@@ -110,11 +113,11 @@ function getNewsArticleById(articleId) {
   return instance.get(`/api/v1/news/${articleId}`);
 }
 
-function getLeaderboard(timeRange) {
+function getLeaderboard(timeRange, page, amount) {
   if (timeRange === null) {
-    return instance.get("/api/v1/leaderboard");
+    return instance.get(`/api/v1/leaderboard?page=${page}&amount=${amount}`);
   } else {
-    return instance.get("/api/v1/leaderboard", {
+    return instance.get(`/api/v1/leaderboard?page=${page}&amount=${amount}`, {
       headers: {
         timeRange: timeRange,
       },
@@ -201,6 +204,22 @@ function getHasVoted(projectId, user) {
   });
 }
 
+function allowedToPostProject(user) {
+  return instance.get(`/api/v1/projects/allowed_to_post`, {
+    headers: {
+      Authorization: bearerAuth(user),
+    },
+  });
+}
+
+function deniedToPostProjectReasons(user) {
+  return instance.get(`/api/v1/projects/allowed_to_post/reasons`, {
+    headers: {
+      Authorization: bearerAuth(user),
+    },
+  });
+}
+
 function postVote(voteType, projectId, user) {
   return instance.post(`/api/v1/votes/${projectId}`, null, {
     headers: {
@@ -215,6 +234,14 @@ function changeProjectStatus(newStatus, projectId, user) {
     headers: {
       Authorization: bearerAuth(user),
       newStatus: newStatus,
+    },
+  });
+}
+
+function toggleAnonymousOnLeaderboard(user) {
+  return instance.patch("/api/v1/users/update/anonymous", null, {
+    headers: {
+      Authorization: bearerAuth(user),
     },
   });
 }

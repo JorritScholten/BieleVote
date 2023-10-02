@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
-import { Icon, Table } from "semantic-ui-react";
-import { BiBug } from "react-icons/bi";
+import { Button, Icon, Popup, Table } from "semantic-ui-react";
+import { BiBug, BiCheck, BiX } from "react-icons/bi";
 
 import { backendApi, handleLogError } from "../../misc/ApiMappings";
 import { useAuth } from "../../misc/AuthContext";
 import { emptyForms } from "../../misc/ApiForms";
 import { Header } from "../../components";
-import UpdateUsernameForm from "./components/UpdateUsernameForm";
+import { accountType } from "../../misc/NavMappings";
+import { HttpStatusCode } from "axios";
 
 export default function AccountSettingsPage() {
   const [user, setUser] = useState(emptyForms.user);
   const [balance, setBalance] = useState(NaN);
-  const { getUser } = useAuth();
+  const [allowedToPost, setAllowedToPost] = useState(false);
+  const { getUser, getAccountType } = useAuth();
 
   useEffect(() => {
     async function getBalance() {
@@ -30,9 +32,29 @@ export default function AccountSettingsPage() {
         handleLogError(error);
       }
     }
+    async function getAllowedToVote() {
+      try {
+        const response = await backendApi.allowedToPostProject(getUser());
+        if (response.status === HttpStatusCode.Ok) {
+          setAllowedToPost(response.data);
+        }
+      } catch (error) {
+        handleLogError(error);
+      }
+    }
     fetchData();
     getBalance();
+    getAllowedToVote();
   }, [getUser]);
+
+  async function toggleAnonymous() {
+    try {
+      const response = await backendApi.toggleAnonymousOnLeaderboard(getUser());
+      setUser(response.data);
+    } catch (error) {
+      handleLogError(error);
+    }
+  }
 
   return (
     <div className="flex flex-col gap-8 w-screen">
@@ -42,7 +64,7 @@ export default function AccountSettingsPage() {
           <Table.Body>
             <Table.Row>
               <Table.Cell collapsing content={<Icon name="address card" />} />
-              <Table.Cell collapsing textAlign="right" content="Legal name" />
+              <Table.Cell textAlign="right" content="Legal name" />
               <Table.Cell>{user.legalName}</Table.Cell>
             </Table.Row>
             <Table.Row>
@@ -55,6 +77,36 @@ export default function AccountSettingsPage() {
               <Table.Cell textAlign="right" content="Telephone" />
               <Table.Cell>{user.phone}</Table.Cell>
             </Table.Row>
+            <Popup
+              disabled={getAccountType() !== accountType.citizen}
+              trigger={
+                <Table.Row disabled={getAccountType() !== accountType.citizen}>
+                  <Table.Cell content={<Icon name="user secret" />} />
+                  <Table.Cell textAlign="right" content="Anonymous" />
+                  <Table.Cell className="flex flex-row items-center gap-5">
+                    {user.anonymousOnLeaderboard ? <BiCheck /> : <BiX />}
+                    <Button onClick={toggleAnonymous} content="Toggle" />
+                  </Table.Cell>
+                </Table.Row>
+              }
+              content="Appear as anonymous on the leaderboard."
+            />
+            <Popup
+              trigger={
+                <Table.Row
+                  className={
+                    getAccountType() !== accountType.admin ? "" : "hidden"
+                  }
+                >
+                  <Table.Cell content={<Icon name="file alternate" />} />
+                  <Table.Cell collapsing content="New project?" />
+                  <Table.Cell className="flex flex-row items-center gap-5">
+                    {allowedToPost ? <BiCheck /> : <BiX />}
+                  </Table.Cell>
+                </Table.Row>
+              }
+              content="Allowed to create/propose a new project?"
+            />
             <Table.Row>
               <Table.Cell content={<Icon name="money" />} />
               <Table.Cell textAlign="right" content="Balance" />
@@ -66,9 +118,6 @@ export default function AccountSettingsPage() {
               </Table.Cell>
             </Table.Row>
           </Table.Body>
-          {/* <Table.Row>
-            <UpdateUsernameForm />
-          </Table.Row> */}
         </Table>
       </div>
     </div>
