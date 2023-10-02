@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react";
 import { Button, Icon, Popup, Table } from "semantic-ui-react";
 import { BiBug, BiCheck, BiX } from "react-icons/bi";
+import { HttpStatusCode } from "axios";
+import { useNavigate } from "react-router-dom";
 
 import { backendApi, handleLogError } from "../../misc/ApiMappings";
 import { useAuth } from "../../misc/AuthContext";
 import { emptyForms } from "../../misc/ApiForms";
 import { Header } from "../../components";
 import { accountType } from "../../misc/NavMappings";
-import { HttpStatusCode } from "axios";
 
 export default function AccountSettingsPage() {
   const [user, setUser] = useState(emptyForms.user);
   const [balance, setBalance] = useState(NaN);
   const [allowedToPost, setAllowedToPost] = useState(false);
   const { getUser, getAccountType } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function getBalance() {
@@ -60,6 +62,18 @@ export default function AccountSettingsPage() {
     <div className="flex flex-col gap-8 w-screen">
       <Header pageTitle="Account settings" />
       <div className="grid grid-cols-5 text-3xl">
+        <div className="p-5 flex flex-col gap-5">
+          <Button
+            content="My projects"
+            size="big"
+            onClick={() => navigate("/myprojects")}
+          />
+          <Button
+            content="My purchases"
+            size="big"
+            onClick={() => navigate("/rewardspurchased")}
+          />
+        </div>
         <Table celled basic compact className="col-start-2 col-span-3">
           <Table.Body>
             <Table.Row>
@@ -78,9 +92,12 @@ export default function AccountSettingsPage() {
               <Table.Cell>{user.phone}</Table.Cell>
             </Table.Row>
             <Popup
-              disabled={getAccountType() !== accountType.citizen}
               trigger={
-                <Table.Row disabled={getAccountType() !== accountType.citizen}>
+                <Table.Row
+                  className={
+                    getAccountType() === accountType.citizen ? "" : "hidden"
+                  }
+                >
                   <Table.Cell content={<Icon name="user secret" />} />
                   <Table.Cell textAlign="right" content="Anonymous" />
                   <Table.Cell className="flex flex-row items-center gap-5">

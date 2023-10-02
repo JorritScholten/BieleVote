@@ -45,7 +45,7 @@ export const navList = [
   },
   {
     path: "/new-account",
-    name: "New account",
+    name: "New Account",
     allowedAccountTypes: allAccountTypes,
     hideFromMenu: true,
     element: () => <CreateAccountPage />,
@@ -66,7 +66,7 @@ export const navList = [
   },
   {
     path: "/myprojects",
-    name: "My projects",
+    name: "My Projects",
     allowedAccountTypes: allLoggedInTypes,
     hideFromMenu: false,
     element: () => <OwnProjectOverviewPage />,
@@ -87,7 +87,7 @@ export const navList = [
   },
   {
     path: "/rewardspurchased",
-    name: "Your orders",
+    name: "My Purchases",
     allowedAccountTypes: allLoggedInTypes,
     hideFromMenu: false,
     element: () => <RewardsPurchased />,
