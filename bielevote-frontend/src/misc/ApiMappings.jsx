@@ -33,6 +33,8 @@ export const backendApi = {
   changeProjectStatus,
   updateUsername,
   toggleAnonymousOnLeaderboard,
+  postAccountRequest,
+  getAllAccountRequests,
 };
 
 function login(formData) {
@@ -57,6 +59,27 @@ function getAccountBalance(user) {
   return instance.get("/api/v1/users/balance", {
     headers: { Authorization: bearerAuth(user) },
   });
+}
+
+function postAccountRequest(newAccount) {
+  return instance.post("/api/v1/account-requests", newAccount, {
+    headers: {
+      "Content-type": "application/json",
+    },
+  });
+}
+
+function getAllAccountRequests(page, amount, user) {
+  const path = "/api/v1/account-requests" + "?page=" + page + "&size=" + amount;
+  if (user === null) {
+    return instance.get(path);
+  } else {
+    return instance.get(path, {
+      headers: {
+        Authorization: bearerAuth(user),
+      },
+    });
+  }
 }
 
 function authTest() {

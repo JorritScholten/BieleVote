@@ -4,15 +4,31 @@ import { useState } from "react";
 
 import { Header } from "../../components";
 import { emptyForms } from "../../misc/ApiForms";
+import { backendApi, handleLogError } from "../../misc/ApiMappings";
+import { HttpStatusCode } from "axios";
 
 export default function CreateAccountPage() {
   const [newAccount, setNewAccount] = useState(emptyForms.newAccount);
   const [hideMessage, setHideMessage] = useState(true);
 
+  // async function onSubmit(e) {
+  //   e.preventDefault();
+  //   setNewAccount(emptyForms.newAccount);
+  //   setHideMessage(false);
+  // }
   async function onSubmit(e) {
     e.preventDefault();
-    setNewAccount(emptyForms.newAccount);
-    setHideMessage(false);
+    try {
+      console.table(newAccount);
+      const response = await backendApi.postAccountRequest(newAccount);
+      if (response.status === HttpStatusCode.Created) {
+        setNewAccount(emptyForms.newAccount);
+        setHideMessage(false);
+      }
+    } catch (error) {
+      handleLogError(error);
+      alert("Something went wrong, please try again");
+    }
   }
 
   return (
