@@ -98,7 +98,7 @@ function getAllOwnProjects(page, amount, statuses, user) {
     filter = filter.substring(0, filter.length - 1);
   }
   const path =
-    "/api/v1/projects" + "?page=" + page + "&size=" + amount + filter;
+    "/api/v1/projects/own" + "?page=" + page + "&size=" + amount + filter;
   return instance.get(path, {
     headers: {
       Authorization: bearerAuth(user),
