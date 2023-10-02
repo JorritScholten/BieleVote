@@ -139,7 +139,7 @@ function renderProject(project) {
         {/* <div hidden /> */}
       </div>
 
-      <div>Time remaining:<TimeRemaing project={project} /></div>
+      <div>Time remaining: <TimeRemaing project={project} /></div>
 
       {project.summary === null || project.summary.length === 0 ? (
         placeHolderText(1)
