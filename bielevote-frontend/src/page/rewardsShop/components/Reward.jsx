@@ -93,7 +93,7 @@ export default function Reward({ rewardId }) {
         getUser()
       );
       setRewardItem(response.data);
-      alert("Inventory updated");
+      alert("Availability updated");
     } catch (error) {
       handleLogError(error);
     }
