@@ -46,7 +46,7 @@ export const navList = [
   {
     path: "/new-account",
     name: "New Account",
-    allowedAccountTypes: allAccountTypes,
+    allowedAccountTypes: [accountType.visitor],
     hideFromMenu: true,
     element: () => <CreateAccountPage />,
   },
