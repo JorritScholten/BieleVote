@@ -38,7 +38,7 @@ export default function AccountRequests() {
 
   return (
     <div>
-      <Header pageTitle="Rewards Shop" />
+      <Header pageTitle="Requested Accounts" />
       <div className="flex flex-row items-center justify-center">
         <ListAccountRequests accountRequestList={accountRequestList} />
       </div>
