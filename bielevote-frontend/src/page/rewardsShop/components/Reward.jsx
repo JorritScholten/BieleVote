@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import { Button, Header, Modal } from "semantic-ui-react";
+import { Button, Form, Header, Icon, Modal } from "semantic-ui-react";
 import PropTypes from "prop-types";
-import { BiBug } from "react-icons/bi";
+import { BiBug, BiCheck, BiX } from "react-icons/bi";
 
 import { emptyForms } from "../../../misc/ApiForms";
 import { backendApi, handleLogError } from "../../../misc/ApiMappings";
 import { useAuth } from "../../../misc/AuthContext";
 import { HttpStatusCode } from "axios";
+import { accountType } from "../../../misc/NavMappings";
 
 export default function Reward({ rewardId }) {
-  const { getUser, userIsAuthenticated } = useAuth();
+  const { getUser, userIsAuthenticated, getAccountType } = useAuth();
   const [open, setOpen] = useState(false);
   const [reward, setRewardItem] = useState(emptyForms.rewardItem);
   const [newTransaction, setNewTransaction] = useState(
@@ -22,7 +23,7 @@ export default function Reward({ rewardId }) {
   useEffect(() => {
     async function fetchReward(rewardId) {
       try {
-        const response = await backendApi.getRewardById(rewardId);
+        const response = await backendApi.getRewardById(rewardId, getUser());
         setRewardItem(response.data);
       } catch (error) {
         handleLogError(error);
@@ -70,8 +71,36 @@ export default function Reward({ rewardId }) {
     }
   }
 
+  async function updateRewardInventory() {
+    try {
+      const response = await backendApi.updateRewardInventory(
+        reward.inventory,
+        rewardId,
+        getUser()
+      );
+      setRewardItem(response.data);
+      alert("Inventory updated");
+    } catch (error) {
+      handleLogError(error);
+    }
+  }
+
+  async function updateRewardAvailability() {
+    try {
+      const response = await backendApi.updateRewardAvailability(
+        !reward.isAvailable,
+        rewardId,
+        getUser()
+      );
+      setRewardItem(response.data);
+      alert("Availability updated");
+    } catch (error) {
+      handleLogError(error);
+    }
+  }
+
   const changeCount = (increase) => {
-    if (count + increase > 0) {
+    if (count + increase > 0 && count + increase - 1 < reward.inventory) {
       setCount(count + increase);
     }
   };
@@ -81,17 +110,18 @@ export default function Reward({ rewardId }) {
       onClose={() => setOpen(false)}
       onOpen={() => setOpen(true)}
       open={open}
+      disabled={reward.inventory <= 0}
       trigger={
         <Button.Group>
           <Button>More info</Button>
-          <Button positive>Purchase</Button>
+          <Button positive={reward.inventory !== 0}>Purchase</Button>
         </Button.Group>
       }
     >
       <Modal.Header>{reward.name}</Modal.Header>
       <Modal.Content image>
         <Modal.Description>
-          <div className="flex flex-row items-center">
+          <div className="flex flex-row items-center text-xl">
             Cost: {reward.cost * count}
             <div className="ml-1">
               <BiBug />
@@ -99,25 +129,69 @@ export default function Reward({ rewardId }) {
           </div>
           <Header>Description</Header>
           <div>{reward.description}</div>
+          {getAccountType() === accountType.admin ? (
+            <div className="pt-4">
+              <Form.Input
+                label="Inventory:"
+                name="inventory"
+                placeholder="Inventory"
+                value={reward.inventory}
+                onChange={(e) =>
+                  setRewardItem({ ...reward, inventory: e.target.value })
+                }
+              />
+              <div className="pt-4">
+                <Button
+                  content="Update Inventory"
+                  onClick={updateRewardInventory}
+                  color="orange"
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="pt-4">In stock: {reward.inventory}</div>
+          )}
         </Modal.Description>
+
+        {getAccountType() === accountType.admin ? (
+          <Modal.Description className="text-xl">
+            Available:{" "}
+            <Icon className="relative top-1">
+              {reward.isAvailable ? <BiCheck /> : <BiX />}
+            </Icon>
+            <Button
+              fluid
+              onClick={() => updateRewardAvailability()}
+              content="Toggle availability"
+            />
+          </Modal.Description>
+        ) : (
+          <div hidden />
+        )}
       </Modal.Content>
       <Modal.Actions>
         <Button color="black" onClick={() => setOpen(false)}>
-          Nope
+          Close
         </Button>
-        <Button.Group>
-          <Button onClick={() => changeCount(-1)}>-</Button>
-          <Button onClick={() => setCount(1)}>{count}</Button>
-          <Button onClick={() => changeCount(1)}>+</Button>
-          <Button
-            content="Purchase"
-            labelPosition="right"
-            icon="checkmark"
-            onClick={() => makePurchase()}
-            positive
-            disabled={userBalance < reward.cost * count}
-          />
-        </Button.Group>
+        {reward.inventory === 0 ? (
+          <p className="font-bold text-red-600">Out Of Stock</p>
+        ) : (
+          <Button.Group>
+            <Button onClick={() => changeCount(-1)}>-</Button>
+            <Button onClick={() => setCount(1)}>{count}</Button>
+            <Button onClick={() => changeCount(1)}>+</Button>
+            <Button
+              content="Purchase"
+              labelPosition="right"
+              icon="checkmark"
+              onClick={() => makePurchase()}
+              positive
+              disabled={
+                userBalance < reward.cost * count || reward.inventory === 0
+              }
+            />
+          </Button.Group>
+        )}
       </Modal.Actions>
     </Modal>
   );
