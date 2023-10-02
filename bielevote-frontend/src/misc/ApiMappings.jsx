@@ -15,6 +15,7 @@ export const backendApi = {
   authTest,
   postProject,
   getAllProjects,
+  getAllOwnProjects,
   getProjectById,
   allowedToPostProject,
   deniedToPostProjectReasons,
@@ -90,6 +91,22 @@ function getAllProjects(page, amount, statuses, user) {
       },
     });
   }
+}
+
+function getAllOwnProjects(page, amount, statuses, user) {
+  let filter = "";
+  if (statuses.length !== 0) {
+    filter = "&statusList=";
+    statuses.forEach((s) => (filter = filter.concat(s, ",")));
+    filter = filter.substring(0, filter.length - 1);
+  }
+  const path =
+    "/api/v1/projects/own" + "?page=" + page + "&size=" + amount + filter;
+  return instance.get(path, {
+    headers: {
+      Authorization: bearerAuth(user),
+    },
+  });
 }
 
 function getProjectById(projectId, user) {

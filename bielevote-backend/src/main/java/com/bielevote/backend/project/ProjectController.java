@@ -96,6 +96,35 @@ public class ProjectController {
         }
     }
 
+    @JsonView(ProjectViews.GetProjectList.class)
+    @GetMapping("/own")
+    public ResponseEntity<Map<String, Object>> getOwnProjects(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) List<String> statusList,
+            @AuthenticationPrincipal User user
+    ) {
+        try {
+            var paging = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "datePublished"));
+            final Set<ProjectStatus> statusFilter = new HashSet<>(statusList == null ? allowedPublicTypes :
+                    statusList.stream().map(ProjectStatus::valueOf).collect(Collectors.toSet()));
+            Page<Project> pageProject = projectRepository.findByAuthorAndStatusIn(user, statusFilter, paging);
+
+            List<Project> projects = pageProject.getContent();
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("projects", projects);
+            responseBody.put("currentPage", pageProject.getNumber());
+            responseBody.put("totalItems", pageProject.getTotalElements());
+            responseBody.put("totalPages", pageProject.getTotalPages());
+
+            return new ResponseEntity<>(responseBody, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProjectInfoDTO> getProjectById(@PathVariable("id") long id,
                                                          @AuthenticationPrincipal User currentUser) {
@@ -103,6 +132,10 @@ public class ProjectController {
             var project = projectRepository.findById(id).orElseThrow();
             if (currentUser != null && currentUser.getRole() == UserRole.MUNICIPAL) {
                 if (!allowedMunicipalTypes.contains(project.getStatus())) {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } else if (currentUser != null) {
+                if(!project.getAuthor().equals(currentUser)){
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } else {

@@ -37,7 +37,7 @@ export default function ProjectPage() {
         setDisableStatusChange(response.data.status !== projectStatus.proposed);
       } catch (error) {
         if (error.response.status === HttpStatusCode.Unauthorized) {
-          navigate("/projects");
+          navigate(-1);
         } else {
           console.log(error);
         }
