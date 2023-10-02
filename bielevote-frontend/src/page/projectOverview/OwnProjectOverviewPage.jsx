@@ -19,12 +19,20 @@ export default function OwnProjectOverviewPage() {
   const [viewRejected, setViewRejected] = useState(true);
   const [viewProposed, setViewProposed] = useState(true);
   const [viewDenied, setViewDenied] = useState(true);
+  const [viewReview, setViewReview] = useState(true);
   const { getUser } = useAuth();
   const amountOfProjects = 3;
 
   useEffect(() => {
     handlePageChange();
-  }, [viewActive, viewAccepted, viewRejected, viewProposed, viewDenied]);
+  }, [
+    viewActive,
+    viewAccepted,
+    viewRejected,
+    viewProposed,
+    viewDenied,
+    viewReview,
+  ]);
 
   const handlePageChange = async (event, value) => {
     const page = value != null ? value.activePage - 1 : 0;
@@ -34,6 +42,7 @@ export default function OwnProjectOverviewPage() {
     if (viewRejected) statusFilter.push(projectStatus.rejected);
     if (viewProposed) statusFilter.push(projectStatus.proposed);
     if (viewDenied) statusFilter.push(projectStatus.denied);
+    if (viewReview) statusFilter.push(projectStatus.review);
     try {
       const response = await backendApi.getAllOwnProjects(
         page,
@@ -56,9 +65,21 @@ export default function OwnProjectOverviewPage() {
           <Button.Group vertical fluid>
             <Button
               toggle
+              active={viewProposed}
+              onClick={() => setViewProposed((state) => (state = !state))}
+              content="Proposed"
+            />
+            <Button
+              toggle
               active={viewActive}
               onClick={() => setViewActive((state) => (state = !state))}
               content="Active"
+            />
+            <Button
+              toggle
+              active={viewReview}
+              onClick={() => setViewReview((state) => (state = !state))}
+              content="Review"
             />
             <Button
               toggle
@@ -71,12 +92,6 @@ export default function OwnProjectOverviewPage() {
               active={viewRejected}
               onClick={() => setViewRejected((state) => (state = !state))}
               content="Rejected"
-            />
-            <Button
-              toggle
-              active={viewProposed}
-              onClick={() => setViewProposed((state) => (state = !state))}
-              content="Proposed"
             />
             <Button
               toggle

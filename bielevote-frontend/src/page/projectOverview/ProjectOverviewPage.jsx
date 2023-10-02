@@ -26,7 +26,14 @@ export default function ProjectOverviewPage() {
 
   useEffect(() => {
     handlePageChange();
-  }, [viewActive, viewAccepted, viewRejected, viewProposed, viewDenied]);
+  }, [
+    viewActive,
+    viewAccepted,
+    viewRejected,
+    viewProposed,
+    viewDenied,
+    viewReview,
+  ]);
 
   const handlePageChange = async (event, value) => {
     const page = value != null ? value.activePage - 1 : 0;
