@@ -15,7 +15,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     List<Project> findByStatus(ProjectStatus status);
 
-    Page<Project> findByAuthor(@NonNull User user, @NonNull Collection<ProjectStatus> statuses, Pageable pageable);
+    Page<Project> findByAuthorAndStatusIn(@NonNull User user, @NonNull Collection<ProjectStatus> statuses, Pageable pageable);
 
     List<Project> findByStatusAndEndOfVotingBefore(ProjectStatus status, LocalDateTime now);
 

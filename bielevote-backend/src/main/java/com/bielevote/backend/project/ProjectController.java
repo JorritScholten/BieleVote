@@ -100,7 +100,7 @@ public class ProjectController {
             var paging = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "datePublished"));
             final Set<ProjectStatus> statusFilter = new HashSet<>(statusList == null ? allowedPublicTypes :
                     statusList.stream().map(ProjectStatus::valueOf).collect(Collectors.toSet()));
-            Page<Project> pageProject = projectRepository.findByAuthor(user, statusFilter, paging);
+            Page<Project> pageProject = projectRepository.findByAuthorAndStatusIn(user, statusFilter, paging);
 
             List<Project> projects = pageProject.getContent();
             Map<String, Object> responseBody = new HashMap<>();
