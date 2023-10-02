@@ -1,10 +1,11 @@
 export const projectStatus = {
   editing: "EDITING",
   proposed: "PROPOSED",
+  denied: "DENIED",
   active: "ACTIVE",
+  review: "REVIEW",
   accepted: "ACCEPTED",
   rejected: "REJECTED",
-  denied: "DENIED",
 };
 
 export const voteTypes = {
@@ -82,6 +83,14 @@ export const emptyForms = {
     isLimited: false,
     inventory: 0,
     datePlaced: "",
+    cost: 0,
+  },
+  createRewardDto: {
+    name: "",
+    description: "",
+    isLimited: false,
+    isAvailable: true,
+    inventory: 0,
     cost: 0,
   },
   user: {

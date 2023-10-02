@@ -2,16 +2,21 @@ import { useState, useEffect } from "react";
 import { Pagination } from "semantic-ui-react";
 
 import Header from "../../components/Header";
-import { backendApi } from "../../misc/ApiMappings";
+import { backendApi, handleLogError } from "../../misc/ApiMappings";
 import ListRewards from "./components/ListRewards";
 import { emptyForms } from "../../misc/ApiForms";
+import { useAuth } from "../../misc/AuthContext";
+import { accountType } from "../../misc/NavMappings";
+import CreateReward from "./components/CreateReward";
 
 export default function RewardOverviewPage() {
   const [rewardsList, setRewardsList] = useState(emptyForms.rewardOverview);
+  const { getUser, getAccountType, userIsAuthenticated } = useAuth();
+  const [version, setVersion] = useState(0);
 
   useEffect(() => {
     handlePageChange();
-  }, []);
+  }, [version, userIsAuthenticated]);
 
   const handlePageChange = async (event, value) => {
     let page;
@@ -20,8 +25,12 @@ export default function RewardOverviewPage() {
     } else {
       page = 0;
     }
-    const response = await backendApi.getAllRewards(page, 9);
-    setRewardsList(response.data);
+    try {
+      const response = await backendApi.getAllRewards(page, 12, getUser());
+      setRewardsList(response.data);
+    } catch (error) {
+      handleLogError(error);
+    }
   };
 
   return (
@@ -37,6 +46,11 @@ export default function RewardOverviewPage() {
           onPageChange={handlePageChange}
         />
       </div>
+      {getAccountType() === accountType.admin ? (
+        <CreateReward setVersion={setVersion} />
+      ) : (
+        <div hidden />
+      )}
     </div>
   );
 }
