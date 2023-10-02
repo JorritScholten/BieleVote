@@ -1,10 +1,14 @@
 package com.bielevote.backend.reward_shop;
 
+import com.bielevote.backend.project.Project;
+import com.bielevote.backend.project.ProjectStatus;
 import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRepository;
+import com.bielevote.backend.user.UserRole;
 import com.bielevote.backend.user.rewardpoint.Transaction;
 import com.bielevote.backend.user.rewardpoint.TransactionReason;
 import com.bielevote.backend.user.rewardpoint.TransactionRepository;
+import jakarta.persistence.Column;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,15 +32,19 @@ public class RewardController {
     private final TransactionRepository transactionRepository;
 
     @GetMapping("/shop")
-    public ResponseEntity<Map<String, Object>> getAllRewards(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+    public ResponseEntity<Map<String, Object>> getAllRewards(@AuthenticationPrincipal User currentUser,
+                                                             @RequestParam(defaultValue = "0") int page,
+                                                             @RequestParam(defaultValue = "10") int size
     ) {
         try {
             List<Reward> rewards;
+            Page<Reward> pageRewards;
             PageRequest paging = PageRequest.of(page, size, Sort.by("datePlaced").descending());
-
-            Page<Reward> pageRewards = rewardRepository.findAll(paging);
+            if (currentUser != null && currentUser.getRole() == UserRole.ADMINISTRATOR) {
+                pageRewards = rewardRepository.findAll(paging);
+            } else {
+                pageRewards = rewardRepository.findByIsAvailable(true, paging);
+            }
 
             rewards = pageRewards.getContent();
 
@@ -53,9 +61,14 @@ public class RewardController {
     }
 
     @GetMapping("/shop/{id}")
-    public ResponseEntity<Reward> getRewardById(@PathVariable("id") long id) {
+    public ResponseEntity<Reward> getRewardById(@AuthenticationPrincipal User currentUser,
+                                                @PathVariable("id") long id) {
         try {
-            return new ResponseEntity<>(rewardRepository.findById(id).orElseThrow(), HttpStatus.OK);
+            if (currentUser != null && currentUser.getRole() == UserRole.ADMINISTRATOR)
+                return new ResponseEntity<>(rewardRepository.findById(id).orElseThrow(), HttpStatus.OK);
+            else {
+                return new ResponseEntity<>(rewardRepository.findByIdAndIsAvailable(id, true).orElseThrow(), HttpStatus.OK);
+            }
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -118,6 +131,71 @@ public class RewardController {
         }
     }
 
+    @PostMapping("/shop")
+    public ResponseEntity<Void> postReward(@Validated @RequestBody CreateRewardDto createRewardDto) {
+        try {
+            var date = LocalDateTime.now();
+            var reward = new Reward();
+            reward.setName(createRewardDto.name);
+            reward.setDescription(createRewardDto.description);
+            reward.setIsLimited(createRewardDto.isLimited);
+            reward.setInventory(createRewardDto.inventory);
+            reward.setDatePlaced(date);
+            reward.setCost(createRewardDto.cost);
+            reward.setIsAvailable(createRewardDto.isAvailable);
+
+            rewardRepository.save(reward);
+            return new ResponseEntity<>(null, HttpStatus.CREATED);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PatchMapping("/shop/inventory/{id}")
+    public ResponseEntity<Reward> changeRewardInventory(@PathVariable("id") long id,
+                                                        @RequestHeader(value = "newInventory") String inventory) {
+        try {
+            var newInventory = Integer.parseInt(inventory);
+            var reward = rewardRepository.findById(id).orElseThrow();
+            if (newInventory < 0) throw new IllegalArgumentException();
+            reward.setInventory(newInventory);
+            return ResponseEntity.ok(rewardRepository.save(reward));
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PatchMapping("/shop/availability/{id}")
+    public ResponseEntity<Reward> changeRewardAvailability(@PathVariable("id") long id,
+                                                           @RequestHeader(value = "newAvailability", defaultValue = "false") String isAvailable) {
+        try {
+            var reward = rewardRepository.findById(id).orElseThrow();
+            reward.setIsAvailable(Boolean.valueOf(isAvailable));
+            return ResponseEntity.ok(rewardRepository.save(reward));
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public record RewardPurchasedDto(int rewardsAmount, Long rewardId) {
+    }
+
+    public record CreateRewardDto(String name, String description, Boolean isLimited, Integer inventory, Integer cost,
+                           Boolean isAvailable) {
     }
 }

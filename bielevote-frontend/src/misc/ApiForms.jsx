@@ -85,6 +85,14 @@ export const emptyForms = {
     datePlaced: "",
     cost: 0,
   },
+  createRewardDto: {
+    name: "",
+    description: "",
+    isLimited: false,
+    isAvailable: true,
+    inventory: 0,
+    cost: 0,
+  },
   user: {
     username: "",
     legalName: "",

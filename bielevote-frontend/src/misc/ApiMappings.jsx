@@ -22,6 +22,9 @@ export const backendApi = {
   getNewsArticleById,
   getAllRewards,
   getRewardById,
+  postReward,
+  updateRewardInventory,
+  updateRewardAvailability,
   getLeaderboard,
   getHasVoted,
   postVote,
@@ -122,14 +125,57 @@ function getLeaderboard(timeRange, page, amount) {
   }
 }
 
-function getAllRewards(page, amount) {
-  return instance.get(
-    "/api/v1/rewards/shop" + "?page=" + page + "&size=" + amount
-  );
+function getAllRewards(page, amount, user) {
+  const path = "/api/v1/rewards/shop" + "?page=" + page + "&size=" + amount;
+  if (user === null) {
+    return instance.get(path);
+  } else {
+    return instance.get(path, {
+      headers: {
+        Authorization: bearerAuth(user),
+      },
+    });
+  }
 }
 
-function getRewardById(rewardId) {
-  return instance.get(`/api/v1/rewards/shop/${rewardId}`);
+function getRewardById(rewardId, user) {
+  const path = `/api/v1/rewards/shop/${rewardId}`;
+  if (user === null) {
+    return instance.get(path);
+  } else {
+    return instance.get(path, {
+      headers: {
+        Authorization: bearerAuth(user),
+      },
+    });
+  }
+}
+
+function postReward(user, formData) {
+  return instance.post("/api/v1/rewards/shop", formData, {
+    headers: {
+      Authorization: bearerAuth(user),
+      "Content-type": "application/json",
+    },
+  });
+}
+
+function updateRewardInventory(updateInventory, rewardId, user) {
+  return instance.patch(`/api/v1/rewards/shop/inventory/${rewardId}`, null, {
+    headers: {
+      Authorization: bearerAuth(user),
+      newInventory: updateInventory,
+    },
+  });
+}
+
+function updateRewardAvailability(updateAvailability, rewardId, user) {
+  return instance.patch(`/api/v1/rewards/shop/availability/${rewardId}`, null, {
+    headers: {
+      Authorization: bearerAuth(user),
+      newAvailability: updateAvailability,
+    },
+  });
 }
 
 function postRewardTransaction(user, rewardData) {
