@@ -7,7 +7,7 @@ export default function TimeRemaining(props) {
   useEffect(() => {
     const getRemainingTime = () => {
       const endOfVoting = new Date(props.project.endOfVoting);
-      var difference = endOfVoting - Date.now();
+      const difference = endOfVoting - Date.now();
       return {
         days: Math.floor(difference / (1000 * 60 * 60 * 24)),
         hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
@@ -15,7 +15,11 @@ export default function TimeRemaining(props) {
         seconds: Math.floor((difference / 1000) % 60),
       };
     };
-    setInterval(() => setTimeRemaining(getRemainingTime()), 1000);
+    const interval = setInterval(
+      () => setTimeRemaining(getRemainingTime()),
+      1000
+    );
+    return () => clearInterval(interval);
   }, [props.project.endOfVoting]);
 
   return timeRemaining ? (
