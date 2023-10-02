@@ -126,6 +126,10 @@ public class ProjectController {
                 if (!allowedMunicipalTypes.contains(project.getStatus())) {
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
+            } else if (currentUser != null) {
+                if(!project.getAuthor().equals(currentUser)){
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
             } else {
                 if (!allowedPublicTypes.contains(project.getStatus())) {
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
