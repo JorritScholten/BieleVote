@@ -21,7 +21,7 @@ export default function ProjectOverviewPage() {
   const [viewProposed, setViewProposed] = useState(true);
   const [viewDenied, setViewDenied] = useState(false);
   const [viewReview, setViewReview] = useState(true);
-  const { getUser, getAccountType } = useAuth();
+  const { getUser, getAccountType, userIsAuthenticated } = useAuth();
   const amountOfProjects = 3;
 
   useEffect(() => {
@@ -33,6 +33,7 @@ export default function ProjectOverviewPage() {
     viewProposed,
     viewDenied,
     viewReview,
+    userIsAuthenticated,
   ]);
 
   const handlePageChange = async (event, value) => {
