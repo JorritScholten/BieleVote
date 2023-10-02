@@ -20,6 +20,7 @@ export default function ProjectOverviewPage() {
   const [viewRejected, setViewRejected] = useState(false);
   const [viewProposed, setViewProposed] = useState(true);
   const [viewDenied, setViewDenied] = useState(false);
+  const [viewReview, setViewReview] = useState(true);
   const { getUser, getAccountType } = useAuth();
   const amountOfProjects = 3;
 
@@ -36,6 +37,7 @@ export default function ProjectOverviewPage() {
     if (getAccountType() === accountType.municipal) {
       if (viewProposed) statusFilter.push(projectStatus.proposed);
       if (viewDenied) statusFilter.push(projectStatus.denied);
+      if (viewReview) statusFilter.push(projectStatus.review);
     }
     try {
       const response = await backendApi.getAllProjects(
@@ -81,6 +83,16 @@ export default function ProjectOverviewPage() {
                 active={viewProposed}
                 onClick={() => setViewProposed((state) => (state = !state))}
                 content="Proposed"
+              />
+            ) : (
+              <div hidden />
+            )}
+            {getAccountType() === accountType.municipal ? (
+              <Button
+                toggle
+                active={viewReview}
+                onClick={() => setViewReview((state) => (state = !state))}
+                content="Review"
               />
             ) : (
               <div hidden />

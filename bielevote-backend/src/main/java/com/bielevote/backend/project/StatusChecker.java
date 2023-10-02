@@ -33,22 +33,7 @@ public class StatusChecker {
             System.out.flush();
         }
         for (Project project : projects) {
-            int votesFor = voteRepository.findByProjectAndType(project, VoteType.POSITIVE).size();
-            int votesAgainst = voteRepository.findByProjectAndType(project, VoteType.AGAINST).size();
-            if (votesFor > votesAgainst) {
-                project.setStatus(ProjectStatus.ACCEPTED);
-                transactionRepository.saveAndFlush(Transaction.builder()
-                        .amount(rewardForAccepted)
-                        .date(LocalDateTime.now())
-                        .user(project.getAuthor())
-                        .reason(TransactionReason.PROJECT_ACCEPTED)
-                        .build()
-                );
-            } else if (votesAgainst > votesFor) {
-                project.setStatus(ProjectStatus.REJECTED);
-            } else {
-                project.setStatus(ProjectStatus.REJECTED);
-            }
+            project.setStatus(ProjectStatus.REVIEW);
             projectRepository.saveAndFlush(project);
         }
     }

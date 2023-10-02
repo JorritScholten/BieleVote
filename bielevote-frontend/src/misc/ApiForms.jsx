@@ -1,10 +1,11 @@
 export const projectStatus = {
   editing: "EDITING",
   proposed: "PROPOSED",
+  denied: "DENIED",
   active: "ACTIVE",
+  review: "REVIEW",
   accepted: "ACCEPTED",
   rejected: "REJECTED",
-  denied: "DENIED",
 };
 
 export const voteTypes = {
