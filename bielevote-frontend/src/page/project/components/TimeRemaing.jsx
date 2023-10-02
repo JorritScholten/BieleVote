@@ -18,16 +18,12 @@ export default function TimeRemaining(props) {
     setInterval(() => setTimeRemaining(getRemainingTime()), 1000);
   }, [props.project.endOfVoting]);
 
-  return (
-    <div>
-      {timeRemaining ? (
-        <div>
-          {timeRemaining.days} days {timeRemaining.hours} hours{" "}
-          {timeRemaining.minutes} minutes {timeRemaining.seconds} seconds
-        </div>
-      ) : (
-        <div>Loading...</div>
-      )}
-    </div>
+  return timeRemaining ? (
+    <span>
+      {timeRemaining.days} days {timeRemaining.hours} hours{" "}
+      {timeRemaining.minutes} minutes {timeRemaining.seconds} seconds
+    </span>
+  ) : (
+    <span>Loading...</span>
   );
 }

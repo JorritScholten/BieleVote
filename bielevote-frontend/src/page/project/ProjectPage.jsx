@@ -120,6 +120,12 @@ function renderProject(project) {
       )}
       <SemanticHeader.Subheader>
         <Icon name="calendar alternate" /> {formatDate(project.datePublished)}
+        <span className="inline-block w-10" />
+        <span
+          className={project.status === projectStatus.active ? "" : "hidden"}
+        >
+          Time remaining: <TimeRemaing project={project} />
+        </span>
       </SemanticHeader.Subheader>
       <SemanticHeader.Subheader>
         <Icon name="user" /> {project.author}
@@ -138,9 +144,6 @@ function renderProject(project) {
         )}
         {/* <div hidden /> */}
       </div>
-
-      <div>Time remaining: <TimeRemaing project={project} /></div>
-
       {project.summary === null || project.summary.length === 0 ? (
         placeHolderText(1)
       ) : (
