@@ -118,6 +118,11 @@ export const emptyForms = {
     legalName: "",
     phone: "",
   },
+  newAccountRequest: {
+    username: "",
+    legalName: "",
+    phone: "",
+  },
   newAccountRequests: {
     accountRequests: [],
     currentPage: 0,

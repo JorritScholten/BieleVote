@@ -1,5 +1,6 @@
 package com.bielevote.backend.user.accountrequests;
 
+import com.bielevote.backend.project.Project;
 import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRepository;
 import com.bielevote.backend.user.UserRole;
@@ -32,18 +33,14 @@ public class AccountRequestController {
 
     @GetMapping()
     public ResponseEntity<Map<String, Object>> getAccountRequests(
-            @AuthenticationPrincipal User user,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        if (!user.getRole().equals(UserRole.ADMINISTRATOR)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+            @RequestParam(defaultValue = "10") int size
+    ) {
         try {
-            List<AccountRequest> accountRequests;
             PageRequest paging = PageRequest.of(page, size, Sort.by("dateRequested").ascending());
             Page<AccountRequest> pageAccountRequests = accountRequestRepository.findAll(paging);
 
-            accountRequests = pageAccountRequests.getContent();
+            List<AccountRequest> accountRequests = pageAccountRequests.getContent();
 
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("accountRequests", accountRequests);
@@ -61,7 +58,7 @@ public class AccountRequestController {
     }
 
     @PostMapping()
-    public ResponseEntity<Void> postAccountRequest(@Validated @RequestBody AccountRequestDto accountRequestDto) {
+    public ResponseEntity<Void> createAccountRequest(@Validated @RequestBody AccountRequestDto accountRequestDto) {
         try {
             var accountRequest = new AccountRequest();
             if (userRepository.findByUsername(accountRequest.getUsername()).isPresent()) {
@@ -82,6 +79,19 @@ public class AccountRequestController {
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
             return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Project> deleteAccountRequestById(@PathVariable("id") long id) {
+        try {
+            if (accountRequestRepository.findById(id).isEmpty()) {
+                throw new RuntimeException();
+            }
+            accountRequestRepository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
