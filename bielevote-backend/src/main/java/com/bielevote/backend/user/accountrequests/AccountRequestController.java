@@ -1,9 +1,7 @@
 package com.bielevote.backend.user.accountrequests;
 
 import com.bielevote.backend.project.Project;
-import com.bielevote.backend.user.User;
 import com.bielevote.backend.user.UserRepository;
-import com.bielevote.backend.user.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

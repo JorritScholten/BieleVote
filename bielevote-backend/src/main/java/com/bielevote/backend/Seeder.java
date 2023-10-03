@@ -41,20 +41,32 @@ public class Seeder implements CommandLineRunner {
     }
 
     private void seedAccountRequests() {
-//        accountRequestRepository.saveAllAndFlush(List.of(
-//                AccountRequest.builder()
-//                        .username("berendjan")
-//                        .legalName("Berend-Jan de Jong")
-//                        .phone("0631245121")
-//                        .dateRequested(LocalDateTime.now().minusDays(1))
-//                        .build(),
-//                AccountRequest.builder()
-//                        .username("henklol")
-//                        .legalName("Henk Koe")
-//                        .phone("0631245122")
-//                        .dateRequested(LocalDateTime.now().minusDays(2))
-//                        .build()
-//        ));
+        accountRequestRepository.saveAllAndFlush(List.of(
+                AccountRequest.builder()
+                        .username("berendjan")
+                        .legalName("Berend-Jan de Jong")
+                        .phone("0631245121")
+                        .dateRequested(LocalDateTime.now().minusDays(1))
+                        .build(),
+                AccountRequest.builder()
+                        .username("klaashoop")
+                        .legalName("Klaas Hoop")
+                        .phone("0631245150")
+                        .dateRequested(LocalDateTime.now().minusDays(3))
+                        .build(),
+                AccountRequest.builder()
+                        .username("joedoe")
+                        .legalName("Joe Doe")
+                        .phone("0642069221")
+                        .dateRequested(LocalDateTime.now().minusMonths(1))
+                        .build(),
+                AccountRequest.builder()
+                        .username("henklol")
+                        .legalName("Henk Koe")
+                        .phone("0631245122")
+                        .dateRequested(LocalDateTime.now().minusDays(2))
+                        .build()
+        ));
     }
 
     private void seedUsers() {

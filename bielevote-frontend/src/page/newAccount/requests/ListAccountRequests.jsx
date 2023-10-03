@@ -40,6 +40,22 @@ export default function ListAccountRequests({
       );
       if (response.status === HttpStatusCode.Created) {
         setVersion((v) => (v = v + 1));
+        alert("Account Request Accepted");
+      }
+    } catch (error) {
+      handleLogError(error);
+    }
+  };
+
+  const deleteAccount = async (accountRequestId) => {
+    try {
+      const response = await backendApi.denyAccountRequest(
+        accountRequestId,
+        getUser()
+      );
+      if (response.status === HttpStatusCode.Ok) {
+        setVersion((v) => (v = v + 1));
+        alert("Account Request Denied");
       }
     } catch (error) {
       handleLogError(error);
@@ -91,7 +107,7 @@ export default function ListAccountRequests({
               />
               <Button
                 negative
-                //   onClick={() => moderateStatus(projectStatus.denied)}
+                onClick={() => deleteAccount(accountRequest.id)}
                 content="Deny"
               />
             </Button.Group>

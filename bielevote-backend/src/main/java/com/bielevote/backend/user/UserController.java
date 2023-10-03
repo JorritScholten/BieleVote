@@ -1,11 +1,9 @@
 package com.bielevote.backend.user;
 
-import com.bielevote.backend.user.accountrequests.AccountRequest;
 import com.bielevote.backend.user.accountrequests.AccountRequestRepository;
 import com.bielevote.backend.user.rewardpoint.TransactionRepository;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.stream.IntStream;
