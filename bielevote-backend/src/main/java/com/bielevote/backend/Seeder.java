@@ -37,7 +37,7 @@ public class Seeder implements CommandLineRunner {
 //        seedProjects();
 //        seedNewsArticles();
 //        seedRewards();
-//        seedAccountRequests();
+        seedAccountRequests();
     }
 
     private void seedAccountRequests() {
