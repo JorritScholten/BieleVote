@@ -9,7 +9,7 @@ import { emptyForms } from "../../../misc/ApiForms";
 import { useAuth } from "../../../misc/AuthContext";
 import { backendApi, handleLogError } from "../../../misc/ApiMappings";
 import { accountType } from "../../../misc/NavMappings";
-import './styling.css'
+import "./form_editor_styling.css";
 
 function ProjectForm() {
   const [newProject, setNewProject] = useState(emptyForms.newProject);
@@ -66,13 +66,12 @@ function ProjectForm() {
 
   const modules = {
     toolbar: [
-      [{ 'font': [] }],
-      [{ header: ['1', '2', '3', false] }],
-      ['bold', 'italic', 'underline'],
-      [{ list: 'ordered' }, { list: 'bullet' }],
-      ]
-  }
-
+      [{ font: [] }],
+      [{ header: ["1", "2", "3", false] }],
+      ["bold", "italic", "underline"],
+      [{ list: "ordered" }, { list: "bullet" }],
+    ],
+  };
 
   return (
     <Form onSubmit={onSubmit}>
