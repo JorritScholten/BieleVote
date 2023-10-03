@@ -40,8 +40,16 @@ export default function Header({ pageTitle }) {
             </Button>
           }
         />
-        <Link to={"/"} className="flex-auto text-4xl font-bold">
-          BieleVote
+        <Link
+          to={"/"}
+          className="flex-auto text-4xl font-bold hover:bg-green-300 hover:!text-red-600"
+        >
+          <span className="font-mono">
+            <span className="text-sky-800">B</span>iele
+          </span>
+          <span className="italic">
+            <span className="text-violet-800">V</span>ote
+          </span>
         </Link>
       </div>
       <h1 className="w-1/5 grow text-center text-3xl">{pageTitle}</h1>

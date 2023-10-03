@@ -25,7 +25,7 @@ export default function NewsPreview() {
     <div>loading...</div>
   ) : (
     <div>
-      <ListNews newsList={newsList} />
+      <ListNews newsList={newsList} hideCategory={true} />
       <Link to={"/news"}>
         <Button fluid primary>
           View All News Articles

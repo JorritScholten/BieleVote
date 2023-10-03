@@ -135,7 +135,7 @@ public class ProjectController {
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } else if (currentUser != null) {
-                if(!project.getAuthor().equals(currentUser)){
+                if (!allowedPublicTypes.contains(project.getStatus()) && !project.getAuthor().equals(currentUser)) {
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } else {
