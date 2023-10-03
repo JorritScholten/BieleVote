@@ -20,7 +20,7 @@ import java.sql.SQLException;
 @RequestMapping("/dev")
 public class DevelopmentController {
     public static final String dataResourcesDir = "src/main/resources/data/";
-    public static final String[] tableInsertOrder = new String[]{"USERS", "NEWS_ARTICLE", "PROJECT", "REWARD", "TRANSACTIONS", "VOTES"};
+    public static final String[] tableInsertOrder = new String[]{"USERS", "NEWS_ARTICLE", "PROJECT", "REWARD", "TRANSACTIONS", "VOTES", "ACCOUNT_REQUESTS"};
     @Autowired
     private DataSource dataSource;
 
@@ -49,8 +49,11 @@ public class DevelopmentController {
                         }
                     }
                     if (count != 0) {
-                        count++;
-                        file.write(("ALTER SEQUENCE \"PUBLIC\".\"" + table + "_SEQ\" RESTART WITH " + count + ";\n")
+//                        count++;
+//                        file.write(("ALTER SEQUENCE \"PUBLIC\".\"" + table + "_SEQ\" RESTART WITH " + count + ";\n")
+//                                .getBytes()
+//                        );
+                        file.write(("-- " + count + " entries in " + table + ";\n")
                                 .getBytes()
                         );
                     }

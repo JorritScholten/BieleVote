@@ -40,7 +40,7 @@ public class Seeder implements CommandLineRunner {
 //        seedAccountRequests();
     }
 
-//    private void seedAccountRequests() {
+    private void seedAccountRequests() {
 //        accountRequestRepository.saveAllAndFlush(List.of(
 //                AccountRequest.builder()
 //                        .username("berendjan")
@@ -55,7 +55,7 @@ public class Seeder implements CommandLineRunner {
 //                        .dateRequested(LocalDateTime.now().minusDays(2))
 //                        .build()
 //        ));
-//    }
+    }
 
     private void seedUsers() {
     }
