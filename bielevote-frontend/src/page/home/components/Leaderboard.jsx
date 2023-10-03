@@ -61,9 +61,9 @@ export default function Leaderboard() {
         <Table basic="very" celled compact>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell collapsing>Rank</Table.HeaderCell>
-              <Table.HeaderCell collapsing>Score</Table.HeaderCell>
-              <Table.HeaderCell>Name</Table.HeaderCell>
+              <Table.HeaderCell textAlign="right">Rank</Table.HeaderCell>
+              <Table.HeaderCell textAlign="center">Name</Table.HeaderCell>
+              <Table.HeaderCell>Score</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -71,8 +71,8 @@ export default function Leaderboard() {
               leaderboardList.scores.map((score) => (
                 <Table.Row key={score.rank}>
                   <Table.Cell textAlign="right">{score.rank}</Table.Cell>
-                  <Table.Cell textAlign="center">{score.score}</Table.Cell>
-                  <Table.Cell>{score.name}</Table.Cell>
+                  <Table.Cell textAlign="center">{score.name}</Table.Cell>
+                  <Table.Cell>{score.score}</Table.Cell>
                 </Table.Row>
               ))
             ) : (
@@ -86,12 +86,14 @@ export default function Leaderboard() {
           <Table.Footer fullWidth>
             <Table.Row>
               <Table.HeaderCell colSpan="3">
-                <Pagination
-                  defaultActivePage={1}
-                  activePage={leaderboardList.currentPage + 1}
-                  totalPages={leaderboardList.totalPages}
-                  onPageChange={handlePageChange}
-                />
+                <div className="flex justify-center">
+                  <Pagination
+                    defaultActivePage={1}
+                    activePage={leaderboardList.currentPage + 1}
+                    totalPages={leaderboardList.totalPages}
+                    onPageChange={handlePageChange}
+                  />
+                </div>
               </Table.HeaderCell>
             </Table.Row>
           </Table.Footer>
