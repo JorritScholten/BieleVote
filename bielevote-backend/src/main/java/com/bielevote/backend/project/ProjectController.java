@@ -171,7 +171,8 @@ public class ProjectController {
     @JsonView(ProjectViews.GetProjectList.class)
     @PostMapping
     public ResponseEntity<Project> postProject(@Validated @RequestBody ProjectDTO projectDTO,
-                                               @AuthenticationPrincipal User currentUser) {
+                                               @AuthenticationPrincipal User currentUser,
+                                               @Value("${app.project-rules.days-voting-active}") final int daysVotingActive) {
         if (!checkIfAllowedToPropose(currentUser)) {
             return new ResponseEntity<>(HttpStatus.TOO_MANY_REQUESTS);
         }
@@ -185,6 +186,8 @@ public class ProjectController {
             project.setDatePublished(LocalDateTime.now());
             if (currentUser.getRole().equals(UserRole.MUNICIPAL)) {
                 project.setStatus(ProjectStatus.ACTIVE);
+                project.setStartOfVoting(LocalDateTime.now());
+                project.setEndOfVoting(LocalDateTime.now().plusDays(daysVotingActive));
             } else if (!(project.getAuthor().getRole().equals(UserRole.CITIZEN)
                     && (project.getStatus() == ProjectStatus.PROPOSED || project.getStatus() == ProjectStatus.EDITING))) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -270,7 +273,7 @@ public class ProjectController {
             project.setStatus(newStatus);
             if (newStatus == ProjectStatus.ACTIVE) {
                 project.setStartOfVoting(LocalDateTime.now());
-                project.setEndOfVoting(LocalDateTime.now().plus(Period.ofDays(daysVotingActive)));
+                project.setEndOfVoting(LocalDateTime.now().plusDays(daysVotingActive));
             } else if (newStatus == ProjectStatus.ACCEPTED && project.getAuthor().getRole().equals(UserRole.CITIZEN)) {
                 transactionRepository.saveAndFlush(Transaction.builder()
                         .amount(rewardForAccepted)
