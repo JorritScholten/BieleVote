@@ -22,7 +22,9 @@ export default function ListProjects({ projectsList, hideStatus = false }) {
             <Item.Meta>
               <Icon name="user" /> {project.author.legalName}
             </Item.Meta>
-            <Item.Description>{project.summary}</Item.Description>
+            <Item.Description>
+              {hideStatus ? shortenSummary(project.summary) : project.summary}
+            </Item.Description>
             <Item.Extra className={hideStatus ? "!hidden" : ""}>
               Status: {project.status}
             </Item.Extra>
@@ -31,6 +33,31 @@ export default function ListProjects({ projectsList, hideStatus = false }) {
       ))}
     </Item.Group>
   );
+}
+
+function shortenSummary(summary) {
+  const cutoffLength = 140;
+  const cutoffMargin = 10;
+  if (summary.length > cutoffLength) {
+    const spaceIndex = summary.indexOf(" ", cutoffLength - cutoffMargin);
+    let shortenedSummary = summary.substring(
+      0,
+      spaceIndex < cutoffLength + cutoffMargin && spaceIndex > 0
+        ? spaceIndex
+        : cutoffLength
+    );
+    if (shortenedSummary.match("[.!?]{1}$") !== null) {
+      return shortenedSummary;
+    } else if (shortenedSummary.match("[,]{1}$") !== null) {
+      shortenedSummary = shortenedSummary.substring(
+        0,
+        shortenedSummary.length - 1
+      );
+    }
+    return shortenedSummary.concat("...");
+  } else {
+    return summary;
+  }
 }
 
 ListProjects.propTypes = {
