@@ -27,7 +27,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "users", uniqueConstraints = {
+@Table(name = "USERS", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"legalName", "phone"})
 })
 public class User implements UserDetails {

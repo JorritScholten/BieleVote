@@ -19,11 +19,12 @@ import java.util.Set;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "PROJECTS")
 public class Project {
     @JsonView({ProjectViews.GetProjectList.class})
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PROJECT_ID_SEQ")
-    @SequenceGenerator(name = "PROJECT_ID_SEQ", sequenceName = "PROJECT_SEQ", initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PROJECTS_ID_SEQ")
+    @SequenceGenerator(name = "PROJECTS_ID_SEQ", sequenceName = "PROJECTS_SEQ", initialValue = 1, allocationSize = 1)
     private Long id;
 
     @NonNull

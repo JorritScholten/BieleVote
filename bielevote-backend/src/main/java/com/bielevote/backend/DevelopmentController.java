@@ -20,7 +20,9 @@ import java.sql.SQLException;
 @RequestMapping("/dev")
 public class DevelopmentController {
     public static final String dataResourcesDir = "src/main/resources/data/";
-    public static final String[] tableInsertOrder = new String[]{"USERS", "NEWS_ARTICLE", "PROJECT", "REWARD", "TRANSACTIONS", "VOTES", "ACCOUNT_REQUESTS"};
+    public static final String[] tableInsertOrder = new String[]{
+            "USERS", "NEWS_ARTICLES", "PROJECTS", "REWARDS",
+            "TRANSACTIONS", "VOTES", "ACCOUNT_REQUESTS"};
     @Autowired
     private DataSource dataSource;
 

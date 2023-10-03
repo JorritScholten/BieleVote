@@ -16,10 +16,11 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Jacksonized
+@Table(name = "REWARDS")
 public class Reward {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "REWARD_ID_SEQ")
-    @SequenceGenerator(name = "REWARD_ID_SEQ", sequenceName = "REWARD_SEQ", initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "REWARDS_ID_SEQ")
+    @SequenceGenerator(name = "REWARDS_ID_SEQ", sequenceName = "REWARDS_SEQ", initialValue = 1, allocationSize = 1)
     private Long id;
 
     private String name;

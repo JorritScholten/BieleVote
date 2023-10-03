@@ -14,10 +14,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Jacksonized
+@Table(name ="NEWS_ARTICLES")
 public class NewsArticle {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "NEWS_ARTICLE_ID_SEQ")
-    @SequenceGenerator(name = "NEWS_ARTICLE_ID_SEQ", sequenceName = "NEWS_ARTICLE_SEQ", initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "NEWS_ARTICLES_ID_SEQ")
+    @SequenceGenerator(name = "NEWS_ARTICLES_ID_SEQ", sequenceName = "NEWS_ARTICLES_SEQ", initialValue = 1, allocationSize = 1)
     private Long id;
 
     private String title;

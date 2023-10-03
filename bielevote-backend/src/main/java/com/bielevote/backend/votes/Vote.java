@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Jacksonized
-@Table(name = "votes", uniqueConstraints = {
+@Table(name = "VOTES", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"user_id", "project_id"})
 })
 public class Vote {

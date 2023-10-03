@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "account_requests")
+@Table(name = "ACCOUNT_REQUESTS")
 public class AccountRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ACCOUNT_REQUESTS_ID_SEQ")
