@@ -1,5 +1,6 @@
 package com.bielevote.backend.user;
 
+import com.bielevote.backend.user.accountrequests.AccountRequestRepository;
 import com.bielevote.backend.user.rewardpoint.TransactionRepository;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.RequiredArgsConstructor;
@@ -7,10 +8,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
@@ -19,6 +22,8 @@ import java.util.stream.IntStream;
 public class UserController {
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
+    private final AccountRequestRepository accountRequestRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @JsonView(UserViews.viewMe.class)
     @GetMapping("/me")
@@ -46,7 +51,7 @@ public class UserController {
 
     @JsonView(UserViews.viewMe.class)
     @PatchMapping("/update/anonymous")
-    public ResponseEntity<User> toggleAnonymous(@AuthenticationPrincipal User currentUser){
+    public ResponseEntity<User> toggleAnonymous(@AuthenticationPrincipal User currentUser) {
         try {
             currentUser.setAnonymousOnLeaderboard(!currentUser.getAnonymousOnLeaderboard());
             return new ResponseEntity<>(userRepository.save(currentUser), HttpStatus.OK);
@@ -71,5 +76,33 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+    }
+
+    @JsonView(UserViews.viewMe.class)
+    @PostMapping("/new/{id}")
+    public ResponseEntity<User> createNewUser(@PathVariable("id") Long accountRequestId,
+                                              @RequestHeader(name = "ROLE", defaultValue = "CITIZEN") String role) {
+        try {
+            var accountRequest = accountRequestRepository.findById(accountRequestId).orElseThrow();
+            var user = User.builder()
+                    .username(accountRequest.getUsername())
+                    .legalName(accountRequest.getLegalName())
+                    .phone(accountRequest.getPhone())
+                    .role(UserRole.valueOf(role))
+                    .password(passwordEncoder.encode(UUID.randomUUID().toString()))
+                    .anonymousOnLeaderboard(false)
+                    .build();
+            var returnVal = userRepository.save(user);
+            accountRequestRepository.delete(accountRequest);
+            return new ResponseEntity<>(returnVal, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }
