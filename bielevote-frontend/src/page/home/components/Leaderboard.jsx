@@ -58,7 +58,7 @@ export default function Leaderboard() {
         </Table.Header>
       </div>
       <div className="p-1">
-        <Table basic="very" celled compact>
+        <Table basic="very" celled striped>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell textAlign="right">Rank</Table.HeaderCell>
