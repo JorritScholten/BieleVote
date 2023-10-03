@@ -37,25 +37,25 @@ public class Seeder implements CommandLineRunner {
 //        seedProjects();
 //        seedNewsArticles();
 //        seedRewards();
-        seedAccountRequests();
+//        seedAccountRequests();
     }
 
-    private void seedAccountRequests() {
-        accountRequestRepository.saveAllAndFlush(List.of(
-                AccountRequest.builder()
-                        .username("berendjan")
-                        .legalName("Berend-Jan de Jong")
-                        .phone("0631245121")
-                        .dateRequested(LocalDateTime.now().minusDays(1))
-                        .build(),
-                AccountRequest.builder()
-                        .username("henklol")
-                        .legalName("Henk Koe")
-                        .phone("0631245122")
-                        .dateRequested(LocalDateTime.now().minusDays(2))
-                        .build()
-        ));
-    }
+//    private void seedAccountRequests() {
+//        accountRequestRepository.saveAllAndFlush(List.of(
+//                AccountRequest.builder()
+//                        .username("berendjan")
+//                        .legalName("Berend-Jan de Jong")
+//                        .phone("0631245121")
+//                        .dateRequested(LocalDateTime.now().minusDays(1))
+//                        .build(),
+//                AccountRequest.builder()
+//                        .username("henklol")
+//                        .legalName("Henk Koe")
+//                        .phone("0631245122")
+//                        .dateRequested(LocalDateTime.now().minusDays(2))
+//                        .build()
+//        ));
+//    }
 
     private void seedUsers() {
     }
