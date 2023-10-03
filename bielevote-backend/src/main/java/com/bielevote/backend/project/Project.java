@@ -25,7 +25,8 @@ import java.util.Set;
 public class Project {
     @JsonView({ProjectViews.GetProjectList.class})
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PROJECT_ID_SEQ")
+    @SequenceGenerator(name = "PROJECT_ID_SEQ", sequenceName = "PROJECT_SEQ", initialValue = 100)
     private Long id;
 
     @NonNull

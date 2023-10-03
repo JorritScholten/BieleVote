@@ -18,7 +18,8 @@ import java.time.LocalDateTime;
 @Table(name = "account_requests")
 public class AccountRequest {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ACCOUNT_REQUESTS_ID_SEQ")
+    @SequenceGenerator(name = "ACCOUNT_REQUESTS_ID_SEQ", sequenceName = "ACCOUNT_REQUESTS_SEQ", initialValue = 100)
     private Long id;
     @NonNull
     private String username;

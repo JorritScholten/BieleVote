@@ -23,7 +23,8 @@ import java.time.LocalDateTime;
 @Table(name = "transactions")
 public class Transaction {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TRANSACTIONS_ID_SEQ")
+    @SequenceGenerator(name = "TRANSACTIONS_ID_SEQ", sequenceName = "TRANSACTIONS_SEQ", initialValue = 100)
     private Long id;
 
     @NonNull
