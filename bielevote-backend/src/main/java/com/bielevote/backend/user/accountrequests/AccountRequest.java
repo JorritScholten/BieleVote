@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class AccountRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ACCOUNT_REQUESTS_ID_SEQ")
-    @SequenceGenerator(name = "ACCOUNT_REQUESTS_ID_SEQ", sequenceName = "ACCOUNT_REQUESTS_SEQ", initialValue = 100)
+    @SequenceGenerator(name = "ACCOUNT_REQUESTS_ID_SEQ", sequenceName = "ACCOUNT_REQUESTS_SEQ", initialValue = 1, allocationSize = 1)
     private Long id;
     @NonNull
     private String username;

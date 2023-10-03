@@ -49,11 +49,8 @@ public class DevelopmentController {
                         }
                     }
                     if (count != 0) {
-//                        count++;
-//                        file.write(("ALTER SEQUENCE \"PUBLIC\".\"" + table + "_SEQ\" RESTART WITH " + count + ";\n")
-//                                .getBytes()
-//                        );
-                        file.write(("-- " + count + " entries in " + table + ";\n")
+                        count++;
+                        file.write(("ALTER SEQUENCE \"PUBLIC\".\"" + table + "_SEQ\" RESTART WITH " + count + ";\n")
                                 .getBytes()
                         );
                     }

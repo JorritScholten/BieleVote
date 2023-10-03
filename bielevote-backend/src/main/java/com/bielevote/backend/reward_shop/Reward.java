@@ -19,7 +19,7 @@ import java.util.List;
 public class Reward {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "REWARD_ID_SEQ")
-    @SequenceGenerator(name = "REWARD_ID_SEQ", sequenceName = "REWARD_SEQ", initialValue = 100)
+    @SequenceGenerator(name = "REWARD_ID_SEQ", sequenceName = "REWARD_SEQ", initialValue = 1, allocationSize = 1)
     private Long id;
 
     private String name;

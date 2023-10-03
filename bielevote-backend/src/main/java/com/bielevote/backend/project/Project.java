@@ -2,7 +2,6 @@ package com.bielevote.backend.project;
 
 import com.bielevote.backend.user.User;
 import com.bielevote.backend.votes.Vote;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
@@ -10,8 +9,6 @@ import lombok.*;
 import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDateTime;
-import java.time.Period;
-import java.time.temporal.TemporalAmount;
 import java.util.Set;
 
 @Jacksonized
@@ -26,7 +23,7 @@ public class Project {
     @JsonView({ProjectViews.GetProjectList.class})
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PROJECT_ID_SEQ")
-    @SequenceGenerator(name = "PROJECT_ID_SEQ", sequenceName = "PROJECT_SEQ", initialValue = 100)
+    @SequenceGenerator(name = "PROJECT_ID_SEQ", sequenceName = "PROJECT_SEQ", initialValue = 1, allocationSize = 1)
     private Long id;
 
     @NonNull

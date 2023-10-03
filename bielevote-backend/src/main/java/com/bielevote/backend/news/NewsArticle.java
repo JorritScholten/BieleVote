@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class NewsArticle {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "NEWS_ARTICLE_ID_SEQ")
-    @SequenceGenerator(name = "NEWS_ARTICLE_ID_SEQ", sequenceName = "NEWS_ARTICLE_SEQ", initialValue = 100)
+    @SequenceGenerator(name = "NEWS_ARTICLE_ID_SEQ", sequenceName = "NEWS_ARTICLE_SEQ", initialValue = 1, allocationSize = 1)
     private Long id;
 
     private String title;

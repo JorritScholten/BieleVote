@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 })
 public class Vote {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VOTES_ID_SEQ")
-    @SequenceGenerator(name = "VOTES_ID_SEQ", sequenceName = "VOTES_SEQ", initialValue = 100)
+    @SequenceGenerator(name = "VOTES_ID_SEQ", sequenceName = "VOTES_SEQ", initialValue = 1, allocationSize = 1)
     @Id
     private Long id;
 
