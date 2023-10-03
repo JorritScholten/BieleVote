@@ -80,6 +80,8 @@ public class SecurityConfiguration {
             matchAll.apply(auth).apply("/auth/**").permitAll();
             match.apply(auth).apply("/api/v1/users/**", GET).hasAnyRole(allAccounts);
             match.apply(auth).apply("/api/v1/users/update/**", PATCH).hasAnyRole(allAccounts);
+            match.apply(auth).apply("/api/v1/users/new/*", POST).hasRole(ADMINISTRATOR.name());
+            match.apply(auth).apply("/api/v1/users/new/*", DELETE).hasRole(ADMINISTRATOR.name());
             match.apply(auth).apply("/api/v1/projects/*", GET).permitAll();
             match.apply(auth).apply("/api/v1/projects", GET).permitAll();
             match.apply(auth).apply("/api/v1/projects/own", GET).hasAnyRole(allAccounts);
@@ -99,6 +101,8 @@ public class SecurityConfiguration {
             match.apply(auth).apply("/api/v1/votes/*", POST).hasAnyRole(allAccounts);
             match.apply(auth).apply("/api/v1/rewards", GET).permitAll();
             match.apply(auth).apply("/api/v1/rewards/*", GET).permitAll();
+            match.apply(auth).apply("/api/v1/account-requests", GET).hasRole(ADMINISTRATOR.name());
+            match.apply(auth).apply("/api/v1/account-requests", POST).permitAll();
             auth.anyRequest().authenticated();
         });
         http.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
