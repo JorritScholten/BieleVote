@@ -2,8 +2,17 @@ import { Button, Dropdown, Icon, Item } from "semantic-ui-react";
 import PropTypes from "prop-types";
 import { formatDate } from "../../../components/Utils";
 import { useState } from "react";
+import { backendApi, handleLogError } from "../../../misc/ApiMappings";
+import { useAuth } from "../../../misc/AuthContext";
+import { HttpStatusCode } from "axios";
 
-export default function ListAccountRequests({ accountRequestList }) {
+export default function ListAccountRequests({
+  accountRequestList,
+  setVersion,
+}) {
+  const [userRole, setUserRole] = useState("CITIZEN");
+  const { getUser } = useAuth();
+
   const userRoles = [
     {
       key: 1,
@@ -22,23 +31,40 @@ export default function ListAccountRequests({ accountRequestList }) {
     },
   ];
 
+  const createAccount = async (accountRequestId) => {
+    try {
+      const response = await backendApi.createNewAccount(
+        accountRequestId,
+        userRole,
+        getUser()
+      );
+      if (response.status === HttpStatusCode.Created) {
+        setVersion((v) => (v = v + 1));
+      }
+    } catch (error) {
+      handleLogError(error);
+    }
+  };
+
   return accountRequestList.accountRequests == [] ? (
     <div>loading...</div>
   ) : (
     <Item.Group relaxed>
-      {accountRequestList.accountRequests.map((newAccount) => (
-        <Item key={newAccount.id}>
+      {accountRequestList.accountRequests.map((accountRequest) => (
+        <Item key={accountRequest.id}>
           <Item.Content>
             <Item.Header>
               <Icon name="calendar alternate" /> Requested:{" "}
-              {formatDate(newAccount.dateRequested)}
+              {formatDate(accountRequest.dateRequested)}
             </Item.Header>
             <Item.Description>
-              Legal name: {newAccount.legalName}
+              Legal name: {accountRequest.legalName}
             </Item.Description>
-            <Item.Description>Username: {newAccount.username}</Item.Description>
             <Item.Description>
-              Phone number: {newAccount.phone}
+              Username: {accountRequest.username}
+            </Item.Description>
+            <Item.Description>
+              Phone number: {accountRequest.phone}
             </Item.Description>
             <Item.Extra>
               <Dropdown
@@ -47,12 +73,20 @@ export default function ListAccountRequests({ accountRequestList }) {
                 selection
                 defaultValue={"CITIZEN"}
                 options={userRoles}
+                onChange={(e) => {
+                  console.log(e);
+                  setUserRole(
+                    userRoles.find(
+                      (option) => option.text === e.target.innerText
+                    ).value
+                  );
+                }}
               />
             </Item.Extra>
             <Button.Group fluid>
               <Button
                 positive
-                //   onClick={() => moderateStatus(projectStatus.active)}
+                onClick={() => createAccount(accountRequest.id)}
                 content="Allow"
               />
               <Button
@@ -69,4 +103,5 @@ export default function ListAccountRequests({ accountRequestList }) {
 }
 ListAccountRequests.propTypes = {
   accountRequestList: PropTypes.object.isRequired,
+  setVersion: PropTypes.func.isRequired,
 };

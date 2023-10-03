@@ -10,8 +10,8 @@ export default function AccountRequests() {
   const [accountRequestList, setAccountRequestList] = useState(
     emptyForms.newAccountRequests
   );
-  const { getUser, userIsAuthenticated } = useAuth();
   const [version, setVersion] = useState(0);
+  const { getUser, userIsAuthenticated } = useAuth();
 
   useEffect(() => {
     handlePageChange();
@@ -40,7 +40,10 @@ export default function AccountRequests() {
     <div>
       <Header pageTitle="Requested Accounts" />
       <div className="flex flex-row items-center justify-center">
-        <ListAccountRequests accountRequestList={accountRequestList} />
+        <ListAccountRequests
+          accountRequestList={accountRequestList}
+          setVersion={setVersion}
+        />
       </div>
       <div className="flex flex-row items-center justify-center">
         <Pagination

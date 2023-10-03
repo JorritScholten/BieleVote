@@ -8,21 +8,18 @@ import { backendApi, handleLogError } from "../../misc/ApiMappings";
 import { HttpStatusCode } from "axios";
 
 export default function CreateAccountPage() {
-  const [newAccount, setNewAccount] = useState(emptyForms.newAccount);
+  const [newAccountRequest, setNewAccount] = useState(
+    emptyForms.newAccountRequest
+  );
   const [hideMessage, setHideMessage] = useState(true);
 
-  // async function onSubmit(e) {
-  //   e.preventDefault();
-  //   setNewAccount(emptyForms.newAccount);
-  //   setHideMessage(false);
-  // }
   async function onSubmit(e) {
     e.preventDefault();
+    console.table(newAccountRequest);
     try {
-      console.table(newAccount);
-      const response = await backendApi.postAccountRequest(newAccount);
+      const response = await backendApi.createAccountRequest(newAccountRequest);
       if (response.status === HttpStatusCode.Created) {
-        setNewAccount(emptyForms.newAccount);
+        setNewAccount(emptyForms.newAccountRequest);
         setHideMessage(false);
       }
     } catch (error) {
@@ -43,9 +40,9 @@ export default function CreateAccountPage() {
           <Form.Input
             label="Username:"
             name="username"
-            value={newAccount.username}
+            value={newAccountRequest.username}
             onChange={(e) =>
-              setNewAccount({ ...newAccount, username: e.target.value })
+              setNewAccount({ ...newAccountRequest, username: e.target.value })
             }
             placeholder="Username"
             required={true}
@@ -54,9 +51,9 @@ export default function CreateAccountPage() {
           <Form.Input
             label="First name and surname:"
             name="legalName"
-            value={newAccount.legalName}
+            value={newAccountRequest.legalName}
             onChange={(e) =>
-              setNewAccount({ ...newAccount, legalName: e.target.value })
+              setNewAccount({ ...newAccountRequest, legalName: e.target.value })
             }
             placeholder="First name and surname"
             required={true}
@@ -65,9 +62,9 @@ export default function CreateAccountPage() {
           <Form.Input
             label="Telephone number:"
             name="phone"
-            value={newAccount.phone}
+            value={newAccountRequest.phone}
             onChange={(e) =>
-              setNewAccount({ ...newAccount, phone: e.target.value })
+              setNewAccount({ ...newAccountRequest, phone: e.target.value })
             }
             pattern="[0-9]{8,}"
             placeholder="Telephone number"

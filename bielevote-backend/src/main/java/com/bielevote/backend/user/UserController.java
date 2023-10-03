@@ -95,7 +95,9 @@ public class UserController {
                     .password(passwordEncoder.encode(UUID.randomUUID().toString()))
                     .anonymousOnLeaderboard(false)
                     .build();
-            return new ResponseEntity<>(userRepository.save(user), HttpStatus.CREATED);
+            var returnVal = userRepository.save(user);
+            accountRequestRepository.delete(accountRequest);
+            return new ResponseEntity<>(returnVal, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
