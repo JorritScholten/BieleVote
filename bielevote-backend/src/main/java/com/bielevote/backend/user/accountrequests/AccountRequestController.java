@@ -67,6 +67,9 @@ public class AccountRequestController {
             if (userRepository.findByUsername(accountRequest.getUsername()).isPresent()) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
+            if (userRepository.findByLegalNameAndPhone(accountRequestDto.legalName, accountRequestDto.phone).isPresent()) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
             accountRequest.setUsername(accountRequestDto.username);
             accountRequest.setLegalName(accountRequestDto.legalName);
             accountRequest.setPhone(accountRequestDto.phone);

@@ -21,7 +21,6 @@ public class AccountRequest {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     @NonNull
-    @Column(unique = true)
     private String username;
     @NonNull
     private String legalName;
