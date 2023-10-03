@@ -30,7 +30,7 @@ export default function ProjectsPreview() {
     <div>loading...</div>
   ) : (
     <div>
-      <ListProjects projectsList={projectsList} />
+      <ListProjects projectsList={projectsList} hideStatus={true} />
       <Link to={"/projects"}>
         <Button fluid primary>
           View All Projects

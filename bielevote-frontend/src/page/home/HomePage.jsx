@@ -9,7 +9,7 @@ export default function HomePage() {
   return (
     <div className="flex flex-col w-screen h-screen">
       <Header pageTitle="Home page" />
-      <div className="grid grid-cols-3 grid-rows-2 ">
+      <div className="grid grid-cols-3 grid-rows-2 h-full">
         <Table className="row-span-2 h-fit">
           <Table.Header>
             <Table.Row>
@@ -30,7 +30,7 @@ export default function HomePage() {
         <Table celled className="col-span-2 !my-0">
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell>Recent Projects</Table.HeaderCell>
+              <Table.HeaderCell>Recent Active Projects</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>
