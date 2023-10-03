@@ -9,6 +9,7 @@ import { emptyForms } from "../../../misc/ApiForms";
 import { useAuth } from "../../../misc/AuthContext";
 import { backendApi, handleLogError } from "../../../misc/ApiMappings";
 import { accountType } from "../../../misc/NavMappings";
+import './styling.css'
 
 function ProjectForm() {
   const [newProject, setNewProject] = useState(emptyForms.newProject);
@@ -63,6 +64,16 @@ function ProjectForm() {
     if (userIsAuthenticated()) getAllowedToPost();
   }, [userIsAuthenticated]);
 
+  const modules = {
+    toolbar: [
+      [{ 'font': [] }],
+      [{ header: ['1', '2', '3', false] }],
+      ['bold', 'italic', 'underline'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ]
+  }
+
+
   return (
     <Form onSubmit={onSubmit}>
       <Message negative hidden={allowedToPost}>
@@ -98,6 +109,7 @@ function ProjectForm() {
       <Form.Field required={true} disabled={!allowedToPost}>
         <ReactQuill
           theme="snow"
+          modules={modules}
           name="content"
           placeholder="Project proposal"
           value={newProject.content}

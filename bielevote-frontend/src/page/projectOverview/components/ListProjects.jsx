@@ -4,7 +4,7 @@ import { Icon, Item } from "semantic-ui-react";
 
 import { formatDate } from "../../../components/Utils";
 
-export default function ListProjects({ projectsList }) {
+export default function ListProjects({ projectsList, hideStatus = false }) {
   return projectsList.projects == [] ? (
     <div>loading...</div>
   ) : (
@@ -23,7 +23,9 @@ export default function ListProjects({ projectsList }) {
               <Icon name="user" /> {project.author.legalName}
             </Item.Meta>
             <Item.Description>{project.summary}</Item.Description>
-            <Item.Extra>Status: {project.status}</Item.Extra>
+            <Item.Extra className={hideStatus ? "!hidden" : ""}>
+              Status: {project.status}
+            </Item.Extra>
           </Item.Content>
         </Item>
       ))}
@@ -33,4 +35,5 @@ export default function ListProjects({ projectsList }) {
 
 ListProjects.propTypes = {
   projectsList: PropTypes.object.isRequired,
+  hideStatus: PropTypes.bool,
 };

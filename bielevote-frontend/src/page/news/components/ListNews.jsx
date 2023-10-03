@@ -5,7 +5,7 @@ import { BiCategory } from "react-icons/bi";
 
 import { formatDate } from "../../../components/Utils";
 
-export default function ListNews({ newsList }) {
+export default function ListNews({ newsList, hideCategory = false }) {
   return newsList.articles == [] ? (
     <div>loading...</div>
   ) : (
@@ -26,7 +26,7 @@ export default function ListNews({ newsList }) {
               <Icon name="user" /> {articlePreview.author}
             </Item.Meta>
             <Item.Description>{articlePreview.summaryPreview}</Item.Description>
-            <Item.Extra>
+            <Item.Extra className={hideCategory ? "!hidden" : ""}>
               <Icon className="relative [top:0.375rem;]">
                 <BiCategory />
               </Icon>{" "}
@@ -41,4 +41,5 @@ export default function ListNews({ newsList }) {
 
 ListNews.propTypes = {
   newsList: PropTypes.object.isRequired,
+  hideCategory: PropTypes.bool,
 };

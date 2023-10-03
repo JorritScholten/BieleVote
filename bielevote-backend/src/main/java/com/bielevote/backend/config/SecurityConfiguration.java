@@ -84,6 +84,7 @@ public class SecurityConfiguration {
             match.apply(auth).apply("/api/v1/users/new/*", DELETE).hasRole(ADMINISTRATOR.name());
             match.apply(auth).apply("/api/v1/projects/*", GET).permitAll();
             match.apply(auth).apply("/api/v1/projects", GET).permitAll();
+            match.apply(auth).apply("/api/v1/projects/own", GET).hasAnyRole(allAccounts);
             match.apply(auth).apply("/api/v1/projects/allowed_to_post/**", GET).hasAnyRole(allAccounts);
             match.apply(auth).apply("/api/v1/projects", POST).hasAnyRole(notAdmin);
             match.apply(auth).apply("/api/v1/projects/*", DELETE).hasRole(ADMINISTRATOR.name());

@@ -8,16 +8,16 @@ function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const storedUser = JSON.parse(sessionStorage.getItem("user"));
     setUser(storedUser);
   }, []);
 
   const getUser = () => {
-    return JSON.parse(localStorage.getItem("user"));
+    return JSON.parse(sessionStorage.getItem("user"));
   };
 
   const getUsername = () => {
-    let storedUser = localStorage.getItem("user");
+    let storedUser = sessionStorage.getItem("user");
     if (!storedUser) {
       return false;
     }
@@ -26,7 +26,7 @@ function AuthProvider({ children }) {
   };
 
   const userIsAuthenticated = () => {
-    let storedUser = localStorage.getItem("user");
+    let storedUser = sessionStorage.getItem("user");
     if (!storedUser) {
       return false;
     }
@@ -41,17 +41,17 @@ function AuthProvider({ children }) {
   };
 
   const userLogin = (user) => {
-    localStorage.setItem("user", JSON.stringify(user));
+    sessionStorage.setItem("user", JSON.stringify(user));
     setUser(user);
   };
 
   const userLogout = () => {
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
     setUser(null);
   };
 
   const getAccountType = () => {
-    const storedUser = localStorage.getItem("user");
+    const storedUser = sessionStorage.getItem("user");
     if (!storedUser) {
       return accountType.visitor;
     }

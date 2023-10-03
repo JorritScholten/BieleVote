@@ -11,17 +11,16 @@ import ListProjects from "./components/ListProjects";
 import { backendApi, handleLogError } from "../../misc/ApiMappings";
 import { emptyForms, projectStatus } from "../../misc/ApiForms";
 import { useAuth } from "../../misc/AuthContext";
-import { accountType } from "../../misc/NavMappings";
 
-export default function ProjectOverviewPage() {
+export default function OwnProjectOverviewPage() {
   const [projectsList, setProjectsList] = useState(emptyForms.projectOverview);
   const [viewActive, setViewActive] = useState(true);
   const [viewAccepted, setViewAccepted] = useState(true);
-  const [viewRejected, setViewRejected] = useState(false);
+  const [viewRejected, setViewRejected] = useState(true);
   const [viewProposed, setViewProposed] = useState(true);
-  const [viewDenied, setViewDenied] = useState(false);
+  const [viewDenied, setViewDenied] = useState(true);
   const [viewReview, setViewReview] = useState(true);
-  const { getUser, getAccountType, userIsAuthenticated } = useAuth();
+  const { getUser } = useAuth();
   const amountOfProjects = 3;
 
   useEffect(() => {
@@ -33,7 +32,6 @@ export default function ProjectOverviewPage() {
     viewProposed,
     viewDenied,
     viewReview,
-    userIsAuthenticated,
   ]);
 
   const handlePageChange = async (event, value) => {
@@ -42,13 +40,11 @@ export default function ProjectOverviewPage() {
     if (viewActive) statusFilter.push(projectStatus.active);
     if (viewAccepted) statusFilter.push(projectStatus.accepted);
     if (viewRejected) statusFilter.push(projectStatus.rejected);
-    if (getAccountType() === accountType.municipal) {
-      if (viewProposed) statusFilter.push(projectStatus.proposed);
-      if (viewDenied) statusFilter.push(projectStatus.denied);
-      if (viewReview) statusFilter.push(projectStatus.review);
-    }
+    if (viewProposed) statusFilter.push(projectStatus.proposed);
+    if (viewDenied) statusFilter.push(projectStatus.denied);
+    if (viewReview) statusFilter.push(projectStatus.review);
     try {
-      const response = await backendApi.getAllProjects(
+      const response = await backendApi.getAllOwnProjects(
         page,
         amountOfProjects,
         statusFilter,
@@ -62,16 +58,28 @@ export default function ProjectOverviewPage() {
 
   return (
     <div className="flex flex-col gap-5 w-screen">
-      <Header pageTitle="Projects" />
+      <Header pageTitle="My projects" />
       <div className="grid grid-cols-5 items-start justify-items-center">
         <List>
           <SemanticHeader as="h3">Filter by status:</SemanticHeader>
           <Button.Group vertical fluid>
             <Button
               toggle
+              active={viewProposed}
+              onClick={() => setViewProposed((state) => (state = !state))}
+              content="Proposed"
+            />
+            <Button
+              toggle
               active={viewActive}
               onClick={() => setViewActive((state) => (state = !state))}
               content="Active"
+            />
+            <Button
+              toggle
+              active={viewReview}
+              onClick={() => setViewReview((state) => (state = !state))}
+              content="Review"
             />
             <Button
               toggle
@@ -85,36 +93,12 @@ export default function ProjectOverviewPage() {
               onClick={() => setViewRejected((state) => (state = !state))}
               content="Rejected"
             />
-            {getAccountType() === accountType.municipal ? (
-              <Button
-                toggle
-                active={viewProposed}
-                onClick={() => setViewProposed((state) => (state = !state))}
-                content="Proposed"
-              />
-            ) : (
-              <div hidden />
-            )}
-            {getAccountType() === accountType.municipal ? (
-              <Button
-                toggle
-                active={viewReview}
-                onClick={() => setViewReview((state) => (state = !state))}
-                content="Review"
-              />
-            ) : (
-              <div hidden />
-            )}
-            {getAccountType() === accountType.municipal ? (
-              <Button
-                toggle
-                active={viewDenied}
-                onClick={() => setViewDenied((state) => (state = !state))}
-                content="Denied"
-              />
-            ) : (
-              <div hidden />
-            )}
+            <Button
+              toggle
+              active={viewDenied}
+              onClick={() => setViewDenied((state) => (state = !state))}
+              content="Denied"
+            />
           </Button.Group>
         </List>
         <div className="col-span-3 flex flex-col items-center w-full">

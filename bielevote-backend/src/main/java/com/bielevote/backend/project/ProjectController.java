@@ -96,6 +96,35 @@ public class ProjectController {
         }
     }
 
+    @JsonView(ProjectViews.GetProjectList.class)
+    @GetMapping("/own")
+    public ResponseEntity<Map<String, Object>> getOwnProjects(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) List<String> statusList,
+            @AuthenticationPrincipal User user
+    ) {
+        try {
+            var paging = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "datePublished"));
+            final Set<ProjectStatus> statusFilter = new HashSet<>(statusList == null ? allowedPublicTypes :
+                    statusList.stream().map(ProjectStatus::valueOf).collect(Collectors.toSet()));
+            Page<Project> pageProject = projectRepository.findByAuthorAndStatusIn(user, statusFilter, paging);
+
+            List<Project> projects = pageProject.getContent();
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("projects", projects);
+            responseBody.put("currentPage", pageProject.getNumber());
+            responseBody.put("totalItems", pageProject.getTotalElements());
+            responseBody.put("totalPages", pageProject.getTotalPages());
+
+            return new ResponseEntity<>(responseBody, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProjectInfoDTO> getProjectById(@PathVariable("id") long id,
                                                          @AuthenticationPrincipal User currentUser) {
@@ -103,6 +132,10 @@ public class ProjectController {
             var project = projectRepository.findById(id).orElseThrow();
             if (currentUser != null && currentUser.getRole() == UserRole.MUNICIPAL) {
                 if (!allowedMunicipalTypes.contains(project.getStatus())) {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } else if (currentUser != null) {
+                if (!allowedPublicTypes.contains(project.getStatus()) && !project.getAuthor().equals(currentUser)) {
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } else {
@@ -126,7 +159,8 @@ public class ProjectController {
                     project.getVotes().stream().filter(v -> v.getType() == VoteType.POSITIVE).count(),
                     project.getVotes().stream().filter(v -> v.getType() == VoteType.NEUTRAL).count(),
                     project.getVotes().stream().filter(v -> v.getType() == VoteType.AGAINST).count(),
-                    percentage);
+                    percentage,
+                    project.getEndOfVoting());
             return ResponseEntity.ok(dto);
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
@@ -260,7 +294,7 @@ public class ProjectController {
 
     public record ProjectInfoDTO(String title, String summary, String content, String author,
                                  LocalDateTime datePublished, ProjectStatus status, Long votesFor, Long votesNeutral,
-                                 Long votesAgainst, Long progressPercentage) {
+                                 Long votesAgainst, Long progressPercentage, LocalDateTime endOfVoting) {
     }
 
     public record ProjectDTO(String title, String summary, String content, ProjectStatus status) {

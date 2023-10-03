@@ -19,6 +19,7 @@ import { backendApi, handleLogError } from "../../misc/ApiMappings";
 import { formatDate } from "../../components/Utils";
 import { useAuth } from "../../misc/AuthContext";
 import { accountType } from "../../misc/NavMappings";
+import TimeRemaing from "./components/TimeRemaing";
 
 export default function ProjectPage() {
   const [project, setProject] = useState(emptyForms.projectInfoDTO);
@@ -36,7 +37,7 @@ export default function ProjectPage() {
         setDisableStatusChange(response.data.status !== projectStatus.proposed);
       } catch (error) {
         if (error.response.status === HttpStatusCode.Unauthorized) {
-          navigate("/projects");
+          navigate(-1);
         } else {
           console.log(error);
         }
@@ -139,6 +140,12 @@ function renderProject(project) {
       )}
       <SemanticHeader.Subheader>
         <Icon name="calendar alternate" /> {formatDate(project.datePublished)}
+        <span className="inline-block w-10" />
+        <span
+          className={project.status === projectStatus.active ? "" : "hidden"}
+        >
+          Time remaining: <TimeRemaing project={project} />
+        </span>
       </SemanticHeader.Subheader>
       <SemanticHeader.Subheader>
         <Icon name="user" /> {project.author}
