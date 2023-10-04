@@ -17,11 +17,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Jacksonized
-@Table(name = "votes", uniqueConstraints = {
+@Table(name = "VOTES", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"user_id", "project_id"})
 })
 public class Vote {
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VOTES_ID_SEQ")
+    @SequenceGenerator(name = "VOTES_ID_SEQ", sequenceName = "VOTES_SEQ", initialValue = 1, allocationSize = 1)
     @Id
     private Long id;
 

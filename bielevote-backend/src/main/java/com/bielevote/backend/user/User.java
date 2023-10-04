@@ -22,18 +22,18 @@ import java.util.Set;
 @Jacksonized
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "users", uniqueConstraints = {
+@Table(name = "USERS", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"legalName", "phone"})
 })
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USERS_ID_SEQ")
+    @SequenceGenerator(name = "USERS_ID_SEQ", sequenceName = "USERS_SEQ", initialValue = 1, allocationSize = 1)
     private Long id;
 
     @NonNull

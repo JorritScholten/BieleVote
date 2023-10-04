@@ -20,10 +20,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "transactions")
+@Table(name = "TRANSACTIONS")
 public class Transaction {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TRANSACTIONS_ID_SEQ")
+    @SequenceGenerator(name = "TRANSACTIONS_ID_SEQ", sequenceName = "TRANSACTIONS_SEQ", initialValue = 1, allocationSize = 1)
     private Long id;
 
     @NonNull
